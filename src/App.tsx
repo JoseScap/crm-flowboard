@@ -3,7 +3,9 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Layout } from "@/components/Layout";
 import Index from "./pages/Index";
+import Placeholder from "./pages/Placeholder";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -15,8 +17,70 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route
+            path="/"
+            element={
+              <Layout>
+                <Index />
+              </Layout>
+            }
+          />
+          <Route
+            path="/contacts"
+            element={
+              <Layout>
+                <Placeholder />
+              </Layout>
+            }
+          />
+          <Route
+            path="/companies"
+            element={
+              <Layout>
+                <Placeholder />
+              </Layout>
+            }
+          />
+          <Route
+            path="/tasks"
+            element={
+              <Layout>
+                <Placeholder />
+              </Layout>
+            }
+          />
+          <Route
+            path="/reports"
+            element={
+              <Layout>
+                <Placeholder />
+              </Layout>
+            }
+          />
+          <Route
+            path="/emails"
+            element={
+              <Layout>
+                <Placeholder />
+              </Layout>
+            }
+          />
+          <Route
+            path="/documents"
+            element={
+              <Layout>
+                <Placeholder />
+              </Layout>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <Layout>
+                <Placeholder />
+              </Layout>
+            }
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

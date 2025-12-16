@@ -32,22 +32,20 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6 lg:p-8">
-      <div className="max-w-[1800px] mx-auto">
-        <DashboardHeader deals={deals} />
-        
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <div className="flex gap-4 overflow-x-auto pb-4" style={{ height: 'calc(100vh - 280px)' }}>
-            {STAGES.map((stage) => (
-              <KanbanColumn
-                key={stage.id}
-                stage={stage}
-                deals={getDealsByStage(stage.id)}
-              />
-            ))}
-          </div>
-        </DragDropContext>
-      </div>
+    <div className="p-6 lg:p-8 h-full">
+      <DashboardHeader deals={deals} />
+      
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <div className="flex gap-4 overflow-x-auto pb-4" style={{ height: 'calc(100vh - 340px)' }}>
+          {STAGES.map((stage) => (
+            <KanbanColumn
+              key={stage.id}
+              stage={stage}
+              deals={getDealsByStage(stage.id)}
+            />
+          ))}
+        </div>
+      </DragDropContext>
     </div>
   );
 };

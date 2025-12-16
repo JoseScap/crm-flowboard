@@ -8,6 +8,8 @@ import {
   BarChart3,
   Mail,
   FileText,
+  Moon,
+  Sun,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -21,6 +23,8 @@ import {
   SidebarHeader,
   SidebarFooter,
 } from '@/components/ui/sidebar';
+import { Switch } from '@/components/ui/switch';
+import { useTheme } from '@/hooks/use-theme';
 
 const mainNavItems = [
   { title: 'Pipeline', url: '/', icon: LayoutDashboard },
@@ -38,6 +42,7 @@ const secondaryNavItems = [
 export function AppSidebar() {
   const location = useLocation();
   const currentPath = location.pathname;
+  const { theme, toggleTheme } = useTheme();
 
   const isActive = (path: string) => currentPath === path;
 
@@ -119,7 +124,17 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-4 border-t border-border">
+      <SidebarFooter className="p-4 border-t border-border space-y-3">
+        <div className="flex items-center justify-between px-3 py-2">
+          <div className="flex items-center gap-3 text-muted-foreground">
+            {theme === 'dark' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+            <span className="font-medium text-sm">Dark Mode</span>
+          </div>
+          <Switch
+            checked={theme === 'dark'}
+            onCheckedChange={toggleTheme}
+          />
+        </div>
         <Link
           to="/settings"
           className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${

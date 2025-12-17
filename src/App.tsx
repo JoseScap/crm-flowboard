@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { ThemeProvider } from "@/hooks/use-theme";
-import Index from "./pages/Index";
+import Pipelines from "./pages/Pipelines";
 import Products from "./pages/Products";
 import Sales from "./pages/Sales";
 import Reports from "./pages/Reports";
@@ -26,7 +26,7 @@ const App = () => (
             path="/"
             element={
               <Layout>
-                <Index />
+                <Pipelines />
               </Layout>
             }
           />

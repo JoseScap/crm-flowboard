@@ -4,7 +4,7 @@ import { Deal, STAGES, INITIAL_DEALS } from '@/types/crm';
 import { KanbanColumn } from '@/components/KanbanColumn';
 import { DashboardHeader } from '@/components/DashboardHeader';
 
-const Index = () => {
+const Pipelines = () => {
   const [deals, setDeals] = useState<Deal[]>(INITIAL_DEALS);
 
   const handleDragEnd = (result: DropResult) => {
@@ -50,4 +50,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Pipelines;

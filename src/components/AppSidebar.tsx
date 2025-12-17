@@ -11,6 +11,7 @@ import {
   Moon,
   Sun,
   Package,
+  ShoppingCart,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -29,6 +30,7 @@ import { useTheme } from '@/hooks/use-theme';
 
 const mainNavItems = [
   { title: 'Pipeline', url: '/', icon: LayoutDashboard },
+  { title: 'Sales', url: '/sales', icon: ShoppingCart },
   { title: 'Products', url: '/products', icon: Package },
   { title: 'Contacts', url: '/contacts', icon: Users },
   { title: 'Companies', url: '/companies', icon: Building2 },

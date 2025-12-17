@@ -10,6 +10,7 @@ import {
   FileText,
   Moon,
   Sun,
+  Package,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -28,6 +29,7 @@ import { useTheme } from '@/hooks/use-theme';
 
 const mainNavItems = [
   { title: 'Pipeline', url: '/', icon: LayoutDashboard },
+  { title: 'Products', url: '/products', icon: Package },
   { title: 'Contacts', url: '/contacts', icon: Users },
   { title: 'Companies', url: '/companies', icon: Building2 },
   { title: 'Tasks', url: '/tasks', icon: Calendar },

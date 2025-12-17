@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/hooks/use-theme";
 import Index from "./pages/Index";
 import Products from "./pages/Products";
 import Sales from "./pages/Sales";
+import Reports from "./pages/Reports";
 import Placeholder from "./pages/Placeholder";
 import NotFound from "./pages/NotFound";
 
@@ -73,7 +74,7 @@ const App = () => (
             path="/reports"
             element={
               <Layout>
-                <Placeholder />
+                <Reports />
               </Layout>
             }
           />

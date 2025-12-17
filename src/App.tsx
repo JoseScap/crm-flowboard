@@ -7,6 +7,7 @@ import { Layout } from "@/components/Layout";
 import { ThemeProvider } from "@/hooks/use-theme";
 import Index from "./pages/Index";
 import Products from "./pages/Products";
+import Sales from "./pages/Sales";
 import Placeholder from "./pages/Placeholder";
 import NotFound from "./pages/NotFound";
 
@@ -25,6 +26,14 @@ const App = () => (
             element={
               <Layout>
                 <Index />
+              </Layout>
+            }
+          />
+          <Route
+            path="/sales"
+            element={
+              <Layout>
+                <Sales />
               </Layout>
             }
           />

@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
-import { Deal, STAGES, INITIAL_DEALS } from '@/types/crm';
-import { KanbanColumn } from './KanbanColumn';
+import { PipelineStageDeal } from '@/types/index.types';
 
 export function KanbanBoard() {
-  const [deals, setDeals] = useState<Deal[]>(INITIAL_DEALS);
+  const [deals, setDeals] = useState<PipelineStageDeal[]>([]);
 
   const handleDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
@@ -26,20 +25,10 @@ export function KanbanBoard() {
     );
   };
 
-  const getDealsByStage = (stageId: string) => {
-    return deals.filter((deal) => deal.stage === stageId);
-  };
-
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <div className="flex gap-4 overflow-x-auto pb-4 h-full">
-        {STAGES.map((stage) => (
-          <KanbanColumn
-            key={stage.id}
-            stage={stage}
-            deals={getDealsByStage(stage.id)}
-          />
-        ))}
+        {/* KanbanBoard component - stages should come from props or DB */}
       </div>
     </DragDropContext>
   );

@@ -55,10 +55,10 @@ export function AppSidebar() {
       <SidebarHeader className="p-4 border-b border-border">
         <Link to="/" className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-lg">C</span>
+            <span className="text-primary-foreground font-bold text-lg">S</span>
           </div>
           <div>
-            <h1 className="font-bold text-foreground text-lg leading-tight">CRM</h1>
+            <h1 className="font-bold text-foreground text-lg leading-tight">SynergIA</h1>
             <p className="text-xs text-muted-foreground">Sales Pipeline</p>
           </div>
         </Link>

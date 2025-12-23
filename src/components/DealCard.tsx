@@ -1,56 +1,37 @@
-import { Deal } from '@/types/crm';
-import { Building2, DollarSign, Mail } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { PipelineStageDeal } from '@/types/index.types';
+import { DollarSign, Mail, Archive, Eye } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { formatCurrency, getInitials, getAvatarColor } from '@/lib/deal-utils';
 
 interface DealCardProps {
-  deal: Deal;
+  deal: PipelineStageDeal;
+  onArchiveClick?: () => void;
+  onDetailClick?: () => void;
 }
 
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value);
-};
+export function DealCard({ deal, onArchiveClick, onDetailClick }: DealCardProps) {
+  const navigate = useNavigate();
 
-const getInitials = (name: string) => {
-  return name
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase();
-};
+  const handleDetailClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate(`/deal/${deal.id}`);
+  };
 
-const getAvatarColor = (name: string) => {
-  const colors = [
-    'bg-primary',
-    'bg-success',
-    'bg-warning',
-    'bg-destructive',
-    'bg-muted',
-  ];
-  const index = name.charCodeAt(0) % colors.length;
-  return colors[index];
-};
-
-export function DealCard({ deal }: DealCardProps) {
   return (
-    <div className="bg-card rounded-lg p-4 shadow-lg border border-border hover:border-primary/50 transition-all duration-200 cursor-grab active:cursor-grabbing group">
+    <div 
+      className="bg-card rounded-lg p-4 shadow-lg border border-border hover:border-primary/50 transition-all duration-200 cursor-grab active:cursor-grabbing group"
+    >
       <div className="flex items-start gap-3">
         <div
-          className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold ${getAvatarColor(deal.name)} text-primary-foreground flex-shrink-0`}
+          className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold ${getAvatarColor(deal.customer_name)} text-primary-foreground flex-shrink-0`}
         >
-          {getInitials(deal.name)}
+          {getInitials(deal.customer_name)}
         </div>
         <div className="flex-1 min-w-0">
           <h4 className="font-semibold text-foreground truncate group-hover:text-primary transition-colors">
-            {deal.name}
+            {deal.customer_name}
           </h4>
-          <div className="flex items-center gap-1.5 text-muted-foreground text-sm mt-1">
-            <Building2 className="w-3.5 h-3.5 flex-shrink-0" />
-            <span className="truncate">{deal.company}</span>
-          </div>
         </div>
       </div>
       
@@ -59,9 +40,32 @@ export function DealCard({ deal }: DealCardProps) {
           <DollarSign className="w-4 h-4" />
           <span>{formatCurrency(deal.value)}</span>
         </div>
-        <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
-          <Mail className="w-3.5 h-3.5" />
-          <span className="truncate max-w-[100px]">{deal.email}</span>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+            <Mail className="w-3.5 h-3.5" />
+            <span className="truncate max-w-[100px]">{deal.email || 'N/A'}</span>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 p-0 hover:bg-primary transition-colors [&:hover_svg]:text-primary-foreground"
+            onClick={handleDetailClick}
+          >
+            <Eye className="w-3.5 h-3.5 text-primary transition-colors" />
+          </Button>
+          {onArchiveClick && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 p-0 hover:bg-destructive transition-colors [&:hover_svg]:text-destructive-foreground"
+              onClick={(e) => {
+                e.stopPropagation();
+                onArchiveClick();
+              }}
+            >
+              <Archive className="w-3.5 h-3.5 text-destructive transition-colors" />
+            </Button>
+          )}
         </div>
       </div>
     </div>

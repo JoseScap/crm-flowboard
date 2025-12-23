@@ -5,12 +5,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { ThemeProvider } from "@/hooks/use-theme";
-import Pipelines from "./pages/Pipelines";
+import PipelineView from "./pages/PipelineView";
+import DealDetail from "./pages/DealDetail";
+import PipelineConfig from "./pages/PipelineConfig";
 import Products from "./pages/Products";
 import Sales from "./pages/Sales";
 import Reports from "./pages/Reports";
 import Placeholder from "./pages/Placeholder";
 import NotFound from "./pages/NotFound";
+import Pipelines from "./pages/Pipelines";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +30,30 @@ const App = () => (
             element={
               <Layout>
                 <Pipelines />
+              </Layout>
+            }
+          />
+          <Route
+            path="/pipeline/:id"
+            element={
+              <Layout>
+                <PipelineView />
+              </Layout>
+            }
+          />
+          <Route
+            path="/deal/:dealId"
+            element={
+              <Layout maxHeightScreen>
+                <DealDetail />
+              </Layout>
+            }
+          />
+          <Route
+            path="/pipeline/:id/config"
+            element={
+              <Layout>
+                <PipelineConfig />
               </Layout>
             }
           />

@@ -1,11 +1,19 @@
 import { Droppable, Draggable } from '@hello-pangea/dnd';
-import { Deal, Stage } from '@/types/crm';
+import { PipelineStage, PipelineStageDeal } from '@/types/index.types';
 import { DealCard } from './DealCard';
-import { DollarSign } from 'lucide-react';
+import { DollarSign, ChevronLeft, ChevronRight, Settings } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface KanbanColumnProps {
-  stage: Stage;
-  deals: Deal[];
+  stage: PipelineStage;
+  deals: PipelineStageDeal[];
+  index: number;
+  totalStages: number;
+  onMoveLeft: () => void;
+  onMoveRight: () => void;
+  onEditClick: () => void;
+  onArchiveDeal?: (deal: PipelineStageDeal) => void;
+  isReordering: boolean;
 }
 
 const formatCurrency = (value: number) => {
@@ -18,26 +26,59 @@ const formatCurrency = (value: number) => {
   return `$${value}`;
 };
 
-export function KanbanColumn({ stage, deals }: KanbanColumnProps) {
+export function KanbanColumn({ stage, deals, index, totalStages, onMoveLeft, onMoveRight, onEditClick, onArchiveDeal, isReordering }: KanbanColumnProps) {
   const totalValue = deals.reduce((sum, deal) => sum + deal.value, 0);
+  const canMoveLeft = index > 0;
+  const canMoveRight = index < totalStages - 1;
 
   return (
     <div className="flex flex-col bg-secondary/30 rounded-xl min-w-[320px] max-w-[320px] h-full">
       {/* Header */}
       <div className="p-4 border-b border-border/50">
-        <div className="flex items-center gap-3 mb-2">
-          <div
-            className="w-3 h-3 rounded-full"
-            style={{ backgroundColor: stage.color }}
-          />
-          <h3 className="font-semibold text-foreground">{stage.title}</h3>
-          <span className="ml-auto bg-muted text-muted-foreground text-xs font-medium px-2 py-1 rounded-full">
-            {deals.length}
-          </span>
+        <div className="flex items-center gap-2 mb-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 p-0"
+            onClick={onMoveLeft}
+            disabled={!canMoveLeft || isReordering}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <div className="flex items-center gap-3 flex-1">
+            <div
+              className="w-3 h-3 rounded-full"
+              style={{ backgroundColor: stage.color }}
+            />
+            <h3 className="font-semibold text-foreground">{stage.name}</h3>
+            <span className="ml-auto bg-muted text-muted-foreground text-xs font-medium px-2 py-1 rounded-full">
+              {deals.length}
+            </span>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 p-0"
+            onClick={onMoveRight}
+            disabled={!canMoveRight || isReordering}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
         </div>
-        <div className="flex items-center gap-1.5 text-muted-foreground text-sm">
-          <DollarSign className="w-4 h-4" />
-          <span>{formatCurrency(totalValue)}</span>
+        <div className="flex items-center justify-between text-muted-foreground text-sm">
+          <div className="flex items-center gap-1.5">
+            <DollarSign className="w-4 h-4" />
+            <span>{formatCurrency(totalValue)}</span>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 p-0"
+            onClick={onEditClick}
+            disabled={isReordering}
+          >
+            <Settings className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
@@ -62,7 +103,10 @@ export function KanbanColumn({ stage, deals }: KanbanColumnProps) {
                       snapshot.isDragging ? 'rotate-2 scale-105' : ''
                     }`}
                   >
-                    <DealCard deal={deal} />
+                    <DealCard 
+                      deal={deal} 
+                      onArchiveClick={onArchiveDeal ? () => onArchiveDeal(deal) : undefined}
+                    />
                   </div>
                 )}
               </Draggable>

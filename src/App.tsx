@@ -8,12 +8,13 @@ import { ThemeProvider } from "@/hooks/use-theme";
 import PipelineView from "./pages/PipelineView";
 import DealDetail from "./pages/DealDetail";
 import PipelineConfig from "./pages/PipelineConfig";
-import Products from "./pages/Products";
+import ProductsHome from "./modules/products/use-cases/products-home/ProductsHome";
 import Sales from "./pages/Sales";
 import Reports from "./pages/Reports";
 import Placeholder from "./pages/Placeholder";
 import NotFound from "./pages/NotFound";
 import Pipelines from "./pages/Pipelines";
+import ProductsHomePage from "./modules/products/use-cases/products-home/ProductsHome";
 
 const queryClient = new QueryClient();
 
@@ -69,7 +70,7 @@ const App = () => (
             path="/products"
             element={
               <Layout>
-                <Products />
+                <ProductsHomePage />
               </Layout>
             }
           />

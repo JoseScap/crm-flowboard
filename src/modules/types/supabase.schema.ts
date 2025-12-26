@@ -306,6 +306,7 @@ export type Database = {
         Row: {
           created_at: string | null
           id: string | null
+          is_active: boolean | null
           minimum_stock: number | null
           name: string | null
           price: number | null
@@ -316,6 +317,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           id?: string | null
+          is_active?: boolean | null
           minimum_stock?: number | null
           name?: string | null
           price?: number | null
@@ -326,6 +328,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           id?: string | null
+          is_active?: boolean | null
           minimum_stock?: number | null
           name?: string | null
           price?: number | null
@@ -353,6 +356,7 @@ export type Database = {
         Row: {
           created_at: string | null
           id: string | null
+          is_active: boolean | null
           minimum_stock: number | null
           name: string | null
           price: number | null
@@ -363,6 +367,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           id?: string | null
+          is_active?: boolean | null
           minimum_stock?: number | null
           name?: string | null
           price?: number | null
@@ -373,6 +378,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           id?: string | null
+          is_active?: boolean | null
           minimum_stock?: number | null
           name?: string | null
           price?: number | null

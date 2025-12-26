@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 import { KanbanColumn } from '@/components/KanbanColumn';
 import { DashboardHeader } from '@/components/DashboardHeader';
-import supabase from '@/lib/supabase';
+import supabase from '@/modules/common/supabase';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {

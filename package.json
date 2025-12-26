@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "types:login": "npx supabase login",
-    "types:generate": "npx supabase gen types typescript --project-id clxyybtxnoaokdmlzmay > src/types/supabase.schema.ts"
+    "types:generate": "npx supabase gen types typescript --project-id clxyybtxnoaokdmlzmay > src/modules/types/supabase.schema.ts"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",

@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import supabase from '@/lib/supabase';
+import supabase from '@/modules/common/supabase';
 import { Pipeline, PipelineStageDeal, PipelineStage, ProductWithCategory, ProductSnapshotCartItem } from '@/types/index.types';
 import { STAGE_COLORS } from '@/constants/colors';
 import { formatCurrency, getInitials, getAvatarColor, formatDate } from '@/lib/deal-utils';

@@ -7,13 +7,13 @@ import { Layout } from "@/components/Layout";
 import { ThemeProvider } from "@/hooks/use-theme";
 import PipelineView from "./pages/PipelineView";
 import DealDetail from "./pages/DealDetail";
-import PipelineConfig from "./pages/PipelineConfig";
+import PipelinesConfigPage from "./modules/pipelines/use-cases/pipelines-config/PipelinesConfig";
 import Reports from "./pages/Reports";
 import Placeholder from "./pages/Placeholder";
 import NotFound from "./pages/NotFound";
-import Pipelines from "./pages/Pipelines";
 import ProductsHomePage from "./modules/products/use-cases/products-home/ProductsHome";
 import SalesHomePage from "./modules/sales/use-cases/sales-home/SalesHome";
+import PipelinesHomePage from "./modules/pipelines/use-cases/pipelines-home/PipelinesHome";
 
 const queryClient = new QueryClient();
 
@@ -29,7 +29,7 @@ const App = () => (
             path="/"
             element={
               <Layout>
-                <Pipelines />
+                <PipelinesHomePage />
               </Layout>
             }
           />
@@ -53,7 +53,7 @@ const App = () => (
             path="/pipeline/:id/config"
             element={
               <Layout>
-                <PipelineConfig />
+                <PipelinesConfigPage />
               </Layout>
             }
           />

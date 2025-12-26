@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { ThemeProvider } from "@/hooks/use-theme";
-import PipelineView from "./pages/PipelineView";
 import DealDetail from "./pages/DealDetail";
 import PipelinesConfigPage from "./modules/pipelines/use-cases/pipelines-config/PipelinesConfig";
 import Reports from "./pages/Reports";
@@ -14,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import ProductsHomePage from "./modules/products/use-cases/products-home/ProductsHome";
 import SalesHomePage from "./modules/sales/use-cases/sales-home/SalesHome";
 import PipelinesHomePage from "./modules/pipelines/use-cases/pipelines-home/PipelinesHome";
+import PipelineViewPage from "./modules/pipelines/use-cases/pipeline-view/PipelineView";
 
 const queryClient = new QueryClient();
 
@@ -37,7 +37,7 @@ const App = () => (
             path="/pipeline/:id"
             element={
               <Layout>
-                <PipelineView />
+                <PipelineViewPage />
               </Layout>
             }
           />

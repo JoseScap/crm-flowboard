@@ -638,7 +638,7 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useProductsForPage() {
+export function useProductsHomeContext() {
   const context = useContext(ProductsHomeContext);
   if (!context) {
     throw new Error('useProductsForPage must be used within a ProductsHomeProvider');

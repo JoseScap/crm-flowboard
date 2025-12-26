@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useProductsForPage } from '../ProductsHomeContext';
+import { useProductsHomeContext } from '../ProductsHomeContext';
 
 export function ProductHomePagination() {
   const {
@@ -18,7 +18,7 @@ export function ProductHomePagination() {
     setItemsPerPage,
     totalProducts,
     paginationData,
-  } = useProductsForPage();
+  } = useProductsHomeContext();
 
   if (totalProducts === 0) return null;
 

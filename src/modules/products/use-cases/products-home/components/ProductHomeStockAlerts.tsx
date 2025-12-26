@@ -1,6 +1,6 @@
 import { AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useProductsForPage } from '../ProductsHomeContext';
+import { useProductsHomeContext } from '../ProductsHomeContext';
 
 export function ProductHomeStockAlerts() {
   const {
@@ -11,7 +11,7 @@ export function ProductHomeStockAlerts() {
     handleViewLowStockProducts,
     handleViewOutOfStockProducts,
     handleViewAllProducts,
-  } = useProductsForPage();
+  } = useProductsHomeContext();
 
   return (
     <>

@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useProductsForPage } from '../ProductsHomeContext';
+import { useProductsHomeContext } from '../ProductsHomeContext';
 
 export function ProductHomeDialogs() {
   const {
@@ -45,7 +45,7 @@ export function ProductHomeDialogs() {
     handleCancelToggleStatus,
     handleConfirmDeleteCategory,
     handleCancelDeleteCategory,
-  } = useProductsForPage();
+  } = useProductsHomeContext();
 
   return (
     <>

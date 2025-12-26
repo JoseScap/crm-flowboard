@@ -1,7 +1,7 @@
 import { Search, FolderOpen, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useProductsForPage } from '../ProductsHomeContext';
+import { useProductsHomeContext } from '../ProductsHomeContext';
 
 export function ProductHomeToolbar() {
   const {
@@ -10,7 +10,7 @@ export function ProductHomeToolbar() {
     showCategories,
     setShowCategories,
     handleAddProduct,
-  } = useProductsForPage();
+  } = useProductsHomeContext();
 
   return (
     <div className="flex flex-col sm:flex-row gap-4 justify-between">

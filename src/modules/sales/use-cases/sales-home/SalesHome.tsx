@@ -8,7 +8,7 @@ import {
   Receipt,
   Loader2,
 } from "lucide-react";
-import { useSalesForPage } from "@/hooks/use-sales-for-page";
+import { SalesHomeProvider, useSalesHomeContext } from "@/modules/sales/use-cases/sales-home/SalesHomeContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,20 +23,20 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-export default function Sales() {
+const SalesHome = () => {
   const {
+    // Loading state
+    loadingData,
+
     // Cart states
     cart,
     searchTerm,
     setSearchTerm,
     showReceipt,
     setShowReceipt,
-    lastSale,
     
     // Product states
     products,
-    loading,
-    filteredProducts,
     
     // Tax states
     applyTax,
@@ -44,19 +44,18 @@ export default function Sales() {
     taxPercentage,
     setTaxPercentage,
     
-    // Calculations
-    subtotal,
-    tax,
-    total,
-    totalItems,
+    // Sales states
+    saleDetails,
+    processedSale,
     
     // Handlers
-    addToCart,
-    updateQuantity,
-    removeFromCart,
-    clearCart,
-    processSale,
-  } = useSalesForPage();
+    handleAddProductToCart,
+    handleUpdateProductQuantity,
+    handleRemoveProductFromCart,
+    handleResetCart,
+    handleProcessSale,
+    handleCloseReceipt,
+  } = useSalesHomeContext();
 
   return (
       <div className="p-6 h-full">
@@ -81,7 +80,7 @@ export default function Sales() {
             </div>
 
             <div className="grid grid-cols-4 grid-rows-2 gap-3 flex-1">
-              {loading ? (
+              {loadingData ? (
                 <div className="col-span-full flex items-center justify-center py-12">
                   <div className="flex items-center gap-2">
                     <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
@@ -90,18 +89,18 @@ export default function Sales() {
                     </span>
                   </div>
                 </div>
-              ) : filteredProducts.length === 0 ? (
+              ) : products.length === 0 ? (
                 <div className="col-span-full flex items-center justify-center py-12 text-muted-foreground">
                   <p>No products found</p>
                 </div>
               ) : (
-                filteredProducts.map((product) => (
+                products.map((product) => (
                   <Card
                     key={product.id}
                     className={`cursor-pointer transition-all hover:shadow-md hover:border-primary/50 ${
                       product.stock === 0 ? "opacity-50" : ""
                     }`}
-                    onClick={() => addToCart(product)}
+                    onClick={() => handleAddProductToCart(product.id)}
                   >
                     <CardContent className="p-4">
                       <div className="flex flex-col gap-2">
@@ -136,8 +135,8 @@ export default function Sales() {
               <CardTitle className="flex items-center gap-2">
                 <ShoppingCart className="w-5 h-5" />
                 Carrito
-                {totalItems > 0 && (
-                  <Badge className="ml-auto">{totalItems} items</Badge>
+                {saleDetails.totalItems > 0 && (
+                  <Badge className="ml-auto">{saleDetails.totalItems} items</Badge>
                 )}
               </CardTitle>
             </CardHeader>
@@ -172,7 +171,7 @@ export default function Sales() {
                             className="h-7 w-7"
                             onClick={(e) => {
                               e.stopPropagation();
-                              updateQuantity(item.product_id, -1);
+                              handleUpdateProductQuantity(item.product_id, -1);
                             }}
                           >
                             <Minus className="w-3 h-3" />
@@ -186,7 +185,7 @@ export default function Sales() {
                             className="h-7 w-7"
                             onClick={(e) => {
                               e.stopPropagation();
-                              updateQuantity(item.product_id, 1);
+                              handleUpdateProductQuantity(item.product_id, 1);
                             }}
                           >
                             <Plus className="w-3 h-3" />
@@ -197,7 +196,7 @@ export default function Sales() {
                             className="h-7 w-7 text-destructive"
                             onClick={(e) => {
                               e.stopPropagation();
-                              removeFromCart(item.product_id);
+                              handleRemoveProductFromCart(item.product_id);
                             }}
                           >
                             <Trash2 className="w-3 h-3" />
@@ -210,7 +209,7 @@ export default function Sales() {
                   <div className="mt-4 pt-4 border-t border-border space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Subtotal</span>
-                      <span>${subtotal.toLocaleString()}</span>
+                      <span>${saleDetails.subtotal.toLocaleString()}</span>
                     </div>
                     <div className="flex items-center gap-2 py-2">
                       <Checkbox
@@ -249,7 +248,7 @@ export default function Sales() {
                         </span>
                         <span>
                           $
-                          {tax.toLocaleString(undefined, {
+                          {saleDetails.tax.toLocaleString(undefined, {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                           })}
@@ -261,7 +260,7 @@ export default function Sales() {
                       <span>Total</span>
                       <span className="text-primary">
                         $
-                        {total.toLocaleString(undefined, {
+                        {saleDetails.total.toLocaleString(undefined, {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         })}
@@ -270,14 +269,14 @@ export default function Sales() {
                   </div>
 
                   <div className="mt-4 space-y-2">
-                    <Button className="w-full" size="lg" onClick={processSale}>
+                    <Button className="w-full" size="lg" onClick={handleProcessSale}>
                       <CreditCard className="w-4 h-4 mr-2" />
                       Procesar Venta
                     </Button>
                     <Button
                       variant="outline"
                       className="w-full"
-                      onClick={clearCart}
+                      onClick={handleResetCart}
                     >
                       Vaciar Carrito
                     </Button>
@@ -297,14 +296,14 @@ export default function Sales() {
                 Recibo de Venta
               </DialogTitle>
             </DialogHeader>
-            {lastSale && (
+            {processedSale && (
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">
-                  {lastSale.date.toLocaleString()}
+                  {processedSale.order_number.toLocaleString()}
                 </p>
                 <Separator />
                 <div className="space-y-2">
-                  {lastSale.items.map((item) => (
+                  {cart.map((item) => (
                     <div
                       key={item.product_id}
                       className="flex justify-between text-sm"
@@ -326,7 +325,7 @@ export default function Sales() {
                   <span>Total</span>
                   <span>
                     $
-                    {lastSale.total.toLocaleString(undefined, {
+                    {processedSale.total.toLocaleString(undefined, {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}
@@ -334,7 +333,7 @@ export default function Sales() {
                 </div>
                 <Button
                   className="w-full"
-                  onClick={() => setShowReceipt(false)}
+                  onClick={handleCloseReceipt}
                 >
                   Cerrar
                 </Button>
@@ -345,3 +344,13 @@ export default function Sales() {
       </div>
     );
 }
+
+const SalesHomePage = () => {
+  return (
+    <SalesHomeProvider>
+      <SalesHome />
+    </SalesHomeProvider>
+  );
+};
+
+export default SalesHomePage;

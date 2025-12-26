@@ -1,7 +1,7 @@
 import { FolderOpen, Plus, Pencil, Trash2, X, Check, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useProductsForPage } from '../ProductsHomeContext';
+import { useProductsHomeContext } from '../ProductsHomeContext';
 
 export function ProductHomeCategoriesSection() {
   const {
@@ -22,7 +22,7 @@ export function ProductHomeCategoriesSection() {
     handleEditCategory,
     handleCancelEditCategory,
     handleSaveEditCategory,
-  } = useProductsForPage();
+  } = useProductsHomeContext();
 
   if (!showCategories) return null;
 

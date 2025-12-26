@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useProductsForPage } from '../ProductsHomeContext';
+import { useProductsHomeContext } from '../ProductsHomeContext';
 
 export function ProductHomeTable() {
   const {
@@ -18,7 +18,7 @@ export function ProductHomeTable() {
     getStockStatus,
     handleEditProduct,
     toggleActiveStatus,
-  } = useProductsForPage();
+  } = useProductsHomeContext();
 
   return (
     <div className="border border-border rounded-lg overflow-hidden bg-card">

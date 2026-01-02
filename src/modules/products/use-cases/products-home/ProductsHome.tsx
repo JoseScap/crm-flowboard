@@ -9,10 +9,6 @@ import { ProductHomeDialogs } from './components/ProductHomeDialogs';
 const ProductsHome = () => {
   return (
     <div className="p-6 space-y-6">
-      <header className="mb-2">
-        <h1 className="text-3xl font-bold text-foreground">Products</h1>
-        <p className="text-muted-foreground mt-1">Manage your product inventory and stock levels</p>
-      </header>
       <ProductHomeStockAlerts />
       <ProductHomeToolbar />
       <ProductHomeCategoriesSection />

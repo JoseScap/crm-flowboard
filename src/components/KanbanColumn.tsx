@@ -1,18 +1,18 @@
 import { Droppable, Draggable } from '@hello-pangea/dnd';
-import { PipelineStage, PipelineStageDeal } from '@/types/index.types';
 import { DealCard } from './DealCard';
 import { DollarSign, ChevronLeft, ChevronRight, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Tables } from '@/modules/types/supabase.schema';
 
 interface KanbanColumnProps {
-  stage: PipelineStage;
-  deals: PipelineStageDeal[];
+  stage: Tables<'pipeline_stages'>;
+  deals: Tables<'pipeline_stage_deals'>[];
   index: number;
   totalStages: number;
   onMoveLeft: () => void;
   onMoveRight: () => void;
   onEditClick: () => void;
-  onArchiveDeal?: (deal: PipelineStageDeal) => void;
+  onArchiveDeal?: (deal: Tables<'pipeline_stage_deals'>) => void;
   isReordering: boolean;
 }
 
@@ -83,7 +83,7 @@ export function KanbanColumn({ stage, deals, index, totalStages, onMoveLeft, onM
       </div>
 
       {/* Cards */}
-      <Droppable droppableId={stage.id}>
+      <Droppable droppableId={stage.id.toString()}>
         {(provided, snapshot) => (
           <div
             ref={provided.innerRef}
@@ -93,7 +93,7 @@ export function KanbanColumn({ stage, deals, index, totalStages, onMoveLeft, onM
             }`}
           >
             {deals.map((deal, index) => (
-              <Draggable key={deal.id} draggableId={deal.id} index={index}>
+              <Draggable key={deal.id} draggableId={deal.id.toString()} index={index}>
                 {(provided, snapshot) => (
                   <div
                     ref={provided.innerRef}

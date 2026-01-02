@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import supabase from '@/modules/common/supabase';
+import supabase from '@/modules/common/lib/supabase';
 import { Pipeline, PipelineStageDeal, PipelineStage, ProductWithCategory, ProductSnapshotCartItem } from '@/types/index.types';
 import { STAGE_COLORS } from '@/constants/colors';
 import { formatCurrency, getInitials, getAvatarColor, formatDate } from '@/lib/deal-utils';
@@ -84,7 +84,7 @@ const DealDetail = () => {
 
   const getData = async () => {
     if (!dealId) {
-      navigate('/');
+      navigate('/user');
       return;
     }
 
@@ -109,12 +109,12 @@ const DealDetail = () => {
       if (dealError) {
         console.error('Error fetching deal:', dealError);
         toast.error('Error loading deal details');
-        navigate('/');
+        navigate('/user');
         return;
       }
 
       if (!dealData) {
-        navigate('/');
+        navigate('/user');
         return;
       }
 
@@ -189,7 +189,7 @@ const DealDetail = () => {
     } catch (error) {
       console.error('Error fetching data:', error);
       toast.error('Error loading deal details');
-      navigate('/');
+      navigate('/user');
     } finally {
       setLoading(false);
     }

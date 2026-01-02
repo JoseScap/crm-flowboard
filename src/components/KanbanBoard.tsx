@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
-import { PipelineStageDeal } from '@/types/index.types';
+import { Tables } from '@/modules/types/supabase.schema';
 
 export function KanbanBoard() {
-  const [deals, setDeals] = useState<PipelineStageDeal[]>([]);
+  const [deals, setDeals] = useState<Tables<'pipeline_stage_deals'>[]>([]);
 
   const handleDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
@@ -18,8 +18,8 @@ export function KanbanBoard() {
 
     setDeals((prevDeals) =>
       prevDeals.map((deal) =>
-        deal.id === draggableId
-          ? { ...deal, stage: destination.droppableId }
+        deal.id.toString() === draggableId
+          ? { ...deal, pipeline_stage_id: parseInt(destination.droppableId, 10) }
           : deal
       )
     );

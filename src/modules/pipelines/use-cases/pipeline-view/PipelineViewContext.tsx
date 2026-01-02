@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { DropResult } from '@hello-pangea/dnd';
-import supabase from '@/modules/common/supabase';
+import supabase from '@/modules/common/lib/supabase';
 import { STAGE_COLORS } from '@/constants/colors';
 import { Tables, TablesInsert, TablesUpdate } from '@/modules/types/supabase.schema';
 
@@ -64,6 +64,8 @@ const defaultStageFormData: TablesInsert<'pipeline_stages'> = {
   is_revenue: false,
   order: 0,
   is_input: false,
+  pipeline_id: 0,
+  business_id: 0,
 }
 
 const defaultEditStageFormData: TablesUpdate<'pipeline_stages'> = {
@@ -78,11 +80,12 @@ const defaultCreateDealFormData: TablesInsert<'pipeline_stage_deals'> = {
   email: '',
   phone_number: '',
   value: 0,
-  pipeline_stage_id: '',
+  pipeline_stage_id: 0,
+  business_id: 0,
 }
 
 export function PipelineViewProvider({ children }: { children: ReactNode }) {
-  const { id } = useParams<{ id: string }>();
+  const { id: businessId, pipelineId } = useParams<{ id: string; pipelineId: string }>();
   const navigate = useNavigate();
   const [pipelines, setPipelines] = useState<Tables<'pipelines'>[]>([]);
   const [selectedPipelineId, setSelectedPipelineId] = useState<string>('');
@@ -101,11 +104,17 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
   const [createDealFormData, setCreateDealFormData] = useState<TablesInsert<'pipeline_stage_deals'>>(defaultCreateDealFormData);
 
   const getData = useCallback(async () => {
-    const { data: pipelines, error } = await supabase.from('pipelines').select('*');
+    if (!businessId || !pipelineId) return;
+    
+    const { data: pipelines, error } = await supabase
+      .from('pipelines')
+      .select('*')
+      .eq('business_id', parseInt(businessId, 10));
     const { data: pipelineStages, error: pipelineStagesError } = await supabase
       .from('pipeline_stages')
       .select('*')
-      .eq('pipeline_id', id || '')
+      .eq('pipeline_id', parseInt(pipelineId, 10))
+      .eq('business_id', parseInt(businessId, 10))
       .order('order', { ascending: true });
     
     // Fetch deals - both active (with stage_id) and closed (with is_revenue=true)
@@ -117,6 +126,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
         .from('pipeline_stage_deals')
         .select('*')
         .in('pipeline_stage_id', pipelineStages.map(stage => stage.id))
+        .eq('business_id', parseInt(businessId, 10))
         .order('created_at', { ascending: true });
       
       // Get closed deals (stage_id null - both with and without revenue)
@@ -124,6 +134,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
         .from('pipeline_stage_deals')
         .select('*')
         .is('pipeline_stage_id', null)
+        .eq('business_id', parseInt(businessId, 10))
         .order('created_at', { ascending: true });
       
       // Combine both results
@@ -138,6 +149,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
         .from('pipeline_stage_deals')
         .select('*')
         .is('pipeline_stage_id', null)
+        .eq('business_id', parseInt(businessId, 10))
         .order('created_at', { ascending: true });
       
       pipelineDeals = closedDealsResult.data || [];
@@ -160,13 +172,13 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
       setPipelines(pipelines);
       
       // Get pipeline ID from URL or use first available
-      const pipelineIdFromUrl = id || (pipelines.length > 0 ? pipelines[0].id : '');
+      const pipelineIdFromUrl = pipelineId || (pipelines.length > 0 ? pipelines[0].id.toString() : '');
       
       if (pipelineIdFromUrl) {
         setSelectedPipelineId(pipelineIdFromUrl);
         
         // Find and set current pipeline data
-        const pipeline = pipelines.find(p => p.id === pipelineIdFromUrl);
+        const pipeline = pipelines.find(p => p.id.toString() === pipelineIdFromUrl);
         if (pipeline) {
           setCurrentPipeline(pipeline);
         }
@@ -180,26 +192,55 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
     if (pipelineDeals) {
       setPipelineDeals(pipelineDeals);
     }
-  }, [id]);
+  }, [businessId, pipelineId]);
 
   useEffect(() => {
     getData();
   }, [getData]);
 
+  // Set up realtime subscription for pipeline_stage_deals
+  useEffect(() => {
+    if (!businessId || !pipelineId || isNaN(parseInt(businessId, 10))) {
+      return;
+    }
+
+    const channel = supabase
+      .channel(`pipeline_stage_deals-changes-${businessId}-${pipelineId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
+          schema: 'public',
+          table: 'pipeline_stage_deals',
+          filter: `business_id=eq.${businessId}`,
+        },
+        () => {
+          // Refresh deals data when there are changes
+          getData();
+        }
+      )
+      .subscribe();
+
+    // Cleanup subscription on unmount
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [getData, businessId, pipelineId]);
+
   const revenueStage = useMemo(() => {
     return pipelineStages.find(stage => stage.is_revenue === true) || null;
   }, [pipelineStages]);
   
-  const handleChangePipelineView = (pipelineId: string) => {
-    setSelectedPipelineId(pipelineId);
+  const handleChangePipelineView = (newPipelineId: string) => {
+    setSelectedPipelineId(newPipelineId);
     
     // Find and set current pipeline data
-    const pipeline = pipelines.find(p => p.id === pipelineId);
+    const pipeline = pipelines.find(p => p.id.toString() === newPipelineId);
     if (pipeline) {
     }
 
     setCurrentPipeline(pipeline);
-    navigate(`/pipeline/${pipelineId}`, { replace: true });
+    navigate(`/user/businesses/${businessId}/pipeline/${newPipelineId}`, { replace: true });
   };
 
   const handleDragEnd = async (result: DropResult) => {
@@ -214,15 +255,16 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
     }
 
     // Find the deal being moved
-    const deal = pipelineDeals.find((d) => d.id === draggableId);
+    const deal = pipelineDeals.find((d) => d.id.toString() === draggableId);
     if (!deal) return;
 
     // Update the deal's pipeline_stage_id in the database
     try {
       const { error } = await supabase
         .from('pipeline_stage_deals')
-        .update({ pipeline_stage_id: destination.droppableId })
-        .eq('id', draggableId);
+        .update({ pipeline_stage_id: parseInt(destination.droppableId, 10) })
+        .eq('id', parseInt(draggableId, 10))
+        .eq('business_id', parseInt(businessId, 10));
 
       if (error) {
         console.error('Error updating deal stage:', error);
@@ -236,7 +278,8 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
   };
 
   const getDealsByStage = (stageId: string): Tables<'pipeline_stage_deals'>[] => {
-    return pipelineDeals.filter((deal) => deal.pipeline_stage_id === stageId);
+    const stageIdNum = parseInt(stageId, 10);
+    return pipelineDeals.filter((deal) => deal.pipeline_stage_id === stageIdNum);
   };
 
   const getRevenueValue = (): { total: number; closed: number } => {
@@ -292,7 +335,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
   };
 
   const handleSaveNewStage = async () => {
-    if (!createStageFormData.name.trim() || !id) return;
+    if (!createStageFormData.name.trim() || !pipelineId) return;
 
     // Close modal immediately
     handleCloseCreateStageDialog();
@@ -318,7 +361,8 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
                 {
                   name: createStageFormData.name.trim(),
                   color: createStageFormData.color,
-                  pipeline_id: id,
+                  pipeline_id: parseInt(pipelineId, 10),
+                  business_id: parseInt(businessId, 10),
                   order: newOrder,
                   is_revenue: true,
                 },
@@ -336,7 +380,8 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
               {
                 name: createStageFormData.name.trim(),
                 color: createStageFormData.color,
-                pipeline_id: id,
+                pipeline_id: parseInt(pipelineId, 10),
+                business_id: parseInt(businessId, 10),
                 order: newOrder,
                 is_revenue: true,
               },
@@ -351,13 +396,14 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
         const { error } = await supabase
           .from('pipeline_stages')
           .insert([
-            {
-              name: createStageFormData.name.trim(),
-              color: createStageFormData.color,
-              pipeline_id: id,
-              order: newOrder,
-              is_revenue: false,
-            },
+              {
+                name: createStageFormData.name.trim(),
+                color: createStageFormData.color,
+                pipeline_id: parseInt(pipelineId, 10),
+                business_id: parseInt(businessId, 10),
+                order: newOrder,
+                is_revenue: false,
+              },
           ]);
 
         if (error) {
@@ -376,7 +422,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
   const handleOpenCreateDealDialog = (pipelineStageId: string) => {
     setCreateDealFormData({
       ...defaultCreateDealFormData,
-      pipeline_stage_id: pipelineStageId,
+      pipeline_stage_id: parseInt(pipelineStageId, 10),
     });
     setIsCreateDealDialogOpen(true);
   };
@@ -402,6 +448,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
             phone_number: createDealFormData.phone_number.trim() || null,
             value: createDealFormData.value,
             pipeline_stage_id: createDealFormData.pipeline_stage_id,
+            business_id: parseInt(businessId, 10),
           },
         ]);
 

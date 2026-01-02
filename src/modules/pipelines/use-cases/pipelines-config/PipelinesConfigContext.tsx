@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import supabase from '@/modules/common/supabase';
+import supabase from '@/modules/common/lib/supabase';
 import { toast } from 'sonner';
 import { Tables } from '@/modules/types/supabase.schema';
 
@@ -36,7 +36,7 @@ const defaultWhatsAppFormData: WhatsAppFormData = {
 };
 
 export function PipelinesConfigProvider({ children }: { children: ReactNode }) {
-  const { id } = useParams<{ id: string }>();
+  const { id: businessId, pipelineId } = useParams<{ id: string; pipelineId: string }>();
   const navigate = useNavigate();
   const [pipeline, setPipeline] = useState<Tables<'pipelines'> | null>(null);
   const [loading, setLoading] = useState(true);
@@ -44,8 +44,8 @@ export function PipelinesConfigProvider({ children }: { children: ReactNode }) {
   const [whatsappFormData, setWhatsappFormData] = useState<WhatsAppFormData>(defaultWhatsAppFormData);
 
   useEffect(() => {
-    if (!id) {
-      navigate('/');
+    if (!pipelineId) {
+      navigate(`/user/businesses/${businessId}/pipelines`);
       return;
     }
 
@@ -55,13 +55,14 @@ export function PipelinesConfigProvider({ children }: { children: ReactNode }) {
         const { data, error } = await supabase
           .from('pipelines')
           .select('*')
-          .eq('id', id)
+          .eq('id', parseInt(pipelineId, 10))
+          .eq('business_id', parseInt(businessId, 10))
           .single();
 
         if (error) {
           console.error('Error fetching pipeline:', error);
           toast.error('Error loading pipeline configuration');
-          navigate('/');
+          navigate(`/user/businesses/${businessId}/pipelines`);
           return;
         }
 
@@ -76,17 +77,17 @@ export function PipelinesConfigProvider({ children }: { children: ReactNode }) {
       } catch (error) {
         console.error('Error fetching pipeline:', error);
         toast.error('Error loading pipeline configuration');
-        navigate('/');
+        navigate(`/user/businesses/${businessId}/pipelines`);
       } finally {
         setLoading(false);
       }
     };
 
     fetchPipeline();
-  }, [id, navigate]);
+  }, [pipelineId, businessId, navigate]);
 
   const handleSaveWhatsAppConfig = async () => {
-    if (!pipeline || !id) return;
+    if (!pipeline || !pipelineId) return;
 
     // Validate: if WhatsApp is enabled, both fields are required
     if (whatsappFormData.whatsappEnabled) {
@@ -108,7 +109,8 @@ export function PipelinesConfigProvider({ children }: { children: ReactNode }) {
           whatsapp_number: whatsappFormData.whatsappNumber.trim() || null,
           whatsapp_phone_number_id: whatsappFormData.whatsappPhoneNumberId.trim() || null,
         })
-        .eq('id', id);
+        .eq('id', parseInt(pipelineId, 10))
+        .eq('business_id', parseInt(businessId, 10));
 
       if (error) {
         console.error('Error updating pipeline:', error);
@@ -132,8 +134,8 @@ export function PipelinesConfigProvider({ children }: { children: ReactNode }) {
   };
 
   const handleCancelWhatsAppConfig = () => {
-    if (!id) return;
-    navigate(`/pipeline/${id}`);
+    if (!pipelineId || !businessId) return;
+    navigate(`/user/businesses/${businessId}/pipeline/${pipelineId}`);
   };
 
   const handleChangeWhatsAppFormData = <T extends keyof WhatsAppFormData>(field: T, value: WhatsAppFormData[T]) => {

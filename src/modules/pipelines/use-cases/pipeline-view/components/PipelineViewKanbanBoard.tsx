@@ -23,7 +23,7 @@ export function PipelineViewKanbanBoard() {
           <KanbanColumn
             key={stage.id}
             stage={stage}
-            deals={getDealsByStage(stage.id)}
+            deals={getDealsByStage(stage.id.toString())}
             index={index}
             totalStages={pipelineStages.length}
             onMoveLeft={() => handleMoveStage(index, 'left')}

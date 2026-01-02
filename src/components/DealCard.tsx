@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { PipelineStageDeal } from '@/types/index.types';
 import { DollarSign, Mail, Archive, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatCurrency, getInitials, getAvatarColor } from '@/lib/deal-utils';
+import { Tables } from '@/modules/types/supabase.schema';
 
 interface DealCardProps {
-  deal: PipelineStageDeal;
+  deal: Tables<'pipeline_stage_deals'>;
   onArchiveClick?: () => void;
   onDetailClick?: () => void;
 }

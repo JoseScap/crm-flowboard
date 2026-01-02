@@ -76,9 +76,9 @@ export function ProductHomeDialogs() {
               <div className="grid gap-2">
                 <Label htmlFor="create-category">Category</Label>
                 <Select
-                  value={newProductFormData.product_category_id || 'N/A'}
+                  value={newProductFormData.product_category_id ? String(newProductFormData.product_category_id) : 'N/A'}
                   onValueChange={(value) => setNewProductFormData({
-                    ...newProductFormData, product_category_id: value === 'N/A' ? null : value })}
+                    ...newProductFormData, product_category_id: value === 'N/A' ? null : Number(value) })}
                 >
                   <SelectTrigger id="create-category">
                     <SelectValue placeholder="Select a category" />
@@ -86,7 +86,7 @@ export function ProductHomeDialogs() {
                   <SelectContent>
                     <SelectItem value="N/A">N/A</SelectItem>
                     {categories.map((category) => (
-                      <SelectItem key={category.id} value={category.id}>
+                      <SelectItem key={category.id} value={String(category.id)}>
                         {category.name}
                       </SelectItem>
                     ))}
@@ -162,10 +162,10 @@ export function ProductHomeDialogs() {
                 <div className="grid gap-2">
                   <Label htmlFor="edit-category">Category</Label>
                   <Select
-                    value={editingProductFormData.product_category_id || 'N/A'}
+                    value={editingProductFormData.product_category_id ? String(editingProductFormData.product_category_id) : 'N/A'}
                     onValueChange={(value) => setEditingProductFormData({
                       ...editingProductFormData,
-                      product_category_id: value === 'N/A' ? null : value
+                      product_category_id: value === 'N/A' ? null : Number(value)
                     })}
                   >
                     <SelectTrigger id="edit-category">
@@ -174,7 +174,7 @@ export function ProductHomeDialogs() {
                     <SelectContent>
                       <SelectItem value="N/A">N/A</SelectItem>
                       {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
+                        <SelectItem key={category.id} value={String(category.id)}>
                           {category.name}
                         </SelectItem>
                       ))}

@@ -5,7 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 export function PipelinesConfigHeader() {
   const { pipeline } = usePipelinesConfigContext();
-  const { id } = useParams<{ id: string }>();
+  const { id: businessId, pipelineId } = useParams<{ id: string; pipelineId: string }>();
   const navigate = useNavigate();
 
   return (
@@ -14,7 +14,7 @@ export function PipelinesConfigHeader() {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate(`/pipeline/${id}`)}
+          onClick={() => navigate(`/user/businesses/${businessId}/pipeline/${pipelineId}`)}
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>

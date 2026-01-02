@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode, Dispatch, SetStateAction, useMemo } from 'react';
-import supabase from '@/modules/common/supabase';
+import { useParams } from 'react-router-dom';
+import supabase from '@/modules/common/lib/supabase';
 import { toast } from 'sonner';
 import { Database, Tables, TablesInsert } from '@/modules/types/supabase.schema';
 
@@ -40,9 +41,9 @@ interface SalesHomeContextType {
   processedSale: ProcessedSale | null;
 
   // Handlers
-  handleAddProductToCart: (productId: string) => void;
-  handleUpdateProductQuantity: (productId: string, delta: number) => void;
-  handleRemoveProductFromCart: (productId: string) => void;
+  handleAddProductToCart: (productId: number) => void;
+  handleUpdateProductQuantity: (productId: number, delta: number) => void;
+  handleRemoveProductFromCart: (productId: number) => void;
   handleResetCart: () => void;
   handleProcessSale: () => Promise<void>;
   handleCloseReceipt: () => void;
@@ -51,6 +52,9 @@ interface SalesHomeContextType {
 const SalesHomeContext = createContext<SalesHomeContextType | undefined>(undefined);
 
 export function SalesHomeProvider({ children }: { children: ReactNode }) {
+  const { id: businessIdParam } = useParams<{ id: string }>();
+  const businessId = businessIdParam ? parseInt(businessIdParam, 10) : null;
+
   // Loading state
   const [loadingData, setLoadingData] = useState(true);
   
@@ -81,6 +85,11 @@ export function SalesHomeProvider({ children }: { children: ReactNode }) {
   }, [cart, applyTax, taxPercentage]);
 
   const getData = useCallback(async () => {
+    if (!businessId || isNaN(businessId)) {
+      setLoadingData(false);
+      return;
+    }
+
     try {
       setLoadingData(true);
 
@@ -88,6 +97,7 @@ export function SalesHomeProvider({ children }: { children: ReactNode }) {
       let productsQuery = supabase
         .from('products')
         .select('*, product_categories (name)')
+        .eq('business_id', businessId)
         .order('created_at', { ascending: false })
         .range(0, 7); // Get exactly 8 products (indices 0 to 7)
 
@@ -103,6 +113,7 @@ export function SalesHomeProvider({ children }: { children: ReactNode }) {
         supabase
           .from('product_categories')
           .select('*')
+          .eq('business_id', businessId)
           .order('created_at', { ascending: false }),
         productsQuery,
       ]);
@@ -132,7 +143,7 @@ export function SalesHomeProvider({ children }: { children: ReactNode }) {
     } finally {
       setLoadingData(false);
     }
-  }, [searchTerm]);
+  }, [searchTerm, businessId]);
 
   // Fetch data when dependencies change
   useEffect(() => {
@@ -141,14 +152,19 @@ export function SalesHomeProvider({ children }: { children: ReactNode }) {
 
   // Set up realtime subscription for products
   useEffect(() => {
+    if (!businessId || isNaN(businessId)) {
+      return;
+    }
+
     const channel = supabase
-      .channel('products-changes')
+      .channel(`products-changes-${businessId}`)
       .on(
         'postgres_changes',
         {
           event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
           schema: 'public',
           table: 'products',
+          filter: `business_id=eq.${businessId}`,
         },
         () => {
           // Refresh products data when there are changes
@@ -161,10 +177,10 @@ export function SalesHomeProvider({ children }: { children: ReactNode }) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [getData]);
+  }, [getData, businessId]);
 
   // Cart handlers
-  const handleAddProductToCart = (productId: string) => {
+  const handleAddProductToCart = (productId: number) => {
     const product = products.find((p) => p.id === productId);
     if (!product) {
       toast.error('Producto no encontrado');
@@ -217,7 +233,7 @@ export function SalesHomeProvider({ children }: { children: ReactNode }) {
     toast.success(`${product.name} added to cart`);
   };
 
-  const handleUpdateProductQuantity = (productId: string, delta: number) => {
+  const handleUpdateProductQuantity = (productId: number, delta: number) => {
     const productIndex = cart.findIndex((item) => item.product_id === productId);
     if (productIndex === -1) {
       toast.error('Product not found in cart');
@@ -239,7 +255,7 @@ export function SalesHomeProvider({ children }: { children: ReactNode }) {
     setCart([...cart]);
   };
 
-  const handleRemoveProductFromCart = (productId: string) => {
+  const handleRemoveProductFromCart = (productId: number) => {
     const product = products.find((p) => p.id === productId);
     if (!product) {
       toast.error('Product not found in cart');
@@ -264,8 +280,14 @@ export function SalesHomeProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    if (!businessId || isNaN(businessId)) {
+      toast.error('Business ID is missing');
+      return;
+    }
+
     try {
       const { data, error } = await supabase.rpc('process_sale', {
+        p_business_id: businessId,
         cart_items: cart.map((item) => ({
           ...item,
         })),

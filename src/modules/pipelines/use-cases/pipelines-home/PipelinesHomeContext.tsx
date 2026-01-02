@@ -1,6 +1,7 @@
-import supabase from "@/modules/common/supabase";
+import supabase from "@/modules/common/lib/supabase";
 import { Tables, TablesInsert } from "@/modules/types/supabase.schema";
-import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState } from "react";
+import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState, useCallback } from "react";
+import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 interface PipelinesHomeContextType {
@@ -24,9 +25,13 @@ const PipelinesHomeContext = createContext<PipelinesHomeContextType | undefined>
 const defaultNewPipelineFormData: TablesInsert<'pipelines'> = {
   name: '',
   description: '',
+  business_id: 0,
 }
 
 export function PipelinesHomeProvider({ children }: { children: ReactNode }) {
+  const { id: businessIdParam } = useParams<{ id: string }>();
+  const businessId = businessIdParam ? parseInt(businessIdParam, 10) : null;
+
   // Loading state
   const [loadingData, setLoadingData] = useState(true);
 
@@ -35,12 +40,18 @@ export function PipelinesHomeProvider({ children }: { children: ReactNode }) {
   const [isCreatePipelineDialogOpen, setIsCreatePipelineDialogOpen] = useState(false);
   const [newPipelineFormData, setNewPipelineFormData] = useState<TablesInsert<'pipelines'>>(defaultNewPipelineFormData);
 
-  const getData = async () => {
+  const getData = useCallback(async () => {
+    if (!businessId || isNaN(businessId)) {
+      setLoadingData(false);
+      return;
+    }
+
     try {
       setLoadingData(true);
       const { data, error } = await supabase
         .from('pipelines')
         .select('*')
+        .eq('business_id', businessId)
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -53,11 +64,11 @@ export function PipelinesHomeProvider({ children }: { children: ReactNode }) {
     } finally {
       setLoadingData(false);
     }
-  };
+  }, [businessId]);
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [getData]);
 
   // Handlers
   const handleCreatePipeline = () => {
@@ -75,6 +86,11 @@ export function PipelinesHomeProvider({ children }: { children: ReactNode }) {
   };
 
   const handleSavePipeline = async () => {
+    if (!businessId || isNaN(businessId)) {
+      toast.error('Business ID is missing');
+      return;
+    }
+
     setIsCreatePipelineDialogOpen(false);
     setNewPipelineFormData(defaultNewPipelineFormData);
     setLoadingData(true);
@@ -87,6 +103,7 @@ export function PipelinesHomeProvider({ children }: { children: ReactNode }) {
           {
             name: newPipelineFormData.name.trim(),
             description: newPipelineFormData.description.trim(),
+            business_id: businessId,
           },
         ]);
       

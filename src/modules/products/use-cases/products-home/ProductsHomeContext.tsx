@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode, Dispatch, SetStateAction, useMemo } from 'react';
-import supabase from '@/modules/common/supabase';
+import { useParams } from 'react-router-dom';
+import supabase from '@/modules/common/lib/supabase';
 import { toast } from 'sonner';
 import { Tables, TablesInsert, TablesUpdate } from '@/modules/types/supabase.schema';
 
@@ -93,11 +94,15 @@ const defaultProductFormData: TablesInsert<'products'> = {
   price: 0,
   sku: '',
   stock: 0,
-  product_category_id: '',
+  product_category_id: null,
   minimum_stock: 0,
+  business_id: 0, // Will be set from route params
 }
 
 export function ProductsHomeProvider({ children }: { children: ReactNode }) {
+  const { id } = useParams<{ id: string }>();
+  const businessId = id ? parseInt(id, 10) : null;
+  
   // Loading state
   const [loadingData, setLoadingData] = useState(true);
   
@@ -143,6 +148,11 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
       const useLowStock = showLowStockOnly && !showOutOfStockOnly;
       const useOutOfStock = showOutOfStockOnly && !showLowStockOnly;
       
+      if (!businessId) {
+        setLoadingData(false);
+        return;
+      }
+
       // Fetch categories and products in parallel
       const [
         categoriesResult,
@@ -156,34 +166,23 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
         supabase
           .from('product_categories')
           .select('*')
+          .eq('business_id', businessId)
           .order('created_at', { ascending: false }),
          supabase
            .from('products')
            .select('*, product_categories (name)')
+           .eq('business_id', businessId)
            .order('created_at', { ascending: false })
            .range(startIndex, endIndex),
-        supabase
-          .from('products_low_stock')
-          .select('*, product_categories (name)')
-          .order('created_at', { ascending: false })
-          .range(startIndex, endIndex),
-        supabase
-          .from('products_out_of_stock')
-          .select('*, product_categories (name)')
-          .order('created_at', { ascending: false })
-          .range(startIndex, endIndex),
+        supabase.rpc('get_products_low_stock', { p_business_id: businessId }),
+        supabase.rpc('get_products_out_of_stock', { p_business_id: businessId }),
         supabase
           .from('products')
           .select('count', { count: 'exact', head: true })
+          .eq('business_id', businessId)
           .single(),
-        supabase
-          .from('products_low_stock_total')
-          .select("count")
-          .single(),
-        supabase
-          .from('products_out_of_stock_total')
-          .select("count")
-          .single(),
+        supabase.rpc('get_products_low_stock_total', { p_business_id: businessId }),
+        supabase.rpc('get_products_out_of_stock_total', { p_business_id: businessId }),
       ]);
 
       if (categoriesResult.error) {
@@ -194,11 +193,23 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
         toast.error('Error loading products');
       }
 
+      if (lowStockProductsResult.error) {
+        console.error('Error loading low stock products:', lowStockProductsResult.error);
+        toast.error('Error loading low stock products');
+      }
+
+      if (outOfStockProductsResult.error) {
+        console.error('Error loading out of stock products:', outOfStockProductsResult.error);
+        toast.error('Error loading out of stock products');
+      }
+
       if (lowStockCountResult.error) {
+        console.error('Error loading low stock count:', lowStockCountResult.error);
         toast.error('Error loading low stock count');
       }
 
       if (outOfStockCountResult.error) {
+        console.error('Error loading out of stock count:', outOfStockCountResult.error);
         toast.error('Error loading out of stock count');
       }
 
@@ -207,19 +218,21 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
         setTotalProducts(productsCountResult.data.count);
       }
 
-      // Get low stock count from the database view
-      if (lowStockCountResult.data && lowStockCountResult.data.count !== null) {
-        setLowStockCount(lowStockCountResult.data.count);
+      // Get low stock count from the function (returns BIGINT directly)
+      if (lowStockCountResult.data !== null && lowStockCountResult.data !== undefined) {
+        const count = Number(lowStockCountResult.data);
+        setLowStockCount(count);
         if (useLowStock) {
-          setTotalProducts(lowStockCountResult.data.count);
+          setTotalProducts(count);
         }
       }
 
-      // Get out of stock count from the database view
-      if (outOfStockCountResult.data && outOfStockCountResult.data.count !== null) {
-        setOutOfStockCount(outOfStockCountResult.data.count);
+      // Get out of stock count from the function (returns BIGINT directly)
+      if (outOfStockCountResult.data !== null && outOfStockCountResult.data !== undefined) {
+        const count = Number(outOfStockCountResult.data);
+        setOutOfStockCount(count);
         if (useOutOfStock) {
-          setTotalProducts(outOfStockCountResult.data.count);
+          setTotalProducts(count);
         }
       }
 
@@ -228,11 +241,30 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
         setCategories(categoriesResult.data);
       }
 
-      // Map products with categories
-      if (useOutOfStock && productsResult.data) {
-        setProducts(outOfStockProductsResult.data);
-      } else if (useLowStock && productsResult.data) {
-        setProducts(lowStockProductsResult.data);
+      // Helper function to map products with categories
+      const mapProductsWithCategories = (productsData: any[]) => {
+        if (!productsData || !categoriesResult.data) return productsData;
+        return productsData.map((product) => ({
+          ...product,
+          product_categories: product.product_category_id
+            ? categoriesResult.data.find((cat) => cat.id === product.product_category_id)
+              ? { name: categoriesResult.data.find((cat) => cat.id === product.product_category_id)!.name }
+              : null
+            : null,
+        }));
+      };
+
+      // Map products with categories based on view mode
+      if (useOutOfStock && outOfStockProductsResult.data) {
+        const productsWithCategories = mapProductsWithCategories(outOfStockProductsResult.data);
+        // Apply pagination manually since RPC doesn't support range
+        const paginatedProducts = productsWithCategories.slice(startIndex, endIndex + 1);
+        setProducts(paginatedProducts);
+      } else if (useLowStock && lowStockProductsResult.data) {
+        const productsWithCategories = mapProductsWithCategories(lowStockProductsResult.data);
+        // Apply pagination manually since RPC doesn't support range
+        const paginatedProducts = productsWithCategories.slice(startIndex, endIndex + 1);
+        setProducts(paginatedProducts);
       } else if (productsResult.data) {
         setProducts(productsResult.data);
       }
@@ -241,7 +273,7 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
     } finally {
       setLoadingData(false);
     }
-  }, [currentPage, itemsPerPage, showLowStockOnly, showOutOfStockOnly, searchTerm]);
+  }, [currentPage, itemsPerPage, showLowStockOnly, showOutOfStockOnly, searchTerm, businessId]);
 
   // Fetch data when dependencies change
   useEffect(() => {
@@ -304,10 +336,15 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    if (!businessId) {
+      toast.error('Business ID is required');
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from('product_categories')
-        .insert([{ name: newCategoryName.trim() }]);
+        .insert([{ name: newCategoryName.trim(), business_id: businessId }]);
 
       if (error) {
         toast.error('Error creating category');
@@ -404,7 +441,7 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
 
   const handleAddProduct = () => {
     setIsCreateProductDialogOpen(true);
-    setNewProductFormData(defaultProductFormData);
+    setNewProductFormData({ ...defaultProductFormData, business_id: businessId || 0 });
   };
 
   const handleSaveAddProduct = async () => {
@@ -423,6 +460,11 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    if (!businessId) {
+      toast.error('Business ID is required');
+      return;
+    }
+
     try {
       const productData: TablesInsert<'products'> = {
         name: newProductFormData.name,
@@ -431,6 +473,7 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
         price: newProductFormData.price || 0,
         stock: newProductFormData.stock || 0,
         minimum_stock: newProductFormData.minimum_stock || null,
+        business_id: businessId,
       };
 
       const { error } = await supabase
@@ -443,7 +486,7 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
       } else {
         toast.success('Product added');
         setIsCreateProductDialogOpen(false);
-        setNewProductFormData(defaultProductFormData);
+        setNewProductFormData({ ...defaultProductFormData, business_id: businessId });
         await getData();
       }
     } catch (error) {

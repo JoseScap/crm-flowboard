@@ -8,7 +8,6 @@ import { SimpleLayout } from "@/components/SimpleLayout";
 import { LayoutProvider } from "@/components/LayoutContext";
 import { ThemeProvider } from "@/hooks/use-theme";
 import LoginPage from "./modules/auth/use-cases/login/Login";
-import DealDetail from "./pages/DealDetail";
 import PipelinesConfigPage from "./modules/pipelines/use-cases/pipelines-config/PipelinesConfig";
 import Reports from "./pages/Reports";
 import Placeholder from "./pages/Placeholder";
@@ -136,7 +135,7 @@ const App = () => (
                 path="/user/businesses/:id/deal/:dealId"
                 element={
                   <BusinessLayout maxHeightScreen>
-                    <DealDetail />
+                    <Placeholder />
                   </BusinessLayout>
                 }
               />

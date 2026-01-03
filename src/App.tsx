@@ -133,7 +133,7 @@ const App = () => (
                 }
               />
               <Route
-                path="/user/deal/:dealId"
+                path="/user/businesses/:id/deal/:dealId"
                 element={
                   <BusinessLayout maxHeightScreen>
                     <DealDetail />

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { DollarSign, Mail, Archive, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatCurrency, getInitials, getAvatarColor } from '@/lib/deal-utils';
@@ -12,10 +12,13 @@ interface DealCardProps {
 
 export function DealCard({ deal, onArchiveClick, onDetailClick }: DealCardProps) {
   const navigate = useNavigate();
+  const { id: businessIdParam } = useParams<{ id: string }>();
+  // Use businessId from URL params, or fallback to deal.business_id
+  const businessId = businessIdParam || deal.business_id.toString();
 
   const handleDetailClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigate(`/deal/${deal.id}`);
+    navigate(`/user/businesses/${businessId}/deal/${deal.id}`);
   };
 
   return (

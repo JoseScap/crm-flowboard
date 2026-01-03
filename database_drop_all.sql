@@ -85,6 +85,7 @@ DROP TRIGGER IF EXISTS validate_product_business_before_insert ON products CASCA
 
 -- Triggers for: sales
 DROP TRIGGER IF EXISTS validate_sale_business_before_insert ON sales CASCADE;
+DROP TRIGGER IF EXISTS set_sale_order_number_before_insert ON sales CASCADE;
 
 -- ============================================
 -- DROP FUNCTIONS
@@ -107,6 +108,9 @@ DROP FUNCTION IF EXISTS validate_pipeline_stage_deal_business_access() CASCADE;
 DROP FUNCTION IF EXISTS validate_product_category_business_access() CASCADE;
 DROP FUNCTION IF EXISTS validate_product_business_access() CASCADE;
 DROP FUNCTION IF EXISTS validate_sale_business_access() CASCADE;
+
+-- Sales Functions
+DROP FUNCTION IF EXISTS set_sale_order_number() CASCADE;
 
 -- Product Stock Functions
 DROP FUNCTION IF EXISTS get_products_low_stock(BIGINT) CASCADE;

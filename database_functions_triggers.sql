@@ -317,6 +317,44 @@ BEFORE INSERT ON sales
 FOR EACH ROW
 EXECUTE FUNCTION validate_sale_business_access();
 
+-- Function: set_sale_order_number
+-- Automatically sets the order_number to the next available number for the business_id
+-- This function always overwrites any order_number value sent by the client
+DROP FUNCTION IF EXISTS set_sale_order_number() CASCADE;
+CREATE OR REPLACE FUNCTION set_sale_order_number()
+RETURNS TRIGGER AS $$
+DECLARE
+  max_order_number INTEGER;
+BEGIN
+  -- Verify that business_id is provided
+  IF NEW.business_id IS NULL THEN
+    RAISE EXCEPTION 'business_id is required';
+  END IF;
+  
+  -- Get the maximum order_number for this business_id
+  -- Always overwrite order_number regardless of the value sent by the client
+  SELECT COALESCE(MAX(order_number), 0)
+  INTO max_order_number
+  FROM sales
+  WHERE business_id = NEW.business_id;
+  
+  -- Set the order_number to max + 1 (or 1 if no records exist)
+  -- This overwrites any value sent by the client (e.g., -1, 0, etc.)
+  NEW.order_number := max_order_number + 1;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Trigger: set_sale_order_number_before_insert
+-- Automatically sets order_number before inserting a sale
+-- Always executes and overwrites any order_number value sent by the client
+DROP TRIGGER IF EXISTS set_sale_order_number_before_insert ON sales CASCADE;
+CREATE TRIGGER set_sale_order_number_before_insert
+BEFORE INSERT ON sales
+FOR EACH ROW
+EXECUTE FUNCTION set_sale_order_number();
+
 -- ============================================
 -- PRODUCT STOCK FUNCTIONS
 -- ============================================

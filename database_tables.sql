@@ -196,9 +196,9 @@ CREATE TABLE sales (
     business_id BIGINT NOT NULL REFERENCES businesses(id) ON DELETE RESTRICT,
     deal_id BIGINT REFERENCES pipeline_stage_deals(id) ON DELETE RESTRICT,
     order_number INTEGER NOT NULL,
-    subtotal NUMERIC NOT NULL,
+    subtotal NUMERIC NOT NULL DEFAULT 0,
     applied_tax NUMERIC NOT NULL DEFAULT 0,
-    total NUMERIC NOT NULL,
+    total NUMERIC NOT NULL DEFAULT 0,
     is_open BOOLEAN NOT NULL DEFAULT true,
     is_active BOOLEAN NOT NULL DEFAULT true,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()

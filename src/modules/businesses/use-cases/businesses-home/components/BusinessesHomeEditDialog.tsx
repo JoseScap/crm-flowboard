@@ -82,28 +82,6 @@ export function BusinessesHomeEditDialog() {
               rows={2}
             />
           </div>
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2">
-              <Label htmlFor="edit-ai-context">AI Context</Label>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Este campo sirve para dar información a los agentes IA en caso de usarlo</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-            <Textarea
-              id="edit-ai-context"
-              placeholder="Enter context (optional)"
-              value={editBusinessFormData.ai_context !== undefined ? (editBusinessFormData.ai_context || '') : (editingBusiness.ai_context || '')}
-              onChange={(e) => handleChangeEditBusinessFormData('ai_context', e.target.value || null)}
-              rows={4}
-            />
-          </div>
         </div>
         <div className="flex justify-end gap-3">
           <Button variant="outline" onClick={handleCloseEditBusiness}>

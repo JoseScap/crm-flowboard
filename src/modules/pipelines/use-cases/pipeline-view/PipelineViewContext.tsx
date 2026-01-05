@@ -66,7 +66,6 @@ const defaultStageFormData: TablesInsert<'pipeline_stages'> = {
   is_input: false,
   pipeline_id: 0,
   business_id: 0,
-  ai_context: null,
 }
 
 const defaultEditStageFormData: TablesUpdate<'pipeline_stages'> = {
@@ -74,7 +73,6 @@ const defaultEditStageFormData: TablesUpdate<'pipeline_stages'> = {
   color: STAGE_COLORS[0].hsl,
   is_revenue: false,
   is_input: false,
-  ai_context: null,
 }
 
 const defaultCreateLeadFormData: TablesInsert<'pipeline_stage_leads'> = {
@@ -367,7 +365,6 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
                   business_id: parseInt(businessId, 10),
                   order: newOrder,
                   is_revenue: true,
-                  ai_context: createStageFormData.ai_context?.trim() || null,
                 },
               ]),
           ]);
@@ -387,7 +384,6 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
                 business_id: parseInt(businessId, 10),
                 order: newOrder,
                 is_revenue: true,
-                ai_context: createStageFormData.ai_context?.trim() || null,
               },
             ]);
 
@@ -407,7 +403,6 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
                 business_id: parseInt(businessId, 10),
                 order: newOrder,
                 is_revenue: false,
-                ai_context: createStageFormData.ai_context?.trim() || null,
               },
           ]);
 
@@ -477,7 +472,6 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
       color: stage.color,
       is_revenue: stage.is_revenue,
       is_input: stage.is_input,
-      ai_context: stage.ai_context || null,
     });
     setIsEditStageDialogOpen(true);
   };
@@ -513,7 +507,6 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
                 color: editStageFormData.color,
                 is_revenue: true,
                 is_input: editStageFormData.is_input,
-                ai_context: editStageFormData.ai_context?.trim() || null,
               })
               .eq('id', editingStage.id),
           ]);
@@ -530,7 +523,6 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
               color: editStageFormData.color,
               is_revenue: true,
               is_input: editStageFormData.is_input,
-              ai_context: editStageFormData.ai_context?.trim() || null,
             })
             .eq('id', editingStage.id);
 
@@ -547,7 +539,6 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
             color: editStageFormData.color,
             is_revenue: false,
             is_input: editStageFormData.is_input,
-            ai_context: editStageFormData.ai_context?.trim() || null,
           })
           .eq('id', editingStage.id);
 

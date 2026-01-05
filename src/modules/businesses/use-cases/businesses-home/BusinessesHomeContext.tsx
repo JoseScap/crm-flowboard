@@ -34,7 +34,6 @@ const defaultNewBusinessFormData: Omit<TablesInsert<'businesses'>, 'owner_id'> =
   address: null,
   phone: null,
   email: null,
-  ai_context: null,
 }
 
 export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
@@ -115,7 +114,6 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
             address: newBusinessFormData.address?.trim() || null,
             phone: newBusinessFormData.phone?.trim() || null,
             email: newBusinessFormData.email?.trim() || null,
-            ai_context: newBusinessFormData.ai_context?.trim() || null,
             owner_id: user.id,
           },
         ]);
@@ -145,7 +143,6 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
       address: business.address,
       phone: business.phone,
       email: business.email,
-      ai_context: business.ai_context,
     });
     setIsEditBusinessDialogOpen(true);
   };
@@ -175,7 +172,6 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
           address: editBusinessFormData.address?.trim() || null,
           phone: editBusinessFormData.phone?.trim() || null,
           email: editBusinessFormData.email?.trim() || null,
-          ai_context: editBusinessFormData.ai_context?.trim() || null,
         })
         .eq('id', editingBusiness.id);
 

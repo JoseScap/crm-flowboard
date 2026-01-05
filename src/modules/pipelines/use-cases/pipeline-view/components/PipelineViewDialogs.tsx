@@ -104,16 +104,6 @@ export function PipelineViewDialogs() {
                 </AlertDescription>
               </Alert>
             )}
-            <div className="grid gap-2">
-              <Label htmlFor="stage-ai-context">AI Context</Label>
-              <Textarea
-                id="stage-ai-context"
-                placeholder="Enter AI context (optional)"
-                value={createStageFormData.ai_context || ''}
-                onChange={(e) => handleChangeCreateStageFormData('ai_context', e.target.value || null)}
-                rows={4}
-              />
-            </div>
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={handleCloseCreateStageDialog}>
@@ -276,16 +266,6 @@ export function PipelineViewDialogs() {
                 </AlertDescription>
               </Alert>
             )}
-            <div className="grid gap-2">
-              <Label htmlFor="edit-stage-ai-prompt">AI Context</Label>
-              <Textarea
-                id="edit-stage-ai-context"
-                placeholder="Enter AI context (optional)"
-                value={editStageFormData.ai_context || ''}
-                onChange={(e) => handleChangeEditStageFormData('ai_context', e.target.value || null)}
-                rows={4}
-              />
-            </div>
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={handleCloseEditStageDialog}>

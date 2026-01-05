@@ -17,16 +17,16 @@ export function PipelineViewHeader() {
     selectedPipelineId,
     currentPipeline,
     pipelineStages,
-    pipelineDeals,
+    pipelineLeads,
     handleChangePipelineView,
-    handleOpenCreateDealDialog,
+    handleOpenCreateLeadDialog,
     getRevenueValue,
     getConversionRate,
   } = usePipelineViewContext();
 
-  const deals = pipelineDeals.filter(deal => deal.pipeline_stage_id !== null);
-  const totalValue = deals.reduce((sum, deal) => sum + deal.value, 0);
-  const activeDeals = deals.length;
+  const leads = pipelineLeads.filter(lead => lead.pipeline_stage_id !== null);
+  const totalValue = leads.reduce((sum, lead) => sum + lead.value, 0);
+  const activeLeads = leads.length;
   const revenueValue = getRevenueValue();
   const conversionRate = getConversionRate();
 
@@ -45,8 +45,8 @@ export function PipelineViewHeader() {
       isRevenue: true,
     },
     {
-      label: 'Active Deals',
-      value: activeDeals.toString(),
+      label: 'Active Leads',
+      value: activeLeads.toString(),
       icon: Users,
       color: 'text-warning',
     },
@@ -58,10 +58,10 @@ export function PipelineViewHeader() {
     },
   ];
 
-  const handleNewDealClick = () => {
+  const handleNewLeadClick = () => {
     // If there are stages, use the first one; otherwise use empty string
     const firstStageId = pipelineStages.length > 0 ? pipelineStages[0].id : '';
-    handleOpenCreateDealDialog(firstStageId);
+    handleOpenCreateLeadDialog(firstStageId);
   };
 
   return (
@@ -73,7 +73,7 @@ export function PipelineViewHeader() {
           </h1>
           <p className="text-muted-foreground mt-1">
             {currentPipeline?.description || (pipelineStages.length > 0 
-              ? `Track and manage your deals across ${pipelineStages.length} stages`
+              ? `Track and manage your leads across ${pipelineStages.length} stages`
               : 'Create your first stage')}
           </p>
         </div>
@@ -92,10 +92,10 @@ export function PipelineViewHeader() {
             </select>
           )}
           <button 
-            onClick={handleNewDealClick}
+            onClick={handleNewLeadClick}
             className="bg-primary text-primary-foreground px-5 py-2.5 rounded-lg font-medium hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
           >
-            + New Deal
+            + New Lead
           </button>
         </div>
       </div>

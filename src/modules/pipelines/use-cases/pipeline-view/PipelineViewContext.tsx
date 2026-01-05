@@ -11,22 +11,22 @@ interface PipelineViewContextType {
   selectedPipelineId: string;
   currentPipeline: Tables<'pipelines'> | null;
   pipelineStages: Tables<'pipeline_stages'>[];
-  pipelineDeals: Tables<'pipeline_stage_deals'>[];
+  pipelineLeads: Tables<'pipeline_stage_leads'>[];
   revenueStage: Tables<'pipeline_stages'> | null;
 
   // Dialog states
   isCreateStageDialogOpen: boolean;
-  isCreateDealDialogOpen: boolean;
+  isCreateLeadDialogOpen: boolean;
   isEditStageDialogOpen: boolean;
-  isArchiveDealDialogOpen: boolean;
+  isArchiveLeadDialogOpen: boolean;
 
   // Form states
   createStageFormData: TablesInsert<'pipeline_stages'>;
   editStageFormData: TablesUpdate<'pipeline_stages'>;
-  createDealFormData: TablesInsert<'pipeline_stage_deals'>;
+  createLeadFormData: TablesInsert<'pipeline_stage_leads'>;
 
   // Other states
-  archivingDeal: TablesUpdate<'pipeline_stage_deals'> | null;
+  archivingLead: TablesUpdate<'pipeline_stage_leads'> | null;
   editingStage: TablesUpdate<'pipeline_stages'> | null;
   isReordering: boolean;
 
@@ -36,22 +36,22 @@ interface PipelineViewContextType {
   handleOpenCreateStageDialog: () => void;
   handleCloseCreateStageDialog: () => void;
   handleSaveNewStage: () => Promise<void>;
-  handleOpenCreateDealDialog: (pipelineStageId: string) => void;
-  handleCloseCreateDealDialog: () => void;
-  handleSaveNewDeal: () => Promise<void>;
+  handleOpenCreateLeadDialog: (pipelineStageId: string) => void;
+  handleCloseCreateLeadDialog: () => void;
+  handleSaveNewLead: () => Promise<void>;
   handleOpenEditStageDialog: (stage: Tables<'pipeline_stages'>) => void;
   handleCloseEditStageDialog: () => void;
   handleUpdateStage: () => Promise<void>;
-  handleOpenArchiveDealDialog: (deal: Tables<'pipeline_stage_deals'>) => void;
-  handleCloseArchiveDealDialog: () => void;
-  handleArchiveDeal: (withRevenue: boolean) => Promise<void>;
+  handleOpenArchiveLeadDialog: (lead: Tables<'pipeline_stage_leads'>) => void;
+  handleCloseArchiveLeadDialog: () => void;
+  handleArchiveLead: (withRevenue: boolean) => Promise<void>;
   handleMoveStage: (currentIndex: number, direction: 'left' | 'right') => Promise<void>;
   handleChangeCreateStageFormData: <T extends keyof TablesInsert<'pipeline_stages'>>(field: T, value: TablesInsert<'pipeline_stages'>[T]) => void;
   handleChangeEditStageFormData: <T extends keyof TablesUpdate<'pipeline_stages'>>(field: T, value: TablesUpdate<'pipeline_stages'>[T]) => void;
-  handleChangeCreateDealFormData: <T extends keyof TablesInsert<'pipeline_stage_deals'>>(field: T, value: TablesInsert<'pipeline_stage_deals'>[T]) => void;
+  handleChangeCreateLeadFormData: <T extends keyof TablesInsert<'pipeline_stage_leads'>>(field: T, value: TablesInsert<'pipeline_stage_leads'>[T]) => void;
 
   // Utility functions
-  getDealsByStage: (stageId: string) => Tables<'pipeline_stage_deals'>[];
+  getLeadsByStage: (stageId: string) => Tables<'pipeline_stage_leads'>[];
   getRevenueValue: () => { total: number; closed: number };
   getConversionRate: () => number;
 }
@@ -75,7 +75,7 @@ const defaultEditStageFormData: TablesUpdate<'pipeline_stages'> = {
   is_input: false,
 }
 
-const defaultCreateDealFormData: TablesInsert<'pipeline_stage_deals'> = {
+const defaultCreateLeadFormData: TablesInsert<'pipeline_stage_leads'> = {
   customer_name: '',
   email: '',
   phone_number: '',
@@ -91,17 +91,17 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
   const [selectedPipelineId, setSelectedPipelineId] = useState<string>('');
   const [currentPipeline, setCurrentPipeline] = useState<Tables<'pipelines'> | null>(null);
   const [pipelineStages, setPipelineStages] = useState<Tables<'pipeline_stages'>[]>([]);
-  const [pipelineDeals, setPipelineDeals] = useState<Tables<'pipeline_stage_deals'>[]>([]);
+  const [pipelineLeads, setPipelineLeads] = useState<Tables<'pipeline_stage_leads'>[]>([]);
   const [isCreateStageDialogOpen, setIsCreateStageDialogOpen] = useState(false);
-  const [isCreateDealDialogOpen, setIsCreateDealDialogOpen] = useState(false);
+  const [isCreateLeadDialogOpen, setIsCreateLeadDialogOpen] = useState(false);
   const [isEditStageDialogOpen, setIsEditStageDialogOpen] = useState(false);
-  const [isArchiveDealDialogOpen, setIsArchiveDealDialogOpen] = useState(false);
-  const [archivingDeal, setArchivingDeal] = useState<Tables<'pipeline_stage_deals'> | null>(null);
+  const [isArchiveLeadDialogOpen, setIsArchiveLeadDialogOpen] = useState(false);
+  const [archivingLead, setArchivingLead] = useState<Tables<'pipeline_stage_leads'> | null>(null);
   const [editingStage, setEditingStage] = useState<Tables<'pipeline_stages'> | null>(null);
   const [isReordering, setIsReordering] = useState(false);
   const [createStageFormData, setCreateStageFormData] = useState<TablesInsert<'pipeline_stages'>>(defaultStageFormData);
   const [editStageFormData, setEditStageFormData] = useState<TablesUpdate<'pipeline_stages'>>(defaultEditStageFormData);
-  const [createDealFormData, setCreateDealFormData] = useState<TablesInsert<'pipeline_stage_deals'>>(defaultCreateDealFormData);
+  const [createLeadFormData, setCreateLeadFormData] = useState<TablesInsert<'pipeline_stage_leads'>>(defaultCreateLeadFormData);
 
   const getData = useCallback(async () => {
     if (!businessId || !pipelineId) return;
@@ -117,43 +117,43 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
       .eq('business_id', parseInt(businessId, 10))
       .order('order', { ascending: true });
     
-    // Fetch deals - both active (with stage_id) and closed (with is_revenue=true)
-    let pipelineDeals: Tables<'pipeline_stage_deals'>[] | null = null;
-    let pipelineDealsError = null;
+    // Fetch leads - both active (with stage_id) and closed (with is_revenue=true)
+    let pipelineLeads: Tables<'pipeline_stage_leads'>[] | null = null;
+    let pipelineLeadsError = null;
     if (pipelineStages && pipelineStages.length > 0) {
-      // Get active deals (with stage_id)
-      const activeDealsResult = await supabase
-        .from('pipeline_stage_deals')
+      // Get active leads (with stage_id)
+      const activeLeadsResult = await supabase
+        .from('pipeline_stage_leads')
         .select('*')
         .in('pipeline_stage_id', pipelineStages.map(stage => stage.id))
         .eq('business_id', parseInt(businessId, 10))
         .order('created_at', { ascending: true });
       
-      // Get closed deals (stage_id null - both with and without revenue)
-      const closedDealsResult = await supabase
-        .from('pipeline_stage_deals')
+      // Get closed leads (stage_id null - both with and without revenue)
+      const closedLeadsResult = await supabase
+        .from('pipeline_stage_leads')
         .select('*')
         .is('pipeline_stage_id', null)
         .eq('business_id', parseInt(businessId, 10))
         .order('created_at', { ascending: true });
       
       // Combine both results
-      pipelineDeals = [
-        ...(activeDealsResult.data || []),
-        ...(closedDealsResult.data || [])
+      pipelineLeads = [
+        ...(activeLeadsResult.data || []),
+        ...(closedLeadsResult.data || [])
       ];
-      pipelineDealsError = activeDealsResult.error || closedDealsResult.error;
+      pipelineLeadsError = activeLeadsResult.error || closedLeadsResult.error;
     } else {
-      // If no stages, still get closed deals
-      const closedDealsResult = await supabase
-        .from('pipeline_stage_deals')
+      // If no stages, still get closed leads
+      const closedLeadsResult = await supabase
+        .from('pipeline_stage_leads')
         .select('*')
         .is('pipeline_stage_id', null)
         .eq('business_id', parseInt(businessId, 10))
         .order('created_at', { ascending: true });
       
-      pipelineDeals = closedDealsResult.data || [];
-      pipelineDealsError = closedDealsResult.error;
+      pipelineLeads = closedLeadsResult.data || [];
+      pipelineLeadsError = closedLeadsResult.error;
     }
 
     if (error) {
@@ -164,8 +164,8 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
       console.error('Error fetching pipeline stages:', pipelineStagesError);
     }
     
-    if (pipelineDealsError) {
-      console.error('Error fetching pipeline deals:', pipelineDealsError);
+    if (pipelineLeadsError) {
+      console.error('Error fetching pipeline leads:', pipelineLeadsError);
     }
     
     if (pipelines) {
@@ -189,8 +189,8 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
       setPipelineStages(pipelineStages);
     }
     
-    if (pipelineDeals) {
-      setPipelineDeals(pipelineDeals);
+    if (pipelineLeads) {
+      setPipelineLeads(pipelineLeads);
     }
   }, [businessId, pipelineId]);
 
@@ -198,24 +198,24 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
     getData();
   }, [getData]);
 
-  // Set up realtime subscription for pipeline_stage_deals
+  // Set up realtime subscription for pipeline_stage_leads
   useEffect(() => {
     if (!businessId || !pipelineId || isNaN(parseInt(businessId, 10))) {
       return;
     }
 
     const channel = supabase
-      .channel(`pipeline_stage_deals-changes-${businessId}-${pipelineId}`)
+      .channel(`pipeline_stage_leads-changes-${businessId}-${pipelineId}`)
       .on(
         'postgres_changes',
         {
           event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
           schema: 'public',
-          table: 'pipeline_stage_deals',
+          table: 'pipeline_stage_leads',
           filter: `business_id=eq.${businessId}`,
         },
         () => {
-          // Refresh deals data when there are changes
+          // Refresh leads data when there are changes
           getData();
         }
       )
@@ -254,49 +254,49 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    // Find the deal being moved
-    const deal = pipelineDeals.find((d) => d.id.toString() === draggableId);
-    if (!deal) return;
+    // Find the lead being moved
+    const lead = pipelineLeads.find((d) => d.id.toString() === draggableId);
+    if (!lead) return;
 
-    // Update the deal's pipeline_stage_id in the database
+    // Update the lead's pipeline_stage_id in the database
     try {
       const { error } = await supabase
-        .from('pipeline_stage_deals')
+        .from('pipeline_stage_leads')
         .update({ pipeline_stage_id: parseInt(destination.droppableId, 10) })
         .eq('id', parseInt(draggableId, 10))
         .eq('business_id', parseInt(businessId, 10));
 
       if (error) {
-        console.error('Error updating deal stage:', error);
+        console.error('Error updating lead stage:', error);
       } else {
-        // Refetch deals to update UI
+        // Refetch leads to update UI
         await getData();
       }
     } catch (error) {
-      console.error('Error updating deal stage:', error);
+      console.error('Error updating lead stage:', error);
     }
   };
 
-  const getDealsByStage = (stageId: string): Tables<'pipeline_stage_deals'>[] => {
+  const getLeadsByStage = (stageId: string): Tables<'pipeline_stage_leads'>[] => {
     const stageIdNum = parseInt(stageId, 10);
-    return pipelineDeals.filter((deal) => deal.pipeline_stage_id === stageIdNum);
+    return pipelineLeads.filter((lead) => lead.pipeline_stage_id === stageIdNum);
   };
 
   const getRevenueValue = (): { total: number; closed: number } => {
     const revenueStage = pipelineStages.find(stage => stage.is_revenue === true);
     
-    // Get active deals in revenue stage
-    const activeRevenueDeals = revenueStage 
-      ? pipelineDeals.filter(deal => deal.pipeline_stage_id === revenueStage.id)
+    // Get active leads in revenue stage
+    const activeRevenueLeads = revenueStage 
+      ? pipelineLeads.filter(lead => lead.pipeline_stage_id === revenueStage.id)
       : [];
     
-    // Get closed deals (stage_id null and is_revenue true)
-    const closedRevenueDeals = pipelineDeals.filter(
-      deal => deal.pipeline_stage_id === null && deal.is_revenue === true
+    // Get closed leads (stage_id null and is_revenue true)
+    const closedRevenueLeads = pipelineLeads.filter(
+      lead => lead.pipeline_stage_id === null && lead.is_revenue === true
     );
     
-    const activeTotal = activeRevenueDeals.reduce((sum, deal) => sum + deal.value, 0);
-    const closedTotal = closedRevenueDeals.reduce((sum, deal) => sum + deal.value, 0);
+    const activeTotal = activeRevenueLeads.reduce((sum, lead) => sum + lead.value, 0);
+    const closedTotal = closedRevenueLeads.reduce((sum, lead) => sum + lead.value, 0);
     
     return {
       total: activeTotal + closedTotal,
@@ -305,19 +305,19 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
   };
 
   const getConversionRate = (): number => {
-    // Get all closed deals (with and without revenue)
-    const allClosedDeals = pipelineDeals.filter(
-      deal => deal.pipeline_stage_id === null
+    // Get all closed leads (with and without revenue)
+    const allClosedLeads = pipelineLeads.filter(
+      lead => lead.pipeline_stage_id === null
     );
     
-    // Get closed deals with revenue
-    const closedDealsWithRevenue = allClosedDeals.filter(
-      deal => deal.is_revenue === true
+    // Get closed leads with revenue
+    const closedLeadsWithRevenue = allClosedLeads.filter(
+      lead => lead.is_revenue === true
     );
     
-    if (allClosedDeals.length === 0) return 0;
+    if (allClosedLeads.length === 0) return 0;
     
-    return Math.round((closedDealsWithRevenue.length / allClosedDeals.length) * 100);
+    return Math.round((closedLeadsWithRevenue.length / allClosedLeads.length) * 100);
   };
 
   const getExistingRevenueStage = (): Tables<'pipeline_stages'> | null => {
@@ -419,47 +419,47 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const handleOpenCreateDealDialog = (pipelineStageId: string) => {
-    setCreateDealFormData({
-      ...defaultCreateDealFormData,
+  const handleOpenCreateLeadDialog = (pipelineStageId: string) => {
+    setCreateLeadFormData({
+      ...defaultCreateLeadFormData,
       pipeline_stage_id: parseInt(pipelineStageId, 10),
     });
-    setIsCreateDealDialogOpen(true);
+    setIsCreateLeadDialogOpen(true);
   };
 
-  const handleCloseCreateDealDialog = () => {
-    setIsCreateDealDialogOpen(false);
-    setCreateDealFormData(defaultCreateDealFormData);
+  const handleCloseCreateLeadDialog = () => {
+    setIsCreateLeadDialogOpen(false);
+    setCreateLeadFormData(defaultCreateLeadFormData);
   };
 
-  const handleSaveNewDeal = async () => {
-    if (!createDealFormData.customer_name.trim() || !createDealFormData.value || !createDealFormData.pipeline_stage_id) return;
+  const handleSaveNewLead = async () => {
+    if (!createLeadFormData.customer_name.trim() || !createLeadFormData.value || !createLeadFormData.pipeline_stage_id) return;
 
     // Close modal immediately
-    handleCloseCreateDealDialog();
+    handleCloseCreateLeadDialog();
 
     try {
       const { error } = await supabase
-        .from('pipeline_stage_deals')
+        .from('pipeline_stage_leads')
         .insert([
           {
-            customer_name: createDealFormData.customer_name.trim(),
-            email: createDealFormData.email.trim() || null,
-            phone_number: createDealFormData.phone_number.trim() || null,
-            value: createDealFormData.value,
-            pipeline_stage_id: createDealFormData.pipeline_stage_id,
+            customer_name: createLeadFormData.customer_name.trim(),
+            email: createLeadFormData.email.trim() || null,
+            phone_number: createLeadFormData.phone_number.trim() || null,
+            value: createLeadFormData.value,
+            pipeline_stage_id: createLeadFormData.pipeline_stage_id,
             business_id: parseInt(businessId, 10),
           },
         ]);
 
       if (error) {
-        console.error('Error creating deal:', error);
+        console.error('Error creating lead:', error);
       }
 
-      // Refetch deals
+      // Refetch leads
       await getData();
     } catch (error) {
-      console.error('Error creating deal:', error);
+      console.error('Error creating lead:', error);
       await getData();
     }
   };
@@ -555,40 +555,40 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const handleOpenArchiveDealDialog = (deal: Tables<'pipeline_stage_deals'>) => {
-    setArchivingDeal(deal);
-    setIsArchiveDealDialogOpen(true);
+  const handleOpenArchiveLeadDialog = (lead: Tables<'pipeline_stage_leads'>) => {
+    setArchivingLead(lead);
+    setIsArchiveLeadDialogOpen(true);
   };
 
-  const handleCloseArchiveDealDialog = () => {
-    setIsArchiveDealDialogOpen(false);
-    setArchivingDeal(null);
+  const handleCloseArchiveLeadDialog = () => {
+    setIsArchiveLeadDialogOpen(false);
+    setArchivingLead(null);
   };
 
-  const handleArchiveDeal = async (withRevenue: boolean) => {
-    if (!archivingDeal) return;
+  const handleArchiveLead = async (withRevenue: boolean) => {
+    if (!archivingLead) return;
 
     // Close modal immediately
-    handleCloseArchiveDealDialog();
+    handleCloseArchiveLeadDialog();
 
     try {
       const { error } = await supabase
-        .from('pipeline_stage_deals')
+        .from('pipeline_stage_leads')
         .update({
           pipeline_stage_id: null,
           is_revenue: withRevenue,
           closed_at: new Date().toISOString(),
         })
-        .eq('id', archivingDeal.id);
+        .eq('id', archivingLead.id);
 
       if (error) {
-        console.error('Error archiving deal:', error);
+        console.error('Error archiving lead:', error);
       }
 
-      // Refetch deals
+      // Refetch leads
       await getData();
     } catch (error) {
-      console.error('Error archiving deal:', error);
+      console.error('Error archiving lead:', error);
       await getData();
     }
   };
@@ -646,8 +646,8 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
     setEditStageFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleChangeCreateDealFormData = <T extends keyof TablesInsert<'pipeline_stage_deals'>>(field: T, value: TablesInsert<'pipeline_stage_deals'>[T]) => {
-    setCreateDealFormData((prev) => ({ ...prev, [field]: value }));
+  const handleChangeCreateLeadFormData = <T extends keyof TablesInsert<'pipeline_stage_leads'>>(field: T, value: TablesInsert<'pipeline_stage_leads'>[T]) => {
+    setCreateLeadFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const value: PipelineViewContextType = {
@@ -656,22 +656,22 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
     selectedPipelineId,
     currentPipeline,
     pipelineStages,
-    pipelineDeals,
+    pipelineLeads,
     revenueStage,
 
     // Dialog states
     isCreateStageDialogOpen,
-    isCreateDealDialogOpen,
+    isCreateLeadDialogOpen,
     isEditStageDialogOpen,
-    isArchiveDealDialogOpen,
+    isArchiveLeadDialogOpen,
 
     // Form states
     createStageFormData,
     editStageFormData,
-    createDealFormData,
+    createLeadFormData,
 
     // Other states
-    archivingDeal,
+    archivingLead,
     editingStage,
     isReordering,
 
@@ -681,22 +681,22 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
     handleOpenCreateStageDialog,
     handleCloseCreateStageDialog,
     handleSaveNewStage,
-    handleOpenCreateDealDialog,
-    handleCloseCreateDealDialog,
-    handleSaveNewDeal,
+    handleOpenCreateLeadDialog,
+    handleCloseCreateLeadDialog,
+    handleSaveNewLead,
     handleOpenEditStageDialog,
     handleCloseEditStageDialog,
     handleUpdateStage,
-    handleOpenArchiveDealDialog,
-    handleCloseArchiveDealDialog,
-    handleArchiveDeal,
+    handleOpenArchiveLeadDialog,
+    handleCloseArchiveLeadDialog,
+    handleArchiveLead,
     handleMoveStage,
     handleChangeCreateStageFormData,
     handleChangeEditStageFormData,
-    handleChangeCreateDealFormData,
+    handleChangeCreateLeadFormData,
 
     // Utility functions
-    getDealsByStage,
+    getLeadsByStage,
     getRevenueValue,
     getConversionRate,
   };

@@ -12,6 +12,7 @@ import {
   Sun,
   Package,
   ShoppingCart,
+  Settings,
 } from 'lucide-react';
 import supabase from '@/modules/common/lib/supabase';
 import { toast } from 'sonner';
@@ -90,6 +91,9 @@ export function AppSidebar() {
       <SidebarContent className="px-2 py-4">
         {isInBusinessRoute && (
           <SidebarGroup>
+            <SidebarGroupLabel className="text-xs text-muted-foreground uppercase tracking-wider px-3 mb-2">
+              General
+            </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
@@ -108,6 +112,25 @@ export function AppSidebar() {
                     >
                       <LayoutDashboard className="w-5 h-5" />
                       <span className="font-medium">Dashboard</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={currentPath === '/user/settings' || currentPath.startsWith('/user/settings/')}
+                    className="w-full"
+                  >
+                    <Link
+                      to="/user/settings"
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
+                        currentPath === '/user/settings' || currentPath.startsWith('/user/settings/')
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                      }`}
+                    >
+                      <Settings className="w-5 h-5" />
+                      <span className="font-medium">Settings</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

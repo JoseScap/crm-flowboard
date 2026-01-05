@@ -12,7 +12,9 @@
 -- ============================================
 
 -- Policy: select_own_api_keys
--- Users can only select their own API keys
+-- Users can select their own API keys from the table
+-- Note: The frontend should always use user_api_keys_view which obfuscates the 'key' column
+-- This policy is needed for the view to work, as views inherit RLS from underlying tables
 DROP POLICY IF EXISTS select_own_api_keys ON user_api_keys;
 CREATE POLICY select_own_api_keys
 ON user_api_keys
@@ -213,14 +215,14 @@ USING (
 );
 
 -- ============================================
--- POLICIES FOR: pipeline_stage_deals
+-- POLICIES FOR: pipeline_stage_leads
 -- ============================================
 
--- Policy: select_pipeline_stage_deals_from_own_businesses
--- Users can only select pipeline stage deals from businesses they own
-DROP POLICY IF EXISTS select_pipeline_stage_deals_from_own_businesses ON pipeline_stage_deals;
-CREATE POLICY select_pipeline_stage_deals_from_own_businesses
-ON pipeline_stage_deals
+-- Policy: select_pipeline_stage_leads_from_own_businesses
+-- Users can only select pipeline stage leads from businesses they own
+DROP POLICY IF EXISTS select_pipeline_stage_leads_from_own_businesses ON pipeline_stage_leads;
+CREATE POLICY select_pipeline_stage_leads_from_own_businesses
+ON pipeline_stage_leads
 FOR SELECT
 TO authenticated
 USING (
@@ -229,11 +231,11 @@ USING (
   )
 );
 
--- Policy: insert_pipeline_stage_deals_in_own_businesses
--- Users can only insert pipeline stage deals in businesses they own (validated by trigger)
-DROP POLICY IF EXISTS insert_pipeline_stage_deals_in_own_businesses ON pipeline_stage_deals;
-CREATE POLICY insert_pipeline_stage_deals_in_own_businesses
-ON pipeline_stage_deals
+-- Policy: insert_pipeline_stage_leads_in_own_businesses
+-- Users can only insert pipeline stage leads in businesses they own (validated by trigger)
+DROP POLICY IF EXISTS insert_pipeline_stage_leads_in_own_businesses ON pipeline_stage_leads;
+CREATE POLICY insert_pipeline_stage_leads_in_own_businesses
+ON pipeline_stage_leads
 FOR INSERT
 TO authenticated
 WITH CHECK (
@@ -242,11 +244,11 @@ WITH CHECK (
   )
 );
 
--- Policy: update_pipeline_stage_deals_in_own_businesses
--- Users can only update pipeline stage deals in businesses they own
-DROP POLICY IF EXISTS update_pipeline_stage_deals_in_own_businesses ON pipeline_stage_deals;
-CREATE POLICY update_pipeline_stage_deals_in_own_businesses
-ON pipeline_stage_deals
+-- Policy: update_pipeline_stage_leads_in_own_businesses
+-- Users can only update pipeline stage leads in businesses they own
+DROP POLICY IF EXISTS update_pipeline_stage_leads_in_own_businesses ON pipeline_stage_leads;
+CREATE POLICY update_pipeline_stage_leads_in_own_businesses
+ON pipeline_stage_leads
 FOR UPDATE
 TO authenticated
 USING (
@@ -260,11 +262,11 @@ WITH CHECK (
   )
 );
 
--- Policy: delete_pipeline_stage_deals_in_own_businesses
--- Users can only delete pipeline stage deals in businesses they own
-DROP POLICY IF EXISTS delete_pipeline_stage_deals_in_own_businesses ON pipeline_stage_deals;
-CREATE POLICY delete_pipeline_stage_deals_in_own_businesses
-ON pipeline_stage_deals
+-- Policy: delete_pipeline_stage_leads_in_own_businesses
+-- Users can only delete pipeline stage leads in businesses they own
+DROP POLICY IF EXISTS delete_pipeline_stage_leads_in_own_businesses ON pipeline_stage_leads;
+CREATE POLICY delete_pipeline_stage_leads_in_own_businesses
+ON pipeline_stage_leads
 FOR DELETE
 TO authenticated
 USING (

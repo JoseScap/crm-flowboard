@@ -18,6 +18,7 @@ import PipelinesHomePage from "./modules/pipelines/use-cases/pipelines-home/Pipe
 import PipelineViewPage from "./modules/pipelines/use-cases/pipeline-view/PipelineView";
 import BusinessesHomePage from "./modules/businesses/use-cases/businesses-home/BusinessesHome";
 import BusinessView from "./modules/businesses/use-cases/business-view/BusinessView";
+import UserSettingsHomePage from "./modules/user/use-cases/user-settings-home/UserSettingsHome";
 
 const queryClient = new QueryClient();
 
@@ -132,7 +133,7 @@ const App = () => (
                 }
               />
               <Route
-                path="/user/businesses/:id/deal/:dealId"
+                path="/user/businesses/:id/lead/:leadId"
                 element={
                   <BusinessLayout maxHeightScreen>
                     <Placeholder />
@@ -198,9 +199,9 @@ const App = () => (
               <Route
                 path="/user/settings"
                 element={
-                  <BusinessLayout>
-                    <Placeholder />
-                  </BusinessLayout>
+                  <SimpleLayout>
+                    <UserSettingsHomePage />
+                  </SimpleLayout>
                 }
               />
               <Route path="*" element={<NotFound />} />

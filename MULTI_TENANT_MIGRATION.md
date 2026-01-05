@@ -468,7 +468,7 @@ ALTER TABLE product_categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sales ENABLE ROW LEVEL SECURITY;
 ALTER TABLE pipeline_stages ENABLE ROW LEVEL SECURITY;
-ALTER TABLE pipeline_stage_deals ENABLE ROW LEVEL SECURITY;
+ALTER TABLE pipeline_stage_leads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE product_snapshots ENABLE ROW LEVEL SECURITY;
 ```
 
@@ -693,9 +693,9 @@ USING (
   )
 );
 
--- Pipeline Stage Deals: Users pueden ver deals de pipelines accesibles
-CREATE POLICY "Users can view deals from accessible pipelines"
-ON pipeline_stage_deals FOR SELECT
+-- Pipeline Stage Leads: Users pueden ver leads de pipelines accesibles
+CREATE POLICY "Users can view leads from accessible pipelines"
+ON pipeline_stage_leads FOR SELECT
 USING (
   pipeline_stage_id IN (
     SELECT id FROM pipeline_stages 

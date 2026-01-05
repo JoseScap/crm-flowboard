@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Building2, Calendar, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tables } from '@/modules/types/supabase.schema';
-import { formatDate } from '@/lib/deal-utils';
+import { formatDate } from '@/lib/lead-utils';
 
 interface BusinessCardProps {
   business: Tables<'businesses'>;

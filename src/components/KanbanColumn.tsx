@@ -1,18 +1,18 @@
 import { Droppable, Draggable } from '@hello-pangea/dnd';
-import { DealCard } from './DealCard';
+import { LeadCard } from './LeadCard';
 import { DollarSign, ChevronLeft, ChevronRight, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tables } from '@/modules/types/supabase.schema';
 
 interface KanbanColumnProps {
   stage: Tables<'pipeline_stages'>;
-  deals: Tables<'pipeline_stage_deals'>[];
+  leads: Tables<'pipeline_stage_leads'>[];
   index: number;
   totalStages: number;
   onMoveLeft: () => void;
   onMoveRight: () => void;
   onEditClick: () => void;
-  onArchiveDeal?: (deal: Tables<'pipeline_stage_deals'>) => void;
+  onArchiveLead?: (lead: Tables<'pipeline_stage_leads'>) => void;
   isReordering: boolean;
 }
 
@@ -26,8 +26,8 @@ const formatCurrency = (value: number) => {
   return `$${value}`;
 };
 
-export function KanbanColumn({ stage, deals, index, totalStages, onMoveLeft, onMoveRight, onEditClick, onArchiveDeal, isReordering }: KanbanColumnProps) {
-  const totalValue = deals.reduce((sum, deal) => sum + deal.value, 0);
+export function KanbanColumn({ stage, leads, index, totalStages, onMoveLeft, onMoveRight, onEditClick, onArchiveLead, isReordering }: KanbanColumnProps) {
+  const totalValue = leads.reduce((sum, lead) => sum + lead.value, 0);
   const canMoveLeft = index > 0;
   const canMoveRight = index < totalStages - 1;
 
@@ -52,7 +52,7 @@ export function KanbanColumn({ stage, deals, index, totalStages, onMoveLeft, onM
             />
             <h3 className="font-semibold text-foreground">{stage.name}</h3>
             <span className="ml-auto bg-muted text-muted-foreground text-xs font-medium px-2 py-1 rounded-full">
-              {deals.length}
+              {leads.length}
             </span>
           </div>
           <Button
@@ -92,8 +92,8 @@ export function KanbanColumn({ stage, deals, index, totalStages, onMoveLeft, onM
               snapshot.isDraggingOver ? 'bg-primary/5' : ''
             }`}
           >
-            {deals.map((deal, index) => (
-              <Draggable key={deal.id} draggableId={deal.id.toString()} index={index}>
+            {leads.map((lead, index) => (
+              <Draggable key={lead.id} draggableId={lead.id.toString()} index={index}>
                 {(provided, snapshot) => (
                   <div
                     ref={provided.innerRef}
@@ -103,9 +103,9 @@ export function KanbanColumn({ stage, deals, index, totalStages, onMoveLeft, onM
                       snapshot.isDragging ? 'rotate-2 scale-105' : ''
                     }`}
                   >
-                    <DealCard 
-                      deal={deal} 
-                      onArchiveClick={onArchiveDeal ? () => onArchiveDeal(deal) : undefined}
+                    <LeadCard 
+                      lead={lead} 
+                      onArchiveClick={onArchiveLead ? () => onArchiveLead(lead) : undefined}
                     />
                   </div>
                 )}

@@ -11,9 +11,9 @@ export function PipelineViewKanbanBoard() {
     handleDragEnd,
     handleMoveStage,
     handleOpenEditStageDialog,
-    handleOpenArchiveDealDialog,
+    handleOpenArchiveLeadDialog,
     handleOpenCreateStageDialog,
-    getDealsByStage,
+    getLeadsByStage,
   } = usePipelineViewContext();
 
   return (
@@ -23,13 +23,13 @@ export function PipelineViewKanbanBoard() {
           <KanbanColumn
             key={stage.id}
             stage={stage}
-            deals={getDealsByStage(stage.id.toString())}
+            leads={getLeadsByStage(stage.id.toString())}
             index={index}
             totalStages={pipelineStages.length}
             onMoveLeft={() => handleMoveStage(index, 'left')}
             onMoveRight={() => handleMoveStage(index, 'right')}
             onEditClick={() => handleOpenEditStageDialog(stage)}
-            onArchiveDeal={handleOpenArchiveDealDialog}
+            onArchiveLead={handleOpenArchiveLeadDialog}
             isReordering={isReordering}
           />
         ))}

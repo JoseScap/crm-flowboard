@@ -31,11 +31,11 @@ DROP POLICY IF EXISTS insert_pipeline_stages_in_own_businesses ON pipeline_stage
 DROP POLICY IF EXISTS update_pipeline_stages_in_own_businesses ON pipeline_stages;
 DROP POLICY IF EXISTS delete_pipeline_stages_in_own_businesses ON pipeline_stages;
 
--- Policies for: pipeline_stage_deals
-DROP POLICY IF EXISTS select_pipeline_stage_deals_from_own_businesses ON pipeline_stage_deals;
-DROP POLICY IF EXISTS insert_pipeline_stage_deals_in_own_businesses ON pipeline_stage_deals;
-DROP POLICY IF EXISTS update_pipeline_stage_deals_in_own_businesses ON pipeline_stage_deals;
-DROP POLICY IF EXISTS delete_pipeline_stage_deals_in_own_businesses ON pipeline_stage_deals;
+-- Policies for: pipeline_stage_leads
+DROP POLICY IF EXISTS select_pipeline_stage_leads_from_own_businesses ON pipeline_stage_leads;
+DROP POLICY IF EXISTS insert_pipeline_stage_leads_in_own_businesses ON pipeline_stage_leads;
+DROP POLICY IF EXISTS update_pipeline_stage_leads_in_own_businesses ON pipeline_stage_leads;
+DROP POLICY IF EXISTS delete_pipeline_stage_leads_in_own_businesses ON pipeline_stage_leads;
 
 -- Policies for: product_categories
 DROP POLICY IF EXISTS select_product_categories_from_own_businesses ON product_categories;
@@ -74,8 +74,8 @@ DROP TRIGGER IF EXISTS business_owner_before_insert ON businesses CASCADE;
 -- Triggers for: pipeline_stages
 DROP TRIGGER IF EXISTS validate_pipeline_stage_business_before_insert ON pipeline_stages CASCADE;
 
--- Triggers for: pipeline_stage_deals
-DROP TRIGGER IF EXISTS validate_pipeline_stage_deal_business_before_insert ON pipeline_stage_deals CASCADE;
+-- Triggers for: pipeline_stage_leads
+DROP TRIGGER IF EXISTS validate_pipeline_stage_lead_business_before_insert ON pipeline_stage_leads CASCADE;
 
 -- Triggers for: product_categories
 DROP TRIGGER IF EXISTS validate_product_category_business_before_insert ON product_categories CASCADE;
@@ -104,7 +104,7 @@ DROP FUNCTION IF EXISTS validate_user_business_access(BIGINT) CASCADE;
 
 -- Validation Functions
 DROP FUNCTION IF EXISTS validate_pipeline_stage_business_access() CASCADE;
-DROP FUNCTION IF EXISTS validate_pipeline_stage_deal_business_access() CASCADE;
+DROP FUNCTION IF EXISTS validate_pipeline_stage_lead_business_access() CASCADE;
 DROP FUNCTION IF EXISTS validate_product_category_business_access() CASCADE;
 DROP FUNCTION IF EXISTS validate_product_business_access() CASCADE;
 DROP FUNCTION IF EXISTS validate_sale_business_access() CASCADE;
@@ -125,6 +125,7 @@ DROP FUNCTION IF EXISTS process_sale(BIGINT, jsonb, NUMERIC) CASCADE;
 -- DROP VIEWS
 -- ============================================
 
+DROP VIEW IF EXISTS user_api_keys_view CASCADE;
 DROP VIEW IF EXISTS products_low_stock CASCADE;
 DROP VIEW IF EXISTS products_low_stock_total CASCADE;
 DROP VIEW IF EXISTS products_out_of_stock CASCADE;
@@ -139,7 +140,7 @@ DROP TABLE IF EXISTS product_snapshots CASCADE;
 DROP TABLE IF EXISTS sales CASCADE;
 DROP TABLE IF EXISTS products CASCADE;
 DROP TABLE IF EXISTS product_categories CASCADE;
-DROP TABLE IF EXISTS pipeline_stage_deals CASCADE;
+DROP TABLE IF EXISTS pipeline_stage_leads CASCADE;
 DROP TABLE IF EXISTS pipeline_stages CASCADE;
 DROP TABLE IF EXISTS pipelines CASCADE;
 DROP TABLE IF EXISTS businesses CASCADE;

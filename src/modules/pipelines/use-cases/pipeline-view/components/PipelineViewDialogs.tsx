@@ -26,12 +26,12 @@ export function PipelineViewDialogs() {
     handleSaveNewStage,
     handleChangeCreateStageFormData,
     
-    // Create Deal Dialog
-    createDealFormData,
-    isCreateDealDialogOpen,
-    handleCloseCreateDealDialog,
-    handleSaveNewDeal,
-    handleChangeCreateDealFormData,
+    // Create Lead Dialog
+    createLeadFormData,
+    isCreateLeadDialogOpen,
+    handleCloseCreateLeadDialog,
+    handleSaveNewLead,
+    handleChangeCreateLeadFormData,
     
     // Edit Stage Dialog
     editStageFormData,
@@ -41,10 +41,10 @@ export function PipelineViewDialogs() {
     handleUpdateStage,
     handleChangeEditStageFormData,
     
-    // Archive Deal Dialog
-    isArchiveDealDialogOpen,
-    handleCloseArchiveDealDialog,
-    handleArchiveDeal,
+    // Archive Lead Dialog
+    isArchiveLeadDialogOpen,
+    handleCloseArchiveLeadDialog,
+    handleArchiveLead,
   } = usePipelineViewContext();
 
   return (
@@ -115,59 +115,59 @@ export function PipelineViewDialogs() {
         </DialogContent>
       </Dialog>
 
-      {/* Create Deal Dialog */}
-      <Dialog open={isCreateDealDialogOpen} onOpenChange={(open) => !open && handleCloseCreateDealDialog()}>
+      {/* Create Lead Dialog */}
+      <Dialog open={isCreateLeadDialogOpen} onOpenChange={(open) => !open && handleCloseCreateLeadDialog()}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>New Deal</DialogTitle>
+            <DialogTitle>New Lead</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="deal-customer-name">Customer Name *</Label>
+              <Label htmlFor="lead-customer-name">Customer Name *</Label>
               <Input
-                id="deal-customer-name"
+                id="lead-customer-name"
                 placeholder="Enter customer name"
-                value={createDealFormData.customer_name}
-                onChange={(e) => handleChangeCreateDealFormData('customer_name', e.target.value)}
+                value={createLeadFormData.customer_name}
+                onChange={(e) => handleChangeCreateLeadFormData('customer_name', e.target.value)}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="deal-email">Email</Label>
+              <Label htmlFor="lead-email">Email</Label>
               <Input
-                id="deal-email"
+                id="lead-email"
                 type="email"
                 placeholder="Enter email (optional)"
-                value={createDealFormData.email}
-                onChange={(e) => handleChangeCreateDealFormData('email', e.target.value)}
+                value={createLeadFormData.email}
+                onChange={(e) => handleChangeCreateLeadFormData('email', e.target.value)}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="deal-phone">Phone Number</Label>
+              <Label htmlFor="lead-phone">Phone Number</Label>
               <Input
-                id="deal-phone"
+                id="lead-phone"
                 type="tel"
                 placeholder="Enter phone number (optional)"
-                value={createDealFormData.phone_number}
-                onChange={(e) => handleChangeCreateDealFormData('phone_number', e.target.value)}
+                value={createLeadFormData.phone_number}
+                onChange={(e) => handleChangeCreateLeadFormData('phone_number', e.target.value)}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="deal-value">Value *</Label>
+              <Label htmlFor="lead-value">Value *</Label>
               <Input
-                id="deal-value"
+                id="lead-value"
                 type="number"
-                placeholder="Enter deal value"
-                value={createDealFormData.value}
-                onChange={(e) => handleChangeCreateDealFormData('value', Number(e.target.value))}
+                placeholder="Enter lead value"
+                value={createLeadFormData.value}
+                onChange={(e) => handleChangeCreateLeadFormData('value', Number(e.target.value))}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="deal-stage">Stage *</Label>
+              <Label htmlFor="lead-stage">Stage *</Label>
               <Select
-                value={createDealFormData.pipeline_stage_id}
-                onValueChange={(value) => handleChangeCreateDealFormData('pipeline_stage_id', value)}
+                value={createLeadFormData.pipeline_stage_id}
+                onValueChange={(value) => handleChangeCreateLeadFormData('pipeline_stage_id', value)}
               >
-                <SelectTrigger id="deal-stage">
+                <SelectTrigger id="lead-stage">
                   <SelectValue placeholder="Select a stage" />
                 </SelectTrigger>
                 <SelectContent>
@@ -187,14 +187,14 @@ export function PipelineViewDialogs() {
             </div>
           </div>
           <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={handleCloseCreateDealDialog}>
+            <Button variant="outline" onClick={handleCloseCreateLeadDialog}>
               Cancel
             </Button>
             <Button 
-              onClick={handleSaveNewDeal} 
-              disabled={!createDealFormData.customer_name.trim() || !createDealFormData.value || !createDealFormData.pipeline_stage_id || isReordering}
+              onClick={handleSaveNewLead} 
+              disabled={!createLeadFormData.customer_name.trim() || !createLeadFormData.value || !createLeadFormData.pipeline_stage_id || isReordering}
             >
-              Create Deal
+              Create Lead
             </Button>
           </div>
         </DialogContent>
@@ -277,41 +277,41 @@ export function PipelineViewDialogs() {
         </DialogContent>
       </Dialog>
 
-      {/* Archive Deal Dialog */}
-      <Dialog open={isArchiveDealDialogOpen} onOpenChange={(open) => !open && handleCloseArchiveDealDialog()}>
+      {/* Archive Lead Dialog */}
+      <Dialog open={isArchiveLeadDialogOpen} onOpenChange={(open) => !open && handleCloseArchiveLeadDialog()}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Archive Deal</DialogTitle>
+            <DialogTitle>Archive Lead</DialogTitle>
           </DialogHeader>
           <div className="py-4">
             <p className="text-foreground mb-4">
-              How do you want to close this deal?
+              How do you want to close this lead?
             </p>
             <div className="flex flex-col gap-3">
               <Button
                 variant="outline"
                 className="w-full justify-start h-auto py-4"
-                onClick={() => handleArchiveDeal(true)}
+                onClick={() => handleArchiveLead(true)}
               >
                 <div className="flex flex-col items-start">
                   <span className="font-semibold">Close with Revenue</span>
-                  <span className="text-sm text-muted-foreground">This deal will be marked as revenue</span>
+                  <span className="text-sm text-muted-foreground">This lead will be marked as revenue</span>
                 </div>
               </Button>
               <Button
                 variant="outline"
                 className="w-full justify-start h-auto py-4"
-                onClick={() => handleArchiveDeal(false)}
+                onClick={() => handleArchiveLead(false)}
               >
                 <div className="flex flex-col items-start">
                   <span className="font-semibold">Close without Revenue</span>
-                  <span className="text-sm text-muted-foreground">This deal will be archived without revenue</span>
+                  <span className="text-sm text-muted-foreground">This lead will be archived without revenue</span>
                 </div>
               </Button>
             </div>
           </div>
           <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={handleCloseArchiveDealDialog}>
+            <Button variant="outline" onClick={handleCloseArchiveLeadDialog}>
               Cancel
             </Button>
           </div>

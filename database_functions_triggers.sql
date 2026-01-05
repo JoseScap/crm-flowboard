@@ -100,10 +100,38 @@ BEFORE INSERT ON user_api_keys
 FOR EACH ROW
 EXECUTE FUNCTION prevent_more_than_two_keys();
 
+-- Function: get_user_api_key
+-- Returns a specific API key for the current authenticated user (key_index 1 or 2)
+-- This is the only way to retrieve API keys, as direct SELECT is denied by RLS
+DROP FUNCTION IF EXISTS get_user_api_key(INTEGER) CASCADE;
+CREATE OR REPLACE FUNCTION get_user_api_key(p_key_index INTEGER)
+RETURNS TEXT AS $$
+DECLARE
+  api_key TEXT;
+BEGIN
+  -- Validate key_index
+  IF p_key_index NOT IN (1, 2) THEN
+    RAISE EXCEPTION 'key_index must be 1 or 2';
+  END IF;
+  
+  -- Get the API key for the current authenticated user
+  SELECT key INTO api_key
+  FROM user_api_keys
+  WHERE user_id = auth.uid() AND key_index = p_key_index AND is_active = true;
+  
+  -- Raise exception if key not found
+  IF api_key IS NULL THEN
+    RAISE EXCEPTION 'API key with index % not found for current user', p_key_index;
+  END IF;
+  
+  RETURN api_key;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
 -- Function: rotate_user_api_key
--- Rotates one of the user's API keys (key_index 1 or 2)
-DROP FUNCTION IF EXISTS rotate_user_api_key(UUID, INTEGER) CASCADE;
-CREATE OR REPLACE FUNCTION rotate_user_api_key(p_user_id UUID, p_key_index INTEGER)
+-- Rotates one of the current authenticated user's API keys (key_index 1 or 2)
+DROP FUNCTION IF EXISTS rotate_user_api_key(INTEGER) CASCADE;
+CREATE OR REPLACE FUNCTION rotate_user_api_key(p_key_index INTEGER)
 RETURNS TEXT AS $$
 DECLARE
   new_key TEXT;
@@ -117,7 +145,7 @@ BEGIN
   -- Validate that the user owns this key
   IF NOT EXISTS (
     SELECT 1 FROM user_api_keys
-    WHERE user_id = p_user_id AND key_index = p_key_index
+    WHERE user_id = auth.uid() AND key_index = p_key_index
   ) THEN
     RAISE EXCEPTION 'User does not have a key with index %', p_key_index;
   END IF;
@@ -130,7 +158,7 @@ BEGIN
   SET 
     key = new_key,
     last_rotated_at = NOW()
-  WHERE user_id = p_user_id AND key_index = p_key_index
+  WHERE user_id = auth.uid() AND key_index = p_key_index
   RETURNING id INTO rotated_key_id;
   
   IF rotated_key_id IS NULL THEN
@@ -203,10 +231,10 @@ BEFORE INSERT ON pipeline_stages
 FOR EACH ROW
 EXECUTE FUNCTION validate_pipeline_stage_business_access();
 
--- Function: validate_pipeline_stage_deal_business_access
+-- Function: validate_pipeline_stage_lead_business_access
 -- Validates that business_id is provided and user has access to it
-DROP FUNCTION IF EXISTS validate_pipeline_stage_deal_business_access() CASCADE;
-CREATE OR REPLACE FUNCTION validate_pipeline_stage_deal_business_access()
+DROP FUNCTION IF EXISTS validate_pipeline_stage_lead_business_access() CASCADE;
+CREATE OR REPLACE FUNCTION validate_pipeline_stage_lead_business_access()
 RETURNS TRIGGER AS $$
 BEGIN
   -- Verify that business_id is provided
@@ -225,13 +253,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Trigger: validate_pipeline_stage_deal_business_before_insert
--- Validates business_id before inserting a pipeline stage deal
-DROP TRIGGER IF EXISTS validate_pipeline_stage_deal_business_before_insert ON pipeline_stage_deals CASCADE;
-CREATE TRIGGER validate_pipeline_stage_deal_business_before_insert
-BEFORE INSERT ON pipeline_stage_deals
+-- Trigger: validate_pipeline_stage_lead_business_before_insert
+-- Validates business_id before inserting a pipeline stage lead
+DROP TRIGGER IF EXISTS validate_pipeline_stage_lead_business_before_insert ON pipeline_stage_leads CASCADE;
+CREATE TRIGGER validate_pipeline_stage_lead_business_before_insert
+BEFORE INSERT ON pipeline_stage_leads
 FOR EACH ROW
-EXECUTE FUNCTION validate_pipeline_stage_deal_business_access();
+EXECUTE FUNCTION validate_pipeline_stage_lead_business_access();
 
 -- Function: validate_product_category_business_access
 -- Validates that business_id is provided and user has access to it

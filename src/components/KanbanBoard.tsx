@@ -3,7 +3,7 @@ import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 import { Tables } from '@/modules/types/supabase.schema';
 
 export function KanbanBoard() {
-  const [deals, setDeals] = useState<Tables<'pipeline_stage_deals'>[]>([]);
+  const [leads, setLeads] = useState<Tables<'pipeline_stage_leads'>[]>([]);
 
   const handleDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
@@ -16,11 +16,11 @@ export function KanbanBoard() {
       return;
     }
 
-    setDeals((prevDeals) =>
-      prevDeals.map((deal) =>
-        deal.id.toString() === draggableId
-          ? { ...deal, pipeline_stage_id: parseInt(destination.droppableId, 10) }
-          : deal
+    setLeads((prevLeads) =>
+      prevLeads.map((lead) =>
+        lead.id.toString() === draggableId
+          ? { ...lead, pipeline_stage_id: parseInt(destination.droppableId, 10) }
+          : lead
       )
     );
   };

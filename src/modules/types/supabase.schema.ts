@@ -122,6 +122,7 @@ export type Database = {
           name: string
           order: number
           pipeline_id: number
+          webhook_url: string | null
         }
         Insert: {
           business_id: number
@@ -134,6 +135,7 @@ export type Database = {
           name: string
           order: number
           pipeline_id: number
+          webhook_url?: string | null
         }
         Update: {
           business_id?: number
@@ -146,6 +148,7 @@ export type Database = {
           name?: string
           order?: number
           pipeline_id?: number
+          webhook_url?: string | null
         }
         Relationships: [
           {

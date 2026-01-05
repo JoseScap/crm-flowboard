@@ -104,6 +104,16 @@ export function PipelineViewDialogs() {
                 </AlertDescription>
               </Alert>
             )}
+            <div className="grid gap-2">
+              <Label htmlFor="stage-webhook-url">Webhook URL</Label>
+              <Input
+                id="stage-webhook-url"
+                type="url"
+                placeholder="Enter webhook URL (optional)"
+                value={createStageFormData.webhook_url || ''}
+                onChange={(e) => handleChangeCreateStageFormData('webhook_url', e.target.value || null)}
+              />
+            </div>
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={handleCloseCreateStageDialog}>
@@ -266,6 +276,16 @@ export function PipelineViewDialogs() {
                 </AlertDescription>
               </Alert>
             )}
+            <div className="grid gap-2">
+              <Label htmlFor="edit-stage-webhook-url">Webhook URL</Label>
+              <Input
+                id="edit-stage-webhook-url"
+                type="url"
+                placeholder="Enter webhook URL (optional)"
+                value={editStageFormData.webhook_url || ''}
+                onChange={(e) => handleChangeEditStageFormData('webhook_url', e.target.value || null)}
+              />
+            </div>
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={handleCloseEditStageDialog}>

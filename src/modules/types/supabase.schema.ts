@@ -17,6 +17,7 @@ export type Database = {
       businesses: {
         Row: {
           address: string | null
+          ai_context: string | null
           created_at: string
           description: string | null
           email: string | null
@@ -28,6 +29,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          ai_context?: string | null
           created_at?: string
           description?: string | null
           email?: string | null
@@ -39,6 +41,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          ai_context?: string | null
           created_at?: string
           description?: string | null
           email?: string | null
@@ -112,6 +115,7 @@ export type Database = {
       }
       pipeline_stages: {
         Row: {
+          ai_prompt: string | null
           business_id: number
           color: string
           created_at: string
@@ -124,6 +128,7 @@ export type Database = {
           pipeline_id: number
         }
         Insert: {
+          ai_prompt?: string | null
           business_id: number
           color: string
           created_at?: string
@@ -136,6 +141,7 @@ export type Database = {
           pipeline_id: number
         }
         Update: {
+          ai_prompt?: string | null
           business_id?: number
           color?: string
           created_at?: string
@@ -519,6 +525,7 @@ export type Database = {
         Args: { p_business_id: number }
         Returns: number
       }
+      get_user_api_key: { Args: { p_key_index: number }; Returns: string }
       initialize_api_keys: { Args: never; Returns: boolean }
       process_sale: {
         Args: { applied_tax: number; cart_items: Json; p_business_id: number }
@@ -529,10 +536,9 @@ export type Database = {
           total: number
         }[]
       }
-      rotate_user_api_key: {
-        Args: { p_key_index: number; p_user_id: string }
-        Returns: string
-      }
+      rotate_user_api_key:
+        | { Args: { p_key_index: number }; Returns: string }
+        | { Args: { p_key_index: number; p_user_id: string }; Returns: string }
       validate_user_business_access: {
         Args: { p_business_id: number }
         Returns: boolean

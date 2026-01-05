@@ -7,6 +7,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
@@ -103,6 +104,16 @@ export function PipelineViewDialogs() {
                 </AlertDescription>
               </Alert>
             )}
+            <div className="grid gap-2">
+              <Label htmlFor="stage-ai-prompt">AI Prompt</Label>
+              <Textarea
+                id="stage-ai-prompt"
+                placeholder="Enter AI prompt (optional)"
+                value={createStageFormData.ai_prompt || ''}
+                onChange={(e) => handleChangeCreateStageFormData('ai_prompt', e.target.value || null)}
+                rows={4}
+              />
+            </div>
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={handleCloseCreateStageDialog}>
@@ -164,15 +175,15 @@ export function PipelineViewDialogs() {
             <div className="grid gap-2">
               <Label htmlFor="lead-stage">Stage *</Label>
               <Select
-                value={createLeadFormData.pipeline_stage_id}
-                onValueChange={(value) => handleChangeCreateLeadFormData('pipeline_stage_id', value)}
+                value={createLeadFormData.pipeline_stage_id.toString()}
+                onValueChange={(value) => handleChangeCreateLeadFormData('pipeline_stage_id', Number(value))}
               >
                 <SelectTrigger id="lead-stage">
                   <SelectValue placeholder="Select a stage" />
                 </SelectTrigger>
                 <SelectContent>
                   {pipelineStages.map((stage) => (
-                    <SelectItem key={stage.id} value={stage.id}>
+                    <SelectItem key={stage.id} value={stage.id.toString()}>
                       <div className="flex items-center gap-2">
                         <div 
                           className="w-3 h-3 rounded" 
@@ -265,6 +276,16 @@ export function PipelineViewDialogs() {
                 </AlertDescription>
               </Alert>
             )}
+            <div className="grid gap-2">
+              <Label htmlFor="edit-stage-ai-prompt">AI Prompt</Label>
+              <Textarea
+                id="edit-stage-ai-prompt"
+                placeholder="Enter AI prompt (optional)"
+                value={editStageFormData.ai_prompt || ''}
+                onChange={(e) => handleChangeEditStageFormData('ai_prompt', e.target.value || null)}
+                rows={4}
+              />
+            </div>
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={handleCloseEditStageDialog}>

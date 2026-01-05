@@ -1,5 +1,5 @@
 import supabase from "@/modules/common/lib/supabase";
-import { Tables, TablesInsert } from "@/modules/types/supabase.schema";
+import { Tables, TablesInsert, TablesUpdate } from "@/modules/types/supabase.schema";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -11,12 +11,19 @@ interface BusinessesHomeContextType {
   businesses: Tables<'businesses'>[];
   isCreateBusinessDialogOpen: boolean;
   newBusinessFormData: Omit<TablesInsert<'businesses'>, 'owner_id'>;
+  isEditBusinessDialogOpen: boolean;
+  editBusinessFormData: TablesUpdate<'businesses'>;
+  editingBusiness: Tables<'businesses'> | null;
 
   // Handlers
   handleCreateBusiness: () => void;
   handleChangeNewBusinessFormData: <T extends keyof Omit<TablesInsert<'businesses'>, 'owner_id'>>(field: T, value: Omit<TablesInsert<'businesses'>, 'owner_id'>[T]) => void;
   handleCancelCreateBusiness: () => void;
   handleSaveBusiness: () => Promise<void>;
+  handleOpenEditBusiness: (business: Tables<'businesses'>) => void;
+  handleCloseEditBusiness: () => void;
+  handleChangeEditBusinessFormData: <T extends keyof TablesUpdate<'businesses'>>(field: T, value: TablesUpdate<'businesses'>[T]) => void;
+  handleUpdateBusiness: () => Promise<void>;
 }
 
 const BusinessesHomeContext = createContext<BusinessesHomeContextType | undefined>(undefined);
@@ -27,6 +34,7 @@ const defaultNewBusinessFormData: Omit<TablesInsert<'businesses'>, 'owner_id'> =
   address: null,
   phone: null,
   email: null,
+  ai_context: null,
 }
 
 export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
@@ -37,6 +45,9 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
   const [businesses, setBusinesses] = useState<Tables<'businesses'>[]>([]);
   const [isCreateBusinessDialogOpen, setIsCreateBusinessDialogOpen] = useState(false);
   const [newBusinessFormData, setNewBusinessFormData] = useState<Omit<TablesInsert<'businesses'>, 'owner_id'>>(defaultNewBusinessFormData);
+  const [isEditBusinessDialogOpen, setIsEditBusinessDialogOpen] = useState(false);
+  const [editBusinessFormData, setEditBusinessFormData] = useState<TablesUpdate<'businesses'>>({});
+  const [editingBusiness, setEditingBusiness] = useState<Tables<'businesses'> | null>(null);
 
   const getData = async () => {
     try {
@@ -104,6 +115,7 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
             address: newBusinessFormData.address?.trim() || null,
             phone: newBusinessFormData.phone?.trim() || null,
             email: newBusinessFormData.email?.trim() || null,
+            ai_context: newBusinessFormData.ai_context?.trim() || null,
             owner_id: user.id,
           },
         ]);
@@ -124,6 +136,68 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const handleOpenEditBusiness = (business: Tables<'businesses'>) => {
+    setEditingBusiness(business);
+    setEditBusinessFormData({
+      id: business.id,
+      name: business.name,
+      description: business.description,
+      address: business.address,
+      phone: business.phone,
+      email: business.email,
+      ai_context: business.ai_context,
+    });
+    setIsEditBusinessDialogOpen(true);
+  };
+
+  const handleCloseEditBusiness = () => {
+    setIsEditBusinessDialogOpen(false);
+    setEditingBusiness(null);
+    setEditBusinessFormData({});
+  };
+
+  const handleChangeEditBusinessFormData = <T extends keyof TablesUpdate<'businesses'>>(field: T, value: TablesUpdate<'businesses'>[T]) => {
+    setEditBusinessFormData({ ...editBusinessFormData, [field]: value });
+  };
+
+  const handleUpdateBusiness = async () => {
+    if (!editingBusiness || !editBusinessFormData.id) return;
+
+    setIsEditBusinessDialogOpen(false);
+    setLoadingData(true);
+
+    try {
+      const { error } = await supabase
+        .from('businesses')
+        .update({
+          name: editBusinessFormData.name?.trim() || editingBusiness.name,
+          description: editBusinessFormData.description?.trim() || null,
+          address: editBusinessFormData.address?.trim() || null,
+          phone: editBusinessFormData.phone?.trim() || null,
+          email: editBusinessFormData.email?.trim() || null,
+          ai_context: editBusinessFormData.ai_context?.trim() || null,
+        })
+        .eq('id', editingBusiness.id);
+
+      if (error) {
+        toast.error('Error updating business');
+      } else {
+        toast.success('Business updated successfully');
+      }
+
+      // Refetch businesses
+      await getData();
+    } catch (error) {
+      console.error('Error updating business:', error);
+      toast.error('Error updating business');
+      await getData();
+    } finally {
+      setLoadingData(false);
+      setEditingBusiness(null);
+      setEditBusinessFormData({});
+    }
+  };
+
   const value: BusinessesHomeContextType = {
     // Loading state
     loadingData,
@@ -132,12 +206,19 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
     businesses,
     isCreateBusinessDialogOpen,
     newBusinessFormData,
+    isEditBusinessDialogOpen,
+    editBusinessFormData,
+    editingBusiness,
 
     // Handlers
     handleCreateBusiness,
     handleChangeNewBusinessFormData,
     handleCancelCreateBusiness,
     handleSaveBusiness,
+    handleOpenEditBusiness,
+    handleCloseEditBusiness,
+    handleChangeEditBusinessFormData,
+    handleUpdateBusiness,
   };
 
   return (

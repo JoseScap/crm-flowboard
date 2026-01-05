@@ -3,6 +3,7 @@ import { Building2, Calendar, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tables } from '@/modules/types/supabase.schema';
 import { formatDate } from '@/lib/lead-utils';
+import { useBusinessesHomeContext } from '../BusinessesHomeContext';
 
 interface BusinessCardProps {
   business: Tables<'businesses'>;
@@ -10,6 +11,7 @@ interface BusinessCardProps {
 
 export function BusinessCard({ business }: BusinessCardProps) {
   const navigate = useNavigate();
+  const { handleOpenEditBusiness } = useBusinessesHomeContext();
 
   return (
     <div
@@ -26,7 +28,7 @@ export function BusinessCard({ business }: BusinessCardProps) {
           className="h-8 w-8"
           onClick={(e) => {
             e.stopPropagation();
-            navigate(`/user/businesses/${business.id}/config`);
+            handleOpenEditBusiness(business);
           }}
         >
           <Settings className="w-4 h-4" />

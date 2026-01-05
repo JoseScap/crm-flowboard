@@ -3,6 +3,7 @@ import { BusinessesHomeHeader } from './components/BusinessesHomeHeader';
 import { BusinessesHomeEmptyState } from './components/BusinessesHomeEmptyState';
 import { BusinessesHomeGrid } from './components/BusinessesHomeGrid';
 import { BusinessesHomeCreateDialog } from './components/BusinessesHomeCreateDialog';
+import { BusinessesHomeEditDialog } from './components/BusinessesHomeEditDialog';
 import { BusinessesHomeLoading } from './components/BusinessesHomeLoading';
 
 const BusinessesHome = () => {
@@ -18,6 +19,7 @@ const BusinessesHome = () => {
       <BusinessesHomeEmptyState />
       <BusinessesHomeGrid />
       <BusinessesHomeCreateDialog />
+      <BusinessesHomeEditDialog />
     </div>
   );
 };

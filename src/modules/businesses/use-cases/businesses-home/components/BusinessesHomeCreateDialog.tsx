@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { HelpCircle } from 'lucide-react';
 import { useBusinessesHomeContext } from '../BusinessesHomeContext';
 
 export function BusinessesHomeCreateDialog() {
@@ -75,6 +77,28 @@ export function BusinessesHomeCreateDialog() {
               value={newBusinessFormData.address || ''}
               onChange={(e) => handleChangeNewBusinessFormData('address', e.target.value || null)}
               rows={2}
+            />
+          </div>
+          <div className="grid gap-2">
+            <div className="flex items-center gap-2">
+              <Label htmlFor="ai-context">AI Context</Label>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Este campo sirve para dar información a los agentes IA en caso de usarlo</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+            <Textarea
+              id="ai-context"
+              placeholder="Enter context (optional)"
+              value={newBusinessFormData.ai_context || ''}
+              onChange={(e) => handleChangeNewBusinessFormData('ai_context', e.target.value || null)}
+              rows={4}
             />
           </div>
         </div>

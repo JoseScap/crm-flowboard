@@ -18,6 +18,7 @@ import PipelinesHomePage from "./modules/pipelines/use-cases/pipelines-home/Pipe
 import PipelineViewPage from "./modules/pipelines/use-cases/pipeline-view/PipelineView";
 import BusinessesHomePage from "./modules/businesses/use-cases/businesses-home/BusinessesHome";
 import BusinessView from "./modules/businesses/use-cases/business-view/BusinessView";
+import LeadDetailsPage from "./modules/leads/use-cases/lead-details/LeadDetails";
 import UserSettingsHomePage from "./modules/user/use-cases/user-settings-home/UserSettingsHome";
 
 const queryClient = new QueryClient();
@@ -103,14 +104,6 @@ const App = () => (
                 }
               />
               <Route
-                path="/user/businesses/:id/config"
-                element={
-                  <SimpleLayout>
-                    <Placeholder />
-                  </SimpleLayout>
-                }
-              />
-              <Route
                 path="/user/businesses/:id/pipeline/:pipelineId"
                 element={
                   <BusinessLayout
@@ -122,6 +115,17 @@ const App = () => (
                 }
               />
               <Route
+                path="/user/businesses/:id/pipeline/:pipelineId/lead/:leadId"
+                element={
+                  <BusinessLayout
+                    title="Lead Details"
+                    description="View lead information and details"
+                  >
+                    <LeadDetailsPage />
+                  </BusinessLayout>
+                }
+              />
+              <Route
                 path="/user/businesses/:id/pipeline/:pipelineId/config"
                 element={
                   <BusinessLayout
@@ -129,14 +133,6 @@ const App = () => (
                     description="Configure settings for your pipeline"
                   >
                     <PipelinesConfigPage />
-                  </BusinessLayout>
-                }
-              />
-              <Route
-                path="/user/businesses/:id/lead/:leadId"
-                element={
-                  <BusinessLayout maxHeightScreen>
-                    <Placeholder />
                   </BusinessLayout>
                 }
               />

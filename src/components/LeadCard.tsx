@@ -12,13 +12,19 @@ interface LeadCardProps {
 
 export function LeadCard({ lead, onArchiveClick, onDetailClick }: LeadCardProps) {
   const navigate = useNavigate();
-  const { id: businessIdParam } = useParams<{ id: string }>();
+  const { id: businessIdParam, pipelineId } = useParams<{ id: string; pipelineId?: string }>();
   // Use businessId from URL params, or fallback to lead.business_id
   const businessId = businessIdParam || lead.business_id.toString();
 
   const handleDetailClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigate(`/user/businesses/${businessId}/lead/${lead.id}`);
+    // Navigate to lead details page with pipelineId
+    // pipelineId should always be available when viewing a pipeline
+    if (pipelineId) {
+      navigate(`/user/businesses/${businessId}/pipeline/${pipelineId}/lead/${lead.id}`);
+    } else {
+      console.error('pipelineId is required to view lead details');
+    }
   };
 
   return (

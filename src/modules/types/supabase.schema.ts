@@ -50,6 +50,59 @@ export type Database = {
         }
         Relationships: []
       }
+      pipeline_oauth_connections: {
+        Row: {
+          access_token: string
+          application_id: string
+          created_at: string
+          id: number
+          pipeline_id: number
+          provider_email: string | null
+          provider_user_id: string | null
+          refresh_token: string | null
+          scope: string | null
+          token_expires_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          access_token: string
+          application_id: string
+          created_at?: string
+          id?: number
+          pipeline_id: number
+          provider_email?: string | null
+          provider_user_id?: string | null
+          refresh_token?: string | null
+          scope?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          access_token?: string
+          application_id?: string
+          created_at?: string
+          id?: number
+          pipeline_id?: number
+          provider_email?: string | null
+          provider_user_id?: string | null
+          refresh_token?: string | null
+          scope?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pipeline_oauth_connections_pipeline_id_fkey"
+            columns: ["pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "pipelines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pipeline_stage_leads: {
         Row: {
           business_id: number

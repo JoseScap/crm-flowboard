@@ -20,6 +20,8 @@ import BusinessesHomePage from "./modules/businesses/use-cases/businesses-home/B
 import BusinessView from "./modules/businesses/use-cases/business-view/BusinessView";
 import LeadDetailsPage from "./modules/leads/use-cases/lead-details/LeadDetails";
 import UserSettingsHomePage from "./modules/user/use-cases/user-settings-home/UserSettingsHome";
+import ApplicationsHomePage from "./modules/applications/use-cases/applications-home/ApplicationsHome";
+import GoogleOAuthCallbackPage from "./modules/applications/use-cases/google-oauth-callback/GoogleOAuthCallback";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +38,12 @@ const App = () => (
               <Route
                 path="/login"
                 element={<LoginPage />}
+              />
+              
+              {/* OAuth callback route */}
+              <Route
+                path="/auth/google/callback"
+                element={<GoogleOAuthCallbackPage />}
               />
               
               {/* Redirect root to /user/businesses */}
@@ -100,6 +108,17 @@ const App = () => (
                     description="Selecciona productos y procesa la venta"
                   >
                     <SalesHomePage />
+                  </BusinessLayout>
+                }
+              />
+              <Route
+                path="/user/businesses/:id/applications"
+                element={
+                  <BusinessLayout
+                    title="Applications"
+                    description="Connect your favorite apps to enhance your CRM experience"
+                  >
+                    <ApplicationsHomePage />
                   </BusinessLayout>
                 }
               />

@@ -13,6 +13,7 @@ import {
   Package,
   ShoppingCart,
   Settings,
+  Plug,
 } from 'lucide-react';
 import supabase from '@/modules/common/lib/supabase';
 import { toast } from 'sonner';
@@ -172,6 +173,37 @@ export function AppSidebar() {
                     </SidebarMenuItem>
                   );
                 })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+
+        {isInBusinessRoute && (
+          <SidebarGroup className="mt-6">
+            <SidebarGroupLabel className="text-xs text-muted-foreground uppercase tracking-wider px-3 mb-2">
+              User
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={currentPath === `/user/businesses/${businessId}/applications` || currentPath.startsWith(`/user/businesses/${businessId}/applications/`)}
+                    className="w-full"
+                  >
+                    <Link
+                      to={`/user/businesses/${businessId}/applications`}
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
+                        currentPath === `/user/businesses/${businessId}/applications` || currentPath.startsWith(`/user/businesses/${businessId}/applications/`)
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                      }`}
+                    >
+                      <Plug className="w-5 h-5" />
+                      <span className="font-medium">Applications</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>

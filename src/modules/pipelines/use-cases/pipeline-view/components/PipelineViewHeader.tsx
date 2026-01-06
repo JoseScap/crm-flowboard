@@ -61,7 +61,7 @@ export function PipelineViewHeader() {
   const handleNewLeadClick = () => {
     // If there are stages, use the first one; otherwise use empty string
     const firstStageId = pipelineStages.length > 0 ? pipelineStages[0].id : '';
-    handleOpenCreateLeadDialog(firstStageId);
+    handleOpenCreateLeadDialog(firstStageId.toString());
   };
 
   return (

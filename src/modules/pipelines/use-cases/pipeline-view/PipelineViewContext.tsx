@@ -62,7 +62,7 @@ const defaultStageFormData: TablesInsert<'pipeline_stages'> = {
   name: '',
   color: STAGE_COLORS[0].hsl,
   is_revenue: false,
-  order: 0,
+  position: 0,
   is_input: false,
   pipeline_id: 0,
   business_id: 0,
@@ -119,7 +119,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
       .select('*')
       .eq('pipeline_id', parseInt(pipelineId, 10))
       .eq('business_id', parseInt(businessId, 10))
-      .order('order', { ascending: true });
+      .order('position', { ascending: true });
     
     // Fetch leads - both active (with stage_id) and closed (with is_revenue=true)
     let pipelineLeads: Tables<'pipeline_stage_leads'>[] | null = null;
@@ -344,8 +344,8 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
     // Close modal immediately
     handleCloseCreateStageDialog();
 
-    // Calculate order: if there are 3 stages, new one will be 4
-    const newOrder = pipelineStages.length + 1;
+    // Calculate position: if there are 3 stages, new one will be 4
+    const newPosition = pipelineStages.length + 1;
 
     try {
       // If marking as revenue and there's already a revenue stage, unmark it first
@@ -367,7 +367,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
                   color: createStageFormData.color,
                   pipeline_id: parseInt(pipelineId, 10),
                   business_id: parseInt(businessId, 10),
-                  order: newOrder,
+                  position: newPosition,
                   is_revenue: true,
                   webhook_url: createStageFormData.webhook_url?.trim() || null,
                   description: createStageFormData.description?.trim() || null,
@@ -388,7 +388,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
                 color: createStageFormData.color,
                 pipeline_id: parseInt(pipelineId, 10),
                 business_id: parseInt(businessId, 10),
-                order: newOrder,
+                position: newPosition,
                 is_revenue: true,
                 webhook_url: createStageFormData.webhook_url?.trim() || null,
                 description: createStageFormData.description?.trim() || null,
@@ -409,7 +409,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
                 color: createStageFormData.color,
                 pipeline_id: parseInt(pipelineId, 10),
                 business_id: parseInt(businessId, 10),
-                order: newOrder,
+                position: newPosition,
                 is_revenue: false,
                 webhook_url: createStageFormData.webhook_url?.trim() || null,
                 description: createStageFormData.description?.trim() || null,
@@ -625,20 +625,20 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
       const currentStage = pipelineStages[currentIndex];
       const adjacentStage = pipelineStages[newIndex];
 
-      // Swap orders: if current is at index 1 (order 2) and adjacent is at index 2 (order 3)
-      // After swap: current should have order 3, adjacent should have order 2
-      const currentOrder = currentStage.order;
-      const adjacentOrder = adjacentStage.order;
+      // Swap positions: if current is at index 1 (position 2) and adjacent is at index 2 (position 3)
+      // After swap: current should have position 3, adjacent should have position 2
+      const currentPosition = currentStage.position;
+      const adjacentPosition = adjacentStage.position;
 
       // Update both stages in parallel
       const [result1, result2] = await Promise.all([
         supabase
           .from('pipeline_stages')
-          .update({ order: adjacentOrder })
+          .update({ position: adjacentPosition })
           .eq('id', currentStage.id),
         supabase
           .from('pipeline_stages')
-          .update({ order: currentOrder })
+          .update({ position: currentPosition })
           .eq('id', adjacentStage.id),
       ]);
 

@@ -67,6 +67,7 @@ const defaultStageFormData: TablesInsert<'pipeline_stages'> = {
   pipeline_id: 0,
   business_id: 0,
   webhook_url: null,
+  description: null,
 }
 
 const defaultEditStageFormData: TablesUpdate<'pipeline_stages'> = {
@@ -75,6 +76,7 @@ const defaultEditStageFormData: TablesUpdate<'pipeline_stages'> = {
   is_revenue: false,
   is_input: false,
   webhook_url: null,
+  description: null,
 }
 
 const defaultCreateLeadFormData: TablesInsert<'pipeline_stage_leads'> = {
@@ -368,6 +370,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
                   order: newOrder,
                   is_revenue: true,
                   webhook_url: createStageFormData.webhook_url?.trim() || null,
+                  description: createStageFormData.description?.trim() || null,
                 },
               ]),
           ]);
@@ -388,6 +391,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
                 order: newOrder,
                 is_revenue: true,
                 webhook_url: createStageFormData.webhook_url?.trim() || null,
+                description: createStageFormData.description?.trim() || null,
               },
             ]);
 
@@ -408,6 +412,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
                 order: newOrder,
                 is_revenue: false,
                 webhook_url: createStageFormData.webhook_url?.trim() || null,
+                description: createStageFormData.description?.trim() || null,
               },
           ]);
 
@@ -478,6 +483,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
       is_revenue: stage.is_revenue,
       is_input: stage.is_input,
       webhook_url: stage.webhook_url || null,
+      description: stage.description || null,
     });
     setIsEditStageDialogOpen(true);
   };
@@ -514,6 +520,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
                 is_revenue: true,
                 is_input: editStageFormData.is_input,
                 webhook_url: editStageFormData.webhook_url?.trim() || null,
+                description: editStageFormData.description?.trim() || null,
               })
               .eq('id', editingStage.id),
           ]);
@@ -531,6 +538,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
               is_revenue: true,
               is_input: editStageFormData.is_input,
               webhook_url: editStageFormData.webhook_url?.trim() || null,
+              description: editStageFormData.description?.trim() || null,
             })
             .eq('id', editingStage.id);
 
@@ -548,6 +556,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
             is_revenue: false,
             is_input: editStageFormData.is_input,
             webhook_url: editStageFormData.webhook_url?.trim() || null,
+            description: editStageFormData.description?.trim() || null,
           })
           .eq('id', editingStage.id);
 

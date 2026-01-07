@@ -235,16 +235,15 @@ export function PipelineViewDialogs() {
               </Select>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="lead-assignee">Assigned to (Optional)</Label>
+              <Label htmlFor="lead-assignee">Assigned to *</Label>
               <Select
-                value={createLeadFormData.business_employee_id?.toString() || 'unassigned'}
-                onValueChange={(value) => handleChangeCreateLeadFormData('business_employee_id', value === 'unassigned' ? null : Number(value))}
+                value={createLeadFormData.business_employee_id?.toString() || ''}
+                onValueChange={(value) => handleChangeCreateLeadFormData('business_employee_id', Number(value))}
               >
                 <SelectTrigger id="lead-assignee">
-                  <SelectValue placeholder="Unassigned" />
+                  <SelectValue placeholder="Select an assignee" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="unassigned">Unassigned</SelectItem>
                   {businessEmployees.map((employee) => (
                     <SelectItem key={employee.id} value={employee.id.toString()}>
                       {employee.first_name} {employee.last_name} ({employee.email}) {employee.id === currentUserEmployee?.id ? '(Me)' : ''}
@@ -260,7 +259,7 @@ export function PipelineViewDialogs() {
             </Button>
             <Button 
               onClick={handleSaveNewLead} 
-              disabled={!createLeadFormData.customer_name.trim() || createLeadFormData.value === undefined || createLeadFormData.value === null || !createLeadFormData.pipeline_stage_id || isReordering}
+              disabled={!createLeadFormData.customer_name.trim() || createLeadFormData.value === undefined || createLeadFormData.value === null || !createLeadFormData.pipeline_stage_id || !createLeadFormData.business_employee_id || isReordering}
             >
               Create Lead
             </Button>

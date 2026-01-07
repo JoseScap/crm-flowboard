@@ -504,7 +504,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
   };
 
   const handleSaveNewLead = async () => {
-    if (!createLeadFormData.customer_name.trim() || createLeadFormData.value === undefined || createLeadFormData.value === null || !createLeadFormData.pipeline_stage_id) return;
+    if (!createLeadFormData.customer_name.trim() || createLeadFormData.value === undefined || createLeadFormData.value === null || !createLeadFormData.pipeline_stage_id || !createLeadFormData.business_employee_id) return;
 
     // Close modal immediately
     handleCloseCreateLeadDialog();

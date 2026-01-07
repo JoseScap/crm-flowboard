@@ -92,13 +92,18 @@ export function ApplicationsHomeProvider({ children }: { children: ReactNode }) 
     try {
       if (!businessId) return;
 
+      const { data: employeeId, error: employeeError } = await supabase
+          .rpc('get_my_business_employee_id_by_business', {
+            p_business_id: parseInt(businessId, 10),
+          });
+
       // Eliminar la conexión
       // RLS garantiza que solo podamos borrar nuestras propias conexiones
       const { error } = await supabase
         .from('business_employee_oauth_connections')
         .delete()
         .eq('business_id', parseInt(businessId, 10))
-        .eq('application_id', applicationId);
+        .eq('business_employee_id', employeeId);
 
       if (error) {
         throw error;

@@ -1,30 +1,63 @@
-ALTER TABLE public.pipeline_stages ENABLE ROW LEVEL SECURITY;
+DROP FUNCTION IF EXISTS add_business_employee(BIGINT,TEXT,TEXT,TEXT) CASCADE;
+CREATE OR REPLACE FUNCTION add_business_employee(p_business_id BIGINT, p_user_email TEXT, p_first_name TEXT, p_last_name TEXT)
+RETURNS VOID AS $$
+DECLARE
+  v_user_email TEXT;
+  v_user_id UUID;
+BEGIN
+  IF NOT is_business_owner(p_business_id) THEN
+    RAISE EXCEPTION 'You are not the owner of business %', p_business_id;
+  END IF;
 
-DROP POLICY IF EXISTS "business_employees_can_view_pipeline_stages" ON public.pipeline_stages;
-CREATE POLICY "business_employees_can_view_pipeline_stages"
-ON public.pipeline_stages
-FOR SELECT
-TO authenticated
-USING (is_business_member(business_id));
+  IF p_first_name IS NULL OR p_last_name IS NULL THEN
+    RAISE EXCEPTION 'First name and last name are required';
+  END IF;
 
-DROP POLICY IF EXISTS "owners_can_insert_pipeline_stages" ON public.pipeline_stages;
-CREATE POLICY "owners_can_insert_pipeline_stages"
-ON public.pipeline_stages
-FOR INSERT
-TO authenticated
-WITH CHECK (is_business_owner(business_id));
+  SELECT id, email INTO v_user_id, v_user_email
+  FROM auth.users
+  WHERE email = p_user_email
+  LIMIT 1;
 
-DROP POLICY IF EXISTS "owners_can_update_pipeline_stages" ON public.pipeline_stages;
-CREATE POLICY "owners_can_update_pipeline_stages"
-ON public.pipeline_stages
-FOR UPDATE
-TO authenticated
-USING (is_business_owner(business_id))
-WITH CHECK (is_business_owner(business_id));
+  IF v_user_id IS NULL THEN
+    RAISE EXCEPTION 'User email % was not found', p_user_email;
+  END IF;
 
-DROP POLICY IF EXISTS "owners_can_delete_pipeline_stages" ON public.pipeline_stages;
-CREATE POLICY "owners_can_delete_pipeline_stages"
-ON public.pipeline_stages
-FOR DELETE
-TO authenticated
-USING (is_business_owner(business_id));
+  IF EXISTS (
+    SELECT 1 FROM business_employees 
+    WHERE business_id = p_business_id AND user_id = v_user_id
+  ) THEN
+    RAISE EXCEPTION 'User email % is already an employee of this business', p_user_email;
+  END IF;
+
+  INSERT INTO business_employees (business_id, user_id, email, employee_type, first_name, last_name)
+  VALUES (p_business_id, v_user_id, v_user_email, 'salesperson'::business_employee_type, p_first_name, p_last_name);
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP FUNCTION IF EXISTS deactivate_business_employee(BIGINT, UUID) CASCADE;
+CREATE OR REPLACE FUNCTION deactivate_business_employee(p_business_id BIGINT, p_user_id UUID)
+RETURNS VOID AS $$
+BEGIN
+  IF NOT is_business_owner(p_business_id) THEN
+    RAISE EXCEPTION 'You are not the owner of business %', p_business_id;
+  END IF;
+
+  UPDATE business_employees
+  SET is_active = false
+  WHERE business_id = p_business_id AND user_id = p_user_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP FUNCTION IF EXISTS activate_business_employee(BIGINT, UUID) CASCADE;
+CREATE OR REPLACE FUNCTION activate_business_employee(p_business_id BIGINT, p_user_id UUID)
+RETURNS VOID AS $$
+BEGIN
+  IF NOT is_business_owner(p_business_id) THEN
+    RAISE EXCEPTION 'You are not the owner of business %', p_business_id;
+  END IF;
+
+  UPDATE business_employees
+  SET is_active = true
+  WHERE business_id = p_business_id AND user_id = p_user_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;

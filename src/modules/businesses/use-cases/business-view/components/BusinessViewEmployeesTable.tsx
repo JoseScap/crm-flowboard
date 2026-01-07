@@ -45,6 +45,7 @@ export function BusinessViewEmployeesTable() {
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
+                <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Status</TableHead>
@@ -55,7 +56,7 @@ export function BusinessViewEmployeesTable() {
             <TableBody>
               {loadingEmployees ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8">
+                  <TableCell colSpan={6} className="text-center py-8">
                     <div className="flex items-center justify-center gap-2">
                       <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
                       <span className="text-muted-foreground">Loading employees...</span>
@@ -64,14 +65,17 @@ export function BusinessViewEmployeesTable() {
                 </TableRow>
               ) : employees.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8">
+                  <TableCell colSpan={6} className="text-center py-8">
                     <span className="text-muted-foreground">No employees found</span>
                   </TableCell>
                 </TableRow>
               ) : (
                 employees.map((employee) => (
                   <TableRow key={employee.id}>
-                    <TableCell className="font-medium">{employee.email}</TableCell>
+                    <TableCell className="font-medium">
+                      {employee.first_name} {employee.last_name}
+                    </TableCell>
+                    <TableCell>{employee.email}</TableCell>
                     <TableCell>
                       <Badge variant={employee.employee_type === 'owner' ? 'default' : 'secondary'}>
                         {employee.employee_type}

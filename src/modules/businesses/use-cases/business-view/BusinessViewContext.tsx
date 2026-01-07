@@ -28,6 +28,8 @@ interface BusinessViewContextType {
   // Dialog state
   isAddEmployeeDialogOpen: boolean;
   newEmployeeEmail: string;
+  newEmployeeFirstName: string;
+  newEmployeeLastName: string;
   addingEmployee: boolean;
   togglingStatus: boolean;
   
@@ -36,6 +38,8 @@ interface BusinessViewContextType {
   handleCloseAddEmployeeDialog: () => void;
   handleAddEmployee: () => Promise<void>;
   setNewEmployeeEmail: (email: string) => void;
+  setNewEmployeeFirstName: (firstName: string) => void;
+  setNewEmployeeLastName: (lastName: string) => void;
   handleToggleEmployeeStatus: (employee: Tables<'business_employees'>) => Promise<void>;
 }
 
@@ -50,6 +54,8 @@ export function BusinessViewProvider({ children }: { children: ReactNode }) {
   const [loadingEmployees, setLoadingEmployees] = useState(true);
   const [isAddEmployeeDialogOpen, setIsAddEmployeeDialogOpen] = useState(false);
   const [newEmployeeEmail, setNewEmployeeEmail] = useState('');
+  const [newEmployeeFirstName, setNewEmployeeFirstName] = useState('');
+  const [newEmployeeLastName, setNewEmployeeLastName] = useState('');
   const [addingEmployee, setAddingEmployee] = useState(false);
   const [togglingStatus, setTogglingStatus] = useState(false);
   const [stats, setStats] = useState<BusinessStats>({
@@ -159,11 +165,13 @@ export function BusinessViewProvider({ children }: { children: ReactNode }) {
   const handleCloseAddEmployeeDialog = () => {
     setIsAddEmployeeDialogOpen(false);
     setNewEmployeeEmail('');
+    setNewEmployeeFirstName('');
+    setNewEmployeeLastName('');
   };
 
   const handleAddEmployee = async () => {
-    if (!id || !newEmployeeEmail.trim()) {
-      toast.error('Please enter a valid email address');
+    if (!id || !newEmployeeEmail.trim() || !newEmployeeFirstName.trim() || !newEmployeeLastName.trim()) {
+      toast.error('Please fill in all required fields');
       return;
     }
 
@@ -178,6 +186,8 @@ export function BusinessViewProvider({ children }: { children: ReactNode }) {
       const { data, error } = await supabase.rpc('add_business_employee', {
         p_business_id: businessId,
         p_user_email: newEmployeeEmail.trim(),
+        p_first_name: newEmployeeFirstName.trim(),
+        p_last_name: newEmployeeLastName.trim(),
       });
 
       if (error) {
@@ -188,6 +198,8 @@ export function BusinessViewProvider({ children }: { children: ReactNode }) {
       toast.success('Employee added successfully');
       setIsAddEmployeeDialogOpen(false);
       setNewEmployeeEmail('');
+      setNewEmployeeFirstName('');
+      setNewEmployeeLastName('');
       await fetchEmployees();
     } catch (error: any) {
       console.error('Error adding employee:', error);
@@ -235,12 +247,16 @@ export function BusinessViewProvider({ children }: { children: ReactNode }) {
     loadingEmployees,
     isAddEmployeeDialogOpen,
     newEmployeeEmail,
+    newEmployeeFirstName,
+    newEmployeeLastName,
     addingEmployee,
     togglingStatus,
     handleOpenAddEmployeeDialog,
     handleCloseAddEmployeeDialog,
     handleAddEmployee,
     setNewEmployeeEmail,
+    setNewEmployeeFirstName,
+    setNewEmployeeLastName,
     handleToggleEmployeeStatus,
   };
 

@@ -5,12 +5,21 @@ import { Button } from '@/components/ui/button';
 import { formatDate, formatCurrency } from '@/lib/lead-utils';
 import { Badge } from '@/components/ui/badge';
 import { WhatsAppChatModal } from './WhatsAppChatModal';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function LeadDetailsCard() {
   const {
     lead,
     pipelineStage,
     pipeline,
+    businessEmployees,
+    currentUserEmployee,
     loadingChat,
     isChatModalOpen,
     chatMessages,
@@ -24,10 +33,13 @@ export function LeadDetailsCard() {
     handleLoadMore,
     setMessageText,
     handleKeyPress,
+    handleUpdateLeadAssignment,
     contactName,
     getBackUrl,
   } = useLeadDetailsContext();
   const navigate = useNavigate();
+
+  const currentEmployeeId = lead.business_employee_id?.toString() || 'unassigned';
 
   if (!lead) return null;
 
@@ -185,9 +197,28 @@ export function LeadDetailsCard() {
 
             <div className="flex items-start gap-3">
               <User className="w-5 h-5 text-muted-foreground mt-0.5" />
-              <div>
-                <p className="text-sm text-muted-foreground">Lead ID</p>
-                <p className="text-foreground font-mono text-sm">{lead.id}</p>
+              <div className="flex-1">
+                <p className="text-sm text-muted-foreground mb-1">Assigned to</p>
+                <Select
+                  value={currentEmployeeId}
+                  onValueChange={(value) => {
+                    const employeeId = value === 'unassigned' ? null : parseInt(value, 10);
+                    handleUpdateLeadAssignment(employeeId);
+                  }}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Unassigned" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="unassigned">Unassigned</SelectItem>
+                    {businessEmployees.map((employee) => (
+                      <SelectItem key={employee.id} value={employee.id.toString()}>
+                        {employee.email} {employee.id === currentUserEmployee?.id ? '(Me)' : ''}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-[10px] text-muted-foreground mt-1 font-mono">ID: {lead.id}</p>
               </div>
             </div>
           </div>

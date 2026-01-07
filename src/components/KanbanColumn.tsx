@@ -7,6 +7,8 @@ import { Tables } from '@/modules/types/supabase.schema';
 interface KanbanColumnProps {
   stage: Tables<'pipeline_stages'>;
   leads: Tables<'pipeline_stage_leads'>[];
+  businessEmployees?: Tables<'business_employees'>[];
+  currentUserEmployeeId?: number | null;
   index: number;
   totalStages: number;
   onMoveLeft: () => void;
@@ -26,7 +28,7 @@ const formatCurrency = (value: number) => {
   return `$${value}`;
 };
 
-export function KanbanColumn({ stage, leads, index, totalStages, onMoveLeft, onMoveRight, onEditClick, onArchiveLead, isReordering }: KanbanColumnProps) {
+export function KanbanColumn({ stage, leads, businessEmployees = [], currentUserEmployeeId, index, totalStages, onMoveLeft, onMoveRight, onEditClick, onArchiveLead, isReordering }: KanbanColumnProps) {
   const totalValue = leads.reduce((sum, lead) => sum + lead.value, 0);
   const canMoveLeft = index > 0;
   const canMoveRight = index < totalStages - 1;
@@ -105,6 +107,8 @@ export function KanbanColumn({ stage, leads, index, totalStages, onMoveLeft, onM
                   >
                     <LeadCard 
                       lead={lead} 
+                      assignedEmployee={businessEmployees.find(e => e.id === lead.business_employee_id)}
+                      isMe={lead.business_employee_id === currentUserEmployeeId}
                       onArchiveClick={onArchiveLead ? () => onArchiveLead(lead) : undefined}
                     />
                   </div>

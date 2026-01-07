@@ -42,6 +42,8 @@ interface LeadDetailsContextType {
   lead: Tables<'pipeline_stage_leads'> | null;
   pipelineStage: Tables<'pipeline_stages'> | null;
   pipeline: Tables<'pipelines'> | null;
+  businessEmployees: Tables<'business_employees'>[];
+  currentUserEmployee: Tables<'business_employees'> | null;
 
   // WhatsApp Chat state
   loadingChat: boolean;
@@ -59,6 +61,7 @@ interface LeadDetailsContextType {
   handleLoadMore: () => Promise<void>;
   setMessageText: (text: string) => void;
   handleKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  handleUpdateLeadAssignment: (employeeId: number | null) => Promise<void>;
 
   // Computed values
   contactName: string | undefined;
@@ -73,6 +76,8 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
   const [lead, setLead] = useState<Tables<'pipeline_stage_leads'> | null>(null);
   const [pipelineStage, setPipelineStage] = useState<Tables<'pipeline_stages'> | null>(null);
   const [pipeline, setPipeline] = useState<Tables<'pipelines'> | null>(null);
+  const [businessEmployees, setBusinessEmployees] = useState<Tables<'business_employees'>[]>([]);
+  const [currentUserEmployee, setCurrentUserEmployee] = useState<Tables<'business_employees'> | null>(null);
 
   // WhatsApp Chat state
   const [loadingChat, setLoadingChat] = useState(false);
@@ -112,6 +117,25 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
 
         if (leadData) {
           setLead(leadData);
+
+          // Fetch business employees
+          const { data: employeesData, error: employeesError } = await supabase
+            .from('business_employees')
+            .select('*')
+            .eq('business_id', businessIdNum);
+
+          if (!employeesError && employeesData) {
+            setBusinessEmployees(employeesData);
+
+            // Get current user to identify "Me"
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              const currentEmp = employeesData.find(e => e.user_id === user.id);
+              if (currentEmp) {
+                setCurrentUserEmployee(currentEmp);
+              }
+            }
+          }
 
           // Fetch pipeline stage if lead has a stage
           if (leadData.pipeline_stage_id) {
@@ -281,6 +305,26 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const handleUpdateLeadAssignment = async (employeeId: number | null) => {
+    if (!lead || !businessId) return;
+
+    try {
+      const { error } = await supabase
+        .from('pipeline_stage_leads')
+        .update({ business_employee_id: employeeId })
+        .eq('id', lead.id)
+        .eq('business_id', parseInt(businessId, 10));
+
+      if (error) throw error;
+
+      setLead(prev => prev ? { ...prev, business_employee_id: employeeId } : null);
+      toast.success('Lead assignment updated');
+    } catch (error) {
+      console.error('Error updating lead assignment:', error);
+      toast.error('Error updating lead assignment');
+    }
+  };
+
   // Computed values
   const contactName = chatMessages.length > 0 
     ? chatMessages[0]?.kapso?.contact_name 
@@ -300,6 +344,8 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
     lead,
     pipelineStage,
     pipeline,
+    businessEmployees,
+    currentUserEmployee,
     loadingChat,
     isChatModalOpen,
     chatMessages,
@@ -313,6 +359,7 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
     handleLoadMore,
     setMessageText,
     handleKeyPress,
+    handleUpdateLeadAssignment,
     contactName,
     getBackUrl,
   };

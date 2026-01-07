@@ -6,11 +6,13 @@ import { Tables } from '@/modules/types/supabase.schema';
 
 interface LeadCardProps {
   lead: Tables<'pipeline_stage_leads'>;
+  assignedEmployee?: Tables<'business_employees'> | null;
+  isMe?: boolean;
   onArchiveClick?: () => void;
   onDetailClick?: () => void;
 }
 
-export function LeadCard({ lead, onArchiveClick, onDetailClick }: LeadCardProps) {
+export function LeadCard({ lead, assignedEmployee, isMe, onArchiveClick, onDetailClick }: LeadCardProps) {
   const navigate = useNavigate();
   const { id: businessIdParam, pipelineId } = useParams<{ id: string; pipelineId?: string }>();
   // Use businessId from URL params, or fallback to lead.business_id
@@ -41,6 +43,11 @@ export function LeadCard({ lead, onArchiveClick, onDetailClick }: LeadCardProps)
           <h4 className="font-semibold text-foreground truncate group-hover:text-primary transition-colors">
             {lead.customer_name}
           </h4>
+          <p className="text-[10px] text-muted-foreground truncate mt-0.5">
+            Assigned to: <span className="font-medium text-primary/80">
+              {assignedEmployee ? (isMe ? 'Me' : assignedEmployee.email.split('@')[0]) : 'Unassigned'}
+            </span>
+          </p>
         </div>
       </div>
       

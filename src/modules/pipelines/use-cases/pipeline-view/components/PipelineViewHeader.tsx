@@ -18,13 +18,22 @@ export function PipelineViewHeader() {
     currentPipeline,
     pipelineStages,
     pipelineLeads,
+    businessEmployees,
+    currentUserEmployee,
+    employeeFilterId,
+    setEmployeeFilterId,
     handleChangePipelineView,
     handleOpenCreateLeadDialog,
     getRevenueValue,
     getConversionRate,
   } = usePipelineViewContext();
 
-  const leads = pipelineLeads.filter(lead => lead.pipeline_stage_id !== null);
+  const leads = pipelineLeads.filter(lead => {
+    if (lead.pipeline_stage_id === null) return false;
+    if (employeeFilterId === 'all') return true;
+    const employeeId = employeeFilterId === 'unassigned' ? null : parseInt(employeeFilterId, 10);
+    return lead.business_employee_id === employeeId;
+  });
   const totalValue = leads.reduce((sum, lead) => sum + lead.value, 0);
   const activeLeads = leads.length;
   const revenueValue = getRevenueValue();
@@ -78,6 +87,21 @@ export function PipelineViewHeader() {
           </p>
         </div>
         <div className="flex items-center gap-3">
+          {businessEmployees.length > 0 && (
+            <select
+              value={employeeFilterId}
+              onChange={(e) => setEmployeeFilterId(e.target.value)}
+              className="bg-card border border-border text-foreground px-4 py-2.5 rounded-lg font-medium hover:bg-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            >
+              <option value="all">All Assignees</option>
+              <option value="unassigned">Unassigned</option>
+              {businessEmployees.map((employee) => (
+                <option key={employee.id} value={employee.id.toString()}>
+                  {employee.id === currentUserEmployee?.id ? 'Assigned to: Me' : `Assigned to: ${employee.email.split('@')[0]}`}
+                </option>
+              ))}
+            </select>
+          )}
           {pipelines.length > 0 && (
             <select
               value={selectedPipelineId}

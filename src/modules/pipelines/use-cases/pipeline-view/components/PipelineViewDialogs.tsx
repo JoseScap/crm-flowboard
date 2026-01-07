@@ -29,6 +29,8 @@ export function PipelineViewDialogs() {
     
     // Create Lead Dialog
     createLeadFormData,
+    businessEmployees,
+    currentUserEmployee,
     isCreateLeadDialogOpen,
     handleCloseCreateLeadDialog,
     handleSaveNewLead,
@@ -206,6 +208,25 @@ export function PipelineViewDialogs() {
                 </SelectContent>
               </Select>
             </div>
+            <div className="grid gap-2">
+              <Label htmlFor="lead-assignee">Assigned to (Optional)</Label>
+              <Select
+                value={createLeadFormData.business_employee_id?.toString() || 'unassigned'}
+                onValueChange={(value) => handleChangeCreateLeadFormData('business_employee_id', value === 'unassigned' ? null : Number(value))}
+              >
+                <SelectTrigger id="lead-assignee">
+                  <SelectValue placeholder="Unassigned" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="unassigned">Unassigned</SelectItem>
+                  {businessEmployees.map((employee) => (
+                    <SelectItem key={employee.id} value={employee.id.toString()}>
+                      {employee.email} {employee.id === currentUserEmployee?.id ? '(Me)' : ''}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={handleCloseCreateLeadDialog}>
@@ -213,7 +234,7 @@ export function PipelineViewDialogs() {
             </Button>
             <Button 
               onClick={handleSaveNewLead} 
-              disabled={!createLeadFormData.customer_name.trim() || !createLeadFormData.value || !createLeadFormData.pipeline_stage_id || isReordering}
+              disabled={!createLeadFormData.customer_name.trim() || createLeadFormData.value === undefined || createLeadFormData.value === null || !createLeadFormData.pipeline_stage_id || isReordering}
             >
               Create Lead
             </Button>

@@ -7,6 +7,8 @@ import { usePipelineViewContext } from '../PipelineViewContext';
 export function PipelineViewKanbanBoard() {
   const {
     pipelineStages,
+    businessEmployees,
+    currentUserEmployee,
     isReordering,
     handleDragEnd,
     handleMoveStage,
@@ -24,6 +26,8 @@ export function PipelineViewKanbanBoard() {
             key={stage.id}
             stage={stage}
             leads={getLeadsByStage(stage.id.toString())}
+            businessEmployees={businessEmployees}
+            currentUserEmployeeId={currentUserEmployee?.id}
             index={index}
             totalStages={pipelineStages.length}
             onMoveLeft={() => handleMoveStage(index, 'left')}

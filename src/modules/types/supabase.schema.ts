@@ -62,6 +62,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "business_employee_oauth_connections_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "business_employee_oauth_connections_employee_id_fkey"
             columns: ["business_employee_id"]
             isOneToOne: false
@@ -146,6 +153,7 @@ export type Database = {
       }
       pipeline_stage_leads: {
         Row: {
+          business_employee_id: number | null
           business_id: number
           closed_at: string | null
           created_at: string
@@ -160,6 +168,7 @@ export type Database = {
           whatsapp_conversation_id: string | null
         }
         Insert: {
+          business_employee_id?: number | null
           business_id: number
           closed_at?: string | null
           created_at?: string
@@ -174,6 +183,7 @@ export type Database = {
           whatsapp_conversation_id?: string | null
         }
         Update: {
+          business_employee_id?: number | null
           business_id?: number
           closed_at?: string | null
           created_at?: string
@@ -188,6 +198,13 @@ export type Database = {
           whatsapp_conversation_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "pipeline_stage_leads_business_employee_id_fkey"
+            columns: ["business_employee_id"]
+            isOneToOne: false
+            referencedRelation: "business_employees"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "pipeline_stage_leads_business_id_fkey"
             columns: ["business_id"]

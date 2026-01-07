@@ -12,7 +12,11 @@ interface PipelineViewContextType {
   currentPipeline: Tables<'pipelines'> | null;
   pipelineStages: Tables<'pipeline_stages'>[];
   pipelineLeads: Tables<'pipeline_stage_leads'>[];
+  businessEmployees: Tables<'business_employees'>[];
+  currentUserEmployee: Tables<'business_employees'> | null;
   revenueStage: Tables<'pipeline_stages'> | null;
+  employeeFilterId: string;
+  setEmployeeFilterId: (id: string) => void;
 
   // Dialog states
   isCreateStageDialogOpen: boolean;
@@ -86,6 +90,7 @@ const defaultCreateLeadFormData: TablesInsert<'pipeline_stage_leads'> = {
   value: 0,
   pipeline_stage_id: 0,
   business_id: 0,
+  business_employee_id: null,
 }
 
 export function PipelineViewProvider({ children }: { children: ReactNode }) {
@@ -96,6 +101,8 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
   const [currentPipeline, setCurrentPipeline] = useState<Tables<'pipelines'> | null>(null);
   const [pipelineStages, setPipelineStages] = useState<Tables<'pipeline_stages'>[]>([]);
   const [pipelineLeads, setPipelineLeads] = useState<Tables<'pipeline_stage_leads'>[]>([]);
+  const [businessEmployees, setBusinessEmployees] = useState<Tables<'business_employees'>[]>([]);
+  const [currentUserEmployee, setCurrentUserEmployee] = useState<Tables<'business_employees'> | null>(null);
   const [isCreateStageDialogOpen, setIsCreateStageDialogOpen] = useState(false);
   const [isCreateLeadDialogOpen, setIsCreateLeadDialogOpen] = useState(false);
   const [isEditStageDialogOpen, setIsEditStageDialogOpen] = useState(false);
@@ -103,6 +110,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
   const [archivingLead, setArchivingLead] = useState<Tables<'pipeline_stage_leads'> | null>(null);
   const [editingStage, setEditingStage] = useState<Tables<'pipeline_stages'> | null>(null);
   const [isReordering, setIsReordering] = useState(false);
+  const [employeeFilterId, setEmployeeFilterId] = useState<string>('all');
   const [createStageFormData, setCreateStageFormData] = useState<TablesInsert<'pipeline_stages'>>(defaultStageFormData);
   const [editStageFormData, setEditStageFormData] = useState<TablesUpdate<'pipeline_stages'>>(defaultEditStageFormData);
   const [createLeadFormData, setCreateLeadFormData] = useState<TablesInsert<'pipeline_stage_leads'>>(defaultCreateLeadFormData);
@@ -120,6 +128,21 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
       .eq('pipeline_id', parseInt(pipelineId, 10))
       .eq('business_id', parseInt(businessId, 10))
       .order('position', { ascending: true });
+
+    // Fetch business employees to show assignments
+    const { data: employees, error: employeesError } = await supabase
+      .from('business_employees')
+      .select('*')
+      .eq('business_id', parseInt(businessId, 10));
+
+    // Get current user to identify "Me"
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user && employees) {
+      const currentEmp = employees.find(e => e.user_id === user.id);
+      if (currentEmp) {
+        setCurrentUserEmployee(currentEmp);
+      }
+    }
     
     // Fetch leads - both active (with stage_id) and closed (with is_revenue=true)
     let pipelineLeads: Tables<'pipeline_stage_leads'>[] | null = null;
@@ -171,6 +194,10 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
     if (pipelineLeadsError) {
       console.error('Error fetching pipeline leads:', pipelineLeadsError);
     }
+
+    if (employeesError) {
+      console.error('Error fetching business employees:', employeesError);
+    }
     
     if (pipelines) {
       setPipelines(pipelines);
@@ -191,6 +218,10 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
     
     if (pipelineStages) {
       setPipelineStages(pipelineStages);
+    }
+
+    if (employees) {
+      setBusinessEmployees(employees);
     }
     
     if (pipelineLeads) {
@@ -283,19 +314,33 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
 
   const getLeadsByStage = (stageId: string): Tables<'pipeline_stage_leads'>[] => {
     const stageIdNum = parseInt(stageId, 10);
-    return pipelineLeads.filter((lead) => lead.pipeline_stage_id === stageIdNum);
+    let leads = pipelineLeads.filter((lead) => lead.pipeline_stage_id === stageIdNum);
+    
+    if (employeeFilterId !== 'all') {
+      const employeeId = employeeFilterId === 'unassigned' ? null : parseInt(employeeFilterId, 10);
+      leads = leads.filter(lead => lead.business_employee_id === employeeId);
+    }
+    
+    return leads;
   };
 
   const getRevenueValue = (): { total: number; closed: number } => {
     const revenueStage = pipelineStages.find(stage => stage.is_revenue === true);
     
+    // Filter leads by employee first
+    let filteredLeads = pipelineLeads;
+    if (employeeFilterId !== 'all') {
+      const employeeId = employeeFilterId === 'unassigned' ? null : parseInt(employeeFilterId, 10);
+      filteredLeads = pipelineLeads.filter(lead => lead.business_employee_id === employeeId);
+    }
+
     // Get active leads in revenue stage
     const activeRevenueLeads = revenueStage 
-      ? pipelineLeads.filter(lead => lead.pipeline_stage_id === revenueStage.id)
+      ? filteredLeads.filter(lead => lead.pipeline_stage_id === revenueStage.id)
       : [];
     
     // Get closed leads (stage_id null and is_revenue true)
-    const closedRevenueLeads = pipelineLeads.filter(
+    const closedRevenueLeads = filteredLeads.filter(
       lead => lead.pipeline_stage_id === null && lead.is_revenue === true
     );
     
@@ -309,8 +354,15 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
   };
 
   const getConversionRate = (): number => {
+    // Filter leads by employee first
+    let filteredLeads = pipelineLeads;
+    if (employeeFilterId !== 'all') {
+      const employeeId = employeeFilterId === 'unassigned' ? null : parseInt(employeeFilterId, 10);
+      filteredLeads = pipelineLeads.filter(lead => lead.business_employee_id === employeeId);
+    }
+
     // Get all closed leads (with and without revenue)
-    const allClosedLeads = pipelineLeads.filter(
+    const allClosedLeads = filteredLeads.filter(
       lead => lead.pipeline_stage_id === null
     );
     
@@ -443,7 +495,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
   };
 
   const handleSaveNewLead = async () => {
-    if (!createLeadFormData.customer_name.trim() || !createLeadFormData.value || !createLeadFormData.pipeline_stage_id) return;
+    if (!createLeadFormData.customer_name.trim() || createLeadFormData.value === undefined || createLeadFormData.value === null || !createLeadFormData.pipeline_stage_id) return;
 
     // Close modal immediately
     handleCloseCreateLeadDialog();
@@ -459,6 +511,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
             value: createLeadFormData.value,
             pipeline_stage_id: createLeadFormData.pipeline_stage_id,
             business_id: parseInt(businessId, 10),
+            business_employee_id: createLeadFormData.business_employee_id || null,
           },
         ]);
 
@@ -675,7 +728,11 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
     currentPipeline,
     pipelineStages,
     pipelineLeads,
+    businessEmployees,
+    currentUserEmployee,
     revenueStage,
+    employeeFilterId,
+    setEmployeeFilterId,
 
     // Dialog states
     isCreateStageDialogOpen,

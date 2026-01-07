@@ -38,15 +38,15 @@ const GoogleOAuthCallback = () => {
           throw new Error('User not authenticated');
         }
 
-        // Obtener el business_id del pipeline para construir la URL de retorno
-        const { data: pipeline } = await supabase
-          .from('pipelines')
-          .select('business_id')
-          .eq('id', oauthData.pipelineId)
+        // Obtener el registro del empleado para obtener el business_id
+        const { data: employee, error: employeeError } = await supabase
+          .from('business_employees')
+          .select('business_id, id')
+          .eq('id', oauthData.businessEmployeeId)
           .single();
 
-        if (!pipeline) {
-          throw new Error('Pipeline not found');
+        if (employeeError || !employee) {
+          throw new Error('Employee record not found');
         }
 
         // Calcular la fecha de expiración
@@ -56,10 +56,11 @@ const GoogleOAuthCallback = () => {
 
         // Guardar o actualizar la conexión en Supabase
         const { error: upsertError } = await supabase
-          .from('pipeline_oauth_connections')
+          .from('business_employee_oauth_connections')
           .upsert({
             user_id: user.id,
-            pipeline_id: oauthData.pipelineId,
+            business_id: employee.business_id,
+            business_employee_id: employee.id,
             application_id: 'google-calendar',
             access_token: oauthData.accessToken,
             refresh_token: oauthData.refreshToken,
@@ -69,7 +70,7 @@ const GoogleOAuthCallback = () => {
             provider_email: oauthData.providerEmail,
             updated_at: new Date().toISOString(),
           }, {
-            onConflict: 'pipeline_id,application_id'
+            onConflict: 'business_employee_id,application_id'
           });
 
         if (upsertError) {
@@ -77,7 +78,7 @@ const GoogleOAuthCallback = () => {
         }
 
         toast.success('Google Calendar connected successfully!');
-        navigate(`/user/businesses/${pipeline.business_id}/applications`);
+        navigate(`/user/businesses/${employee.business_id}/applications`);
       } catch (error: any) {
         console.error('Error processing OAuth callback:', error);
         toast.error(error.message || 'Failed to connect Google Calendar');

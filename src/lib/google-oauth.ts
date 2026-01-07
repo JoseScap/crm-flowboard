@@ -11,14 +11,14 @@ const GOOGLE_SCOPES = [
   'https://www.googleapis.com/auth/userinfo.profile',
 ].join(' ');
 
-export const initiateGoogleOAuth = (pipelineId: number) => {
+export const initiateGoogleOAuth = (businessEmployeeId: number) => {
   if (!GOOGLE_CLIENT_ID) {
     throw new Error('Google Client ID is not configured');
   }
 
   // Generar un state único para prevenir CSRF
   const state = btoa(JSON.stringify({ 
-    pipelineId, 
+    businessEmployeeId, 
     timestamp: Date.now(),
     random: Math.random().toString(36).substring(7)
   }));
@@ -48,7 +48,7 @@ export const handleGoogleCallback = async (code: string, state: string) => {
   }
 
   const stateData = JSON.parse(atob(state));
-  const { pipelineId } = stateData;
+  const { businessEmployeeId } = stateData;
 
   // Limpiar el state
   sessionStorage.removeItem('google_oauth_state');
@@ -87,7 +87,7 @@ export const handleGoogleCallback = async (code: string, state: string) => {
   const userInfo = await userInfoResponse.json();
 
   return {
-    pipelineId,
+    businessEmployeeId,
     accessToken: tokens.access_token,
     refreshToken: tokens.refresh_token,
     expiresIn: tokens.expires_in,

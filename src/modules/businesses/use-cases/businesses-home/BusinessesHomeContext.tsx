@@ -95,31 +95,18 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
     setLoadingData(true);
     
     try {
-      // Get current user
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast.error('User not authenticated');
-        setLoadingData(false);
-        return;
-      }
-
-      // Insert into Supabase (owner_id will be set automatically via trigger or we set it here)
-      const { error } = await supabase
-        .from('businesses')
-        .insert([
-          {
-            name: newBusinessFormData.name.trim(),
-            description: newBusinessFormData.description?.trim() || null,
-            address: newBusinessFormData.address?.trim() || null,
-            phone: newBusinessFormData.phone?.trim() || null,
-            email: newBusinessFormData.email?.trim() || null,
-            owner_id: user.id,
-          },
-        ]);
+      // Use the RPC function instead of direct INSERT
+      const { data, error } = await supabase.rpc('create_new_business', {
+        p_name: newBusinessFormData.name.trim(),
+        p_description: newBusinessFormData.description?.trim() ?? null,
+        p_address: newBusinessFormData.address?.trim() ?? null,
+        p_phone: newBusinessFormData.phone?.trim() ?? null,
+        p_email: newBusinessFormData.email?.trim() ?? null,
+      });
       
       if (error) {
         toast.error('Error creating business');
+        console.error('Error creating business:', error);
       } else {
         toast.success('Business created successfully');
       }

@@ -116,25 +116,6 @@ export function AppSidebar() {
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={currentPath === '/user/settings' || currentPath.startsWith('/user/settings/')}
-                    className="w-full"
-                  >
-                    <Link
-                      to="/user/settings"
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                        currentPath === '/user/settings' || currentPath.startsWith('/user/settings/')
-                          ? 'bg-primary text-primary-foreground'
-                          : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
-                      }`}
-                    >
-                      <Settings className="w-5 h-5" />
-                      <span className="font-medium">Settings</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>

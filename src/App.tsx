@@ -19,7 +19,6 @@ import PipelineViewPage from "./modules/pipelines/use-cases/pipeline-view/Pipeli
 import BusinessesHomePage from "./modules/businesses/use-cases/businesses-home/BusinessesHome";
 import BusinessView from "./modules/businesses/use-cases/business-view/BusinessView";
 import LeadDetailsPage from "./modules/leads/use-cases/lead-details/LeadDetails";
-import UserSettingsHomePage from "./modules/user/use-cases/user-settings-home/UserSettingsHome";
 import ApplicationsHomePage from "./modules/applications/use-cases/applications-home/ApplicationsHome";
 import GoogleOAuthCallbackPage from "./modules/applications/use-cases/google-oauth-callback/GoogleOAuthCallback";
 
@@ -209,14 +208,6 @@ const App = () => (
                   <BusinessLayout>
                     <Placeholder />
                   </BusinessLayout>
-                }
-              />
-              <Route
-                path="/user/settings"
-                element={
-                  <SimpleLayout>
-                    <UserSettingsHomePage />
-                  </SimpleLayout>
                 }
               />
               <Route path="*" element={<NotFound />} />

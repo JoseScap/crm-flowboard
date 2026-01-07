@@ -98,6 +98,25 @@ export function PipelineViewDialogs() {
                 Mark as Revenue Stage
               </Label>
             </div>
+            <div className="grid gap-2">
+              <Label htmlFor="stage-default-assignee">Default Assignee for New Leads</Label>
+              <Select
+                value={createStageFormData.default_business_employee_id?.toString() || 'unassigned'}
+                onValueChange={(value) => handleChangeCreateStageFormData('default_business_employee_id', value === 'unassigned' ? null : Number(value))}
+              >
+                <SelectTrigger id="stage-default-assignee">
+                  <SelectValue placeholder="No default assignee" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="unassigned">No default assignee</SelectItem>
+                  {businessEmployees.map((employee) => (
+                    <SelectItem key={employee.id} value={employee.id.toString()}>
+                      {employee.first_name} {employee.last_name} ({employee.email})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             {createStageFormData.is_revenue && revenueStage && (
               <Alert className="border-amber-500/20 bg-amber-500/10">
                 <AlertTriangle className="h-4 w-4 text-amber-500" />
@@ -188,7 +207,14 @@ export function PipelineViewDialogs() {
               <Label htmlFor="lead-stage">Stage *</Label>
               <Select
                 value={createLeadFormData.pipeline_stage_id.toString()}
-                onValueChange={(value) => handleChangeCreateLeadFormData('pipeline_stage_id', Number(value))}
+                onValueChange={(value) => {
+                  const stageId = Number(value);
+                  const stage = pipelineStages.find(s => s.id === stageId);
+                  handleChangeCreateLeadFormData('pipeline_stage_id', stageId);
+                  if (stage?.default_business_employee_id) {
+                    handleChangeCreateLeadFormData('business_employee_id', stage.default_business_employee_id);
+                  }
+                }}
               >
                 <SelectTrigger id="lead-stage">
                   <SelectValue placeholder="Select a stage" />
@@ -221,7 +247,7 @@ export function PipelineViewDialogs() {
                   <SelectItem value="unassigned">Unassigned</SelectItem>
                   {businessEmployees.map((employee) => (
                     <SelectItem key={employee.id} value={employee.id.toString()}>
-                      {employee.email} {employee.id === currentUserEmployee?.id ? '(Me)' : ''}
+                      {employee.first_name} {employee.last_name} ({employee.email}) {employee.id === currentUserEmployee?.id ? '(Me)' : ''}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -298,6 +324,25 @@ export function PipelineViewDialogs() {
               >
                 Mark as Input Stage
               </Label>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="edit-stage-default-assignee">Default Assignee for New Leads</Label>
+              <Select
+                value={editStageFormData.default_business_employee_id?.toString() || 'unassigned'}
+                onValueChange={(value) => handleChangeEditStageFormData('default_business_employee_id', value === 'unassigned' ? null : Number(value))}
+              >
+                <SelectTrigger id="edit-stage-default-assignee">
+                  <SelectValue placeholder="No default assignee" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="unassigned">No default assignee</SelectItem>
+                  {businessEmployees.map((employee) => (
+                    <SelectItem key={employee.id} value={employee.id.toString()}>
+                      {employee.first_name} {employee.last_name} ({employee.email})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             {editStageFormData.is_revenue && revenueStage && revenueStage.id !== editingStage?.id && (
               <Alert className="border-amber-500/20 bg-amber-500/10">

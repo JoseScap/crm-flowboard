@@ -72,6 +72,7 @@ const defaultStageFormData: TablesInsert<'pipeline_stages'> = {
   business_id: 0,
   webhook_url: null,
   description: null,
+  default_business_employee_id: null,
 }
 
 const defaultEditStageFormData: TablesUpdate<'pipeline_stages'> = {
@@ -81,6 +82,7 @@ const defaultEditStageFormData: TablesUpdate<'pipeline_stages'> = {
   is_input: false,
   webhook_url: null,
   description: null,
+  default_business_employee_id: null,
 }
 
 const defaultCreateLeadFormData: TablesInsert<'pipeline_stage_leads'> = {
@@ -423,6 +425,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
                   is_revenue: true,
                   webhook_url: createStageFormData.webhook_url?.trim() || null,
                   description: createStageFormData.description?.trim() || null,
+                  default_business_employee_id: createStageFormData.default_business_employee_id,
                 },
               ]),
           ]);
@@ -444,6 +447,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
                 is_revenue: true,
                 webhook_url: createStageFormData.webhook_url?.trim() || null,
                 description: createStageFormData.description?.trim() || null,
+                default_business_employee_id: createStageFormData.default_business_employee_id,
               },
             ]);
 
@@ -465,6 +469,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
                 is_revenue: false,
                 webhook_url: createStageFormData.webhook_url?.trim() || null,
                 description: createStageFormData.description?.trim() || null,
+                default_business_employee_id: createStageFormData.default_business_employee_id,
               },
           ]);
 
@@ -482,9 +487,13 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
   };
 
   const handleOpenCreateLeadDialog = (pipelineStageId: string) => {
+    const stageId = parseInt(pipelineStageId, 10);
+    const stage = pipelineStages.find(s => s.id === stageId);
+    
     setCreateLeadFormData({
       ...defaultCreateLeadFormData,
-      pipeline_stage_id: parseInt(pipelineStageId, 10),
+      pipeline_stage_id: stageId,
+      business_employee_id: stage?.default_business_employee_id || null,
     });
     setIsCreateLeadDialogOpen(true);
   };
@@ -537,6 +546,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
       is_input: stage.is_input,
       webhook_url: stage.webhook_url || null,
       description: stage.description || null,
+      default_business_employee_id: stage.default_business_employee_id || null,
     });
     setIsEditStageDialogOpen(true);
   };
@@ -574,6 +584,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
                 is_input: editStageFormData.is_input,
                 webhook_url: editStageFormData.webhook_url?.trim() || null,
                 description: editStageFormData.description?.trim() || null,
+                default_business_employee_id: editStageFormData.default_business_employee_id,
               })
               .eq('id', editingStage.id),
           ]);
@@ -592,6 +603,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
               is_input: editStageFormData.is_input,
               webhook_url: editStageFormData.webhook_url?.trim() || null,
               description: editStageFormData.description?.trim() || null,
+              default_business_employee_id: editStageFormData.default_business_employee_id,
             })
             .eq('id', editingStage.id);
 
@@ -610,6 +622,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
             is_input: editStageFormData.is_input,
             webhook_url: editStageFormData.webhook_url?.trim() || null,
             description: editStageFormData.description?.trim() || null,
+            default_business_employee_id: editStageFormData.default_business_employee_id,
           })
           .eq('id', editingStage.id);
 

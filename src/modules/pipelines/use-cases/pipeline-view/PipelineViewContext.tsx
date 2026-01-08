@@ -235,13 +235,14 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
     getData();
   }, [getData]);
 
-  // Set up realtime subscription for pipeline_stage_leads
+  // Set up realtime subscriptions
   useEffect(() => {
     if (!businessId || !pipelineId || isNaN(parseInt(businessId, 10))) {
       return;
     }
 
-    const channel = supabase
+    // Subscribe to leads changes
+    const leadsChannel = supabase
       .channel(`pipeline_stage_leads-changes-${businessId}-${pipelineId}`)
       .on(
         'postgres_changes',
@@ -251,16 +252,40 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
           table: 'pipeline_stage_leads',
           filter: `business_id=eq.${businessId}`,
         },
-        () => {
+        (payload) => {
+          console.log('Realtime lead change received:', payload);
           // Refresh leads data when there are changes
           getData();
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log(`Leads subscription status: ${status}`);
+      });
 
-    // Cleanup subscription on unmount
+    // Subscribe to stages changes
+    const stagesChannel = supabase
+      .channel(`pipeline_stages-changes-${businessId}-${pipelineId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'pipeline_stages',
+          filter: `pipeline_id=eq.${pipelineId}`,
+        },
+        (payload) => {
+          console.log('Realtime stage change received:', payload);
+          getData();
+        }
+      )
+      .subscribe((status) => {
+        console.log(`Stages subscription status: ${status}`);
+      });
+
+    // Cleanup subscriptions on unmount
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(leadsChannel);
+      supabase.removeChannel(stagesChannel);
     };
   }, [getData, businessId, pipelineId]);
 

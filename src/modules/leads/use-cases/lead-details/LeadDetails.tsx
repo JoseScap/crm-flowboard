@@ -13,8 +13,8 @@ const LeadDetails = () => {
     return (
       <div className="p-6 lg:p-8 h-full flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-semibold text-foreground mb-2">Lead not found</h2>
-          <p className="text-muted-foreground">The lead you're looking for doesn't exist or you don't have access to it.</p>
+          <h2 className="text-2xl font-semibold text-foreground mb-2">Lead no encontrado</h2>
+          <p className="text-muted-foreground">El lead que buscas no existe o no tienes acceso a él.</p>
         </div>
       </div>
     );

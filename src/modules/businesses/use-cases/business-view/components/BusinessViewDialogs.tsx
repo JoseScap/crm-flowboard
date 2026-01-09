@@ -31,15 +31,15 @@ export function BusinessViewDialogs() {
       <Dialog open={isAddEmployeeDialogOpen} onOpenChange={handleCloseAddEmployeeDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Employee</DialogTitle>
+            <DialogTitle>Agregar Empleado</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="first-name">First Name *</Label>
+                <Label htmlFor="first-name">Nombre *</Label>
                 <Input
                   id="first-name"
-                  placeholder="John"
+                  placeholder="Juan"
                   value={newEmployeeFirstName}
                   onChange={(e) => setNewEmployeeFirstName(e.target.value)}
                   onKeyDown={(e) => {
@@ -50,10 +50,10 @@ export function BusinessViewDialogs() {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="last-name">Last Name *</Label>
+                <Label htmlFor="last-name">Apellido *</Label>
                 <Input
                   id="last-name"
-                  placeholder="Doe"
+                  placeholder="Pérez"
                   value={newEmployeeLastName}
                   onChange={(e) => setNewEmployeeLastName(e.target.value)}
                   onKeyDown={(e) => {
@@ -65,11 +65,11 @@ export function BusinessViewDialogs() {
               </div>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="employee-email">Email *</Label>
+              <Label htmlFor="employee-email">Correo Electrónico *</Label>
               <Input
                 id="employee-email"
                 type="email"
-                placeholder="employee@example.com"
+                placeholder="empleado@ejemplo.com"
                 value={newEmployeeEmail}
                 onChange={(e) => setNewEmployeeEmail(e.target.value)}
                 onKeyDown={(e) => {
@@ -79,7 +79,7 @@ export function BusinessViewDialogs() {
                 }}
               />
               <p className="text-xs text-muted-foreground">
-                Enter the employee details to add them to the business
+                Ingrese los detalles del empleado para agregarlo al negocio
               </p>
             </div>
           </div>
@@ -89,7 +89,7 @@ export function BusinessViewDialogs() {
               onClick={handleCloseAddEmployeeDialog}
               disabled={addingEmployee}
             >
-              Cancel
+              Cancelar
             </Button>
             <Button
               onClick={handleAddEmployee}
@@ -98,10 +98,10 @@ export function BusinessViewDialogs() {
               {addingEmployee ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Adding...
+                  Agregando...
                 </>
               ) : (
-                'Add Employee'
+                'Agregar Empleado'
               )}
             </Button>
           </DialogFooter>

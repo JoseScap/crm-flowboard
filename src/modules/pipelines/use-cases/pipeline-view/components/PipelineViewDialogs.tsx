@@ -57,15 +57,15 @@ export function PipelineViewDialogs() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {pipelineStages.length === 0 ? 'Create First Stage' : 'Create New Stage'}
+              {pipelineStages.length === 0 ? 'Crear Primera Etapa' : 'Crear Nueva Etapa'}
             </DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="stage-name">Name *</Label>
+              <Label htmlFor="stage-name">Nombre *</Label>
               <Input
                 id="stage-name"
-                placeholder="Enter stage name"
+                placeholder="Ingrese el nombre de la etapa"
                 value={createStageFormData.name}
                 onChange={(e) => handleChangeCreateStageFormData('name', e.target.value)}
               />
@@ -80,7 +80,12 @@ export function PipelineViewDialogs() {
               >
                 {STAGE_COLORS.map((color) => (
                   <option key={color.hsl} value={color.hsl}>
-                    {color.name}
+                    {color.name === 'Blue' ? 'Azul' : 
+                     color.name === 'Purple' ? 'Púrpura' : 
+                     color.name === 'Amber' ? 'Ámbar' : 
+                     color.name === 'Emerald' ? 'Esmeralda' : 
+                     color.name === 'Rose' ? 'Rosa' : 
+                     color.name === 'Slate' ? 'Pizarra' : color.name}
                   </option>
                 ))}
               </select>
@@ -95,20 +100,20 @@ export function PipelineViewDialogs() {
                 htmlFor="stage-is-revenue"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
               >
-                Mark as Revenue Stage
+                Marcar como Etapa de Ingresos
               </Label>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="stage-default-assignee">Default Assignee for New Leads</Label>
+              <Label htmlFor="stage-default-assignee">Asignado por Defecto para Nuevos Leads</Label>
               <Select
                 value={createStageFormData.default_business_employee_id?.toString() || 'unassigned'}
                 onValueChange={(value) => handleChangeCreateStageFormData('default_business_employee_id', value === 'unassigned' ? null : Number(value))}
               >
                 <SelectTrigger id="stage-default-assignee">
-                  <SelectValue placeholder="No default assignee" />
+                  <SelectValue placeholder="Sin asignado por defecto" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="unassigned">No default assignee</SelectItem>
+                  <SelectItem value="unassigned">Sin asignado por defecto</SelectItem>
                   {businessEmployees.map((employee) => (
                     <SelectItem key={employee.id} value={employee.id.toString()}>
                       {employee.first_name} {employee.last_name} ({employee.email})
@@ -121,25 +126,25 @@ export function PipelineViewDialogs() {
               <Alert className="border-amber-500/20 bg-amber-500/10">
                 <AlertTriangle className="h-4 w-4 text-amber-500" />
                 <AlertDescription className="text-sm text-foreground">
-                  There is already a revenue stage ({revenueStage?.name}). It will be replaced when you save.
+                  Ya existe una etapa de ingresos ({revenueStage?.name}). Será reemplazada al guardar.
                 </AlertDescription>
               </Alert>
             )}
             <div className="grid gap-2">
-              <Label htmlFor="stage-webhook-url">Webhook URL</Label>
+              <Label htmlFor="stage-webhook-url">URL del Webhook</Label>
               <Input
                 id="stage-webhook-url"
                 type="url"
-                placeholder="Enter webhook URL (optional)"
+                placeholder="Ingrese la URL del webhook (opcional)"
                 value={createStageFormData.webhook_url || ''}
                 onChange={(e) => handleChangeCreateStageFormData('webhook_url', e.target.value || null)}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="stage-description">Description</Label>
+              <Label htmlFor="stage-description">Descripción</Label>
               <Textarea
                 id="stage-description"
-                placeholder="Enter description (optional)"
+                placeholder="Ingrese una descripción (opcional)"
                 value={createStageFormData.description || ''}
                 onChange={(e) => handleChangeCreateStageFormData('description', e.target.value || null)}
                 rows={4}
@@ -148,10 +153,10 @@ export function PipelineViewDialogs() {
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={handleCloseCreateStageDialog}>
-              Cancel
+              Cancelar
             </Button>
             <Button onClick={handleSaveNewStage} disabled={!createStageFormData.name.trim() || isReordering}>
-              Create Stage
+              Crear Etapa
             </Button>
           </div>
         </DialogContent>
@@ -161,50 +166,50 @@ export function PipelineViewDialogs() {
       <Dialog open={isCreateLeadDialogOpen} onOpenChange={(open) => !open && handleCloseCreateLeadDialog()}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>New Lead</DialogTitle>
+            <DialogTitle>Nuevo Lead</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="lead-customer-name">Customer Name *</Label>
+              <Label htmlFor="lead-customer-name">Nombre del Cliente *</Label>
               <Input
                 id="lead-customer-name"
-                placeholder="Enter customer name"
+                placeholder="Ingrese el nombre del cliente"
                 value={createLeadFormData.customer_name}
                 onChange={(e) => handleChangeCreateLeadFormData('customer_name', e.target.value)}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="lead-email">Email</Label>
+              <Label htmlFor="lead-email">Correo Electrónico</Label>
               <Input
                 id="lead-email"
                 type="email"
-                placeholder="Enter email (optional)"
+                placeholder="Ingrese el correo (opcional)"
                 value={createLeadFormData.email}
                 onChange={(e) => handleChangeCreateLeadFormData('email', e.target.value)}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="lead-phone">Phone Number</Label>
+              <Label htmlFor="lead-phone">Número de Teléfono</Label>
               <Input
                 id="lead-phone"
                 type="tel"
-                placeholder="Enter phone number (optional)"
+                placeholder="Ingrese el número de teléfono (opcional)"
                 value={createLeadFormData.phone_number}
                 onChange={(e) => handleChangeCreateLeadFormData('phone_number', e.target.value)}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="lead-value">Value *</Label>
+              <Label htmlFor="lead-value">Valor *</Label>
               <Input
                 id="lead-value"
                 type="number"
-                placeholder="Enter lead value"
+                placeholder="Ingrese el valor del lead"
                 value={createLeadFormData.value}
                 onChange={(e) => handleChangeCreateLeadFormData('value', Number(e.target.value))}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="lead-stage">Stage *</Label>
+              <Label htmlFor="lead-stage">Etapa *</Label>
               <Select
                 value={createLeadFormData.pipeline_stage_id.toString()}
                 onValueChange={(value) => {
@@ -217,7 +222,7 @@ export function PipelineViewDialogs() {
                 }}
               >
                 <SelectTrigger id="lead-stage">
-                  <SelectValue placeholder="Select a stage" />
+                  <SelectValue placeholder="Seleccione una etapa" />
                 </SelectTrigger>
                 <SelectContent>
                   {pipelineStages.map((stage) => (
@@ -235,18 +240,18 @@ export function PipelineViewDialogs() {
               </Select>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="lead-assignee">Assigned to *</Label>
+              <Label htmlFor="lead-assignee">Asignado a *</Label>
               <Select
                 value={createLeadFormData.business_employee_id?.toString() || ''}
                 onValueChange={(value) => handleChangeCreateLeadFormData('business_employee_id', Number(value))}
               >
                 <SelectTrigger id="lead-assignee">
-                  <SelectValue placeholder="Select an assignee" />
+                  <SelectValue placeholder="Seleccione un asignado" />
                 </SelectTrigger>
                 <SelectContent>
                   {businessEmployees.map((employee) => (
                     <SelectItem key={employee.id} value={employee.id.toString()}>
-                      {employee.first_name} {employee.last_name} ({employee.email}) {employee.id === currentUserEmployee?.id ? '(Me)' : ''}
+                      {employee.first_name} {employee.last_name} ({employee.email}) {employee.id === currentUserEmployee?.id ? '(Yo)' : ''}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -255,13 +260,13 @@ export function PipelineViewDialogs() {
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={handleCloseCreateLeadDialog}>
-              Cancel
+              Cancelar
             </Button>
             <Button 
               onClick={handleSaveNewLead} 
               disabled={!createLeadFormData.customer_name.trim() || createLeadFormData.value === undefined || createLeadFormData.value === null || !createLeadFormData.pipeline_stage_id || !createLeadFormData.business_employee_id || isReordering}
             >
-              Create Lead
+              Crear Lead
             </Button>
           </div>
         </DialogContent>
@@ -271,14 +276,14 @@ export function PipelineViewDialogs() {
       <Dialog open={isEditStageDialogOpen} onOpenChange={(open) => !open && handleCloseEditStageDialog()}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Stage</DialogTitle>
+            <DialogTitle>Editar Etapa</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="edit-stage-name">Name *</Label>
+              <Label htmlFor="edit-stage-name">Nombre *</Label>
               <Input
                 id="edit-stage-name"
-                placeholder="Enter stage name"
+                placeholder="Ingrese el nombre de la etapa"
                 value={editStageFormData.name}
                 onChange={(e) => handleChangeEditStageFormData('name', e.target.value)}
               />
@@ -293,7 +298,12 @@ export function PipelineViewDialogs() {
               >
                 {STAGE_COLORS.map((color) => (
                   <option key={color.hsl} value={color.hsl}>
-                    {color.name}
+                    {color.name === 'Blue' ? 'Azul' : 
+                     color.name === 'Purple' ? 'Púrpura' : 
+                     color.name === 'Amber' ? 'Ámbar' : 
+                     color.name === 'Emerald' ? 'Esmeralda' : 
+                     color.name === 'Rose' ? 'Rosa' : 
+                     color.name === 'Slate' ? 'Pizarra' : color.name}
                   </option>
                 ))}
               </select>
@@ -308,7 +318,7 @@ export function PipelineViewDialogs() {
                 htmlFor="edit-stage-is-revenue"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
               >
-                Mark as Revenue Stage
+                Marcar como Etapa de Ingresos
               </Label>
             </div>
             <div className="flex items-center space-x-2">
@@ -321,20 +331,20 @@ export function PipelineViewDialogs() {
                 htmlFor="edit-stage-is-input"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
               >
-                Mark as Input Stage
+                Marcar como Etapa de Entrada
               </Label>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="edit-stage-default-assignee">Default Assignee for New Leads</Label>
+              <Label htmlFor="edit-stage-default-assignee">Asignado por Defecto para Nuevos Leads</Label>
               <Select
                 value={editStageFormData.default_business_employee_id?.toString() || 'unassigned'}
                 onValueChange={(value) => handleChangeEditStageFormData('default_business_employee_id', value === 'unassigned' ? null : Number(value))}
               >
                 <SelectTrigger id="edit-stage-default-assignee">
-                  <SelectValue placeholder="No default assignee" />
+                  <SelectValue placeholder="Sin asignado por defecto" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="unassigned">No default assignee</SelectItem>
+                  <SelectItem value="unassigned">Sin asignado por defecto</SelectItem>
                   {businessEmployees.map((employee) => (
                     <SelectItem key={employee.id} value={employee.id.toString()}>
                       {employee.first_name} {employee.last_name} ({employee.email})
@@ -347,25 +357,25 @@ export function PipelineViewDialogs() {
               <Alert className="border-amber-500/20 bg-amber-500/10">
                 <AlertTriangle className="h-4 w-4 text-amber-500" />
                 <AlertDescription className="text-sm text-foreground">
-                  There is already a revenue stage ({revenueStage?.name}). It will be replaced when you save.
+                  Ya existe una etapa de ingresos ({revenueStage?.name}). Será reemplazada al guardar.
                 </AlertDescription>
               </Alert>
             )}
             <div className="grid gap-2">
-              <Label htmlFor="edit-stage-webhook-url">Webhook URL</Label>
+              <Label htmlFor="edit-stage-webhook-url">URL del Webhook</Label>
               <Input
                 id="edit-stage-webhook-url"
                 type="url"
-                placeholder="Enter webhook URL (optional)"
+                placeholder="Ingrese la URL del webhook (opcional)"
                 value={editStageFormData.webhook_url || ''}
                 onChange={(e) => handleChangeEditStageFormData('webhook_url', e.target.value || null)}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="edit-stage-description">Description</Label>
+              <Label htmlFor="edit-stage-description">Descripción</Label>
               <Textarea
                 id="edit-stage-description"
-                placeholder="Enter description (optional)"
+                placeholder="Ingrese una descripción (opcional)"
                 value={editStageFormData.description || ''}
                 onChange={(e) => handleChangeEditStageFormData('description', e.target.value || null)}
                 rows={4}
@@ -374,10 +384,10 @@ export function PipelineViewDialogs() {
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={handleCloseEditStageDialog}>
-              Cancel
+              Cancelar
             </Button>
             <Button onClick={handleUpdateStage} disabled={!editStageFormData.name.trim() || isReordering}>
-              Update Stage
+              Actualizar Etapa
             </Button>
           </div>
         </DialogContent>
@@ -387,11 +397,11 @@ export function PipelineViewDialogs() {
       <Dialog open={isArchiveLeadDialogOpen} onOpenChange={(open) => !open && handleCloseArchiveLeadDialog()}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Archive Lead</DialogTitle>
+            <DialogTitle>Archivar Lead</DialogTitle>
           </DialogHeader>
           <div className="py-4">
             <p className="text-foreground mb-4">
-              How do you want to close this lead?
+              ¿Cómo desea cerrar este lead?
             </p>
             <div className="flex flex-col gap-3">
               <Button
@@ -400,8 +410,8 @@ export function PipelineViewDialogs() {
                 onClick={() => handleArchiveLead(true)}
               >
                 <div className="flex flex-col items-start">
-                  <span className="font-semibold">Close with Revenue</span>
-                  <span className="text-sm text-muted-foreground">This lead will be marked as revenue</span>
+                  <span className="font-semibold">Cerrar con Ingresos</span>
+                  <span className="text-sm text-muted-foreground">Este lead será marcado como ingreso ganado</span>
                 </div>
               </Button>
               <Button
@@ -410,15 +420,15 @@ export function PipelineViewDialogs() {
                 onClick={() => handleArchiveLead(false)}
               >
                 <div className="flex flex-col items-start">
-                  <span className="font-semibold">Close without Revenue</span>
-                  <span className="text-sm text-muted-foreground">This lead will be archived without revenue</span>
+                  <span className="font-semibold">Cerrar sin Ingresos</span>
+                  <span className="text-sm text-muted-foreground">Este lead será archivado sin ingresos</span>
                 </div>
               </Button>
             </div>
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={handleCloseArchiveLeadDialog}>
-              Cancel
+              Cancelar
             </Button>
           </div>
         </DialogContent>

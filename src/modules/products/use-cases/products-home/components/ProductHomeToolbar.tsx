@@ -17,7 +17,7 @@ export function ProductHomeToolbar() {
       <div className="relative flex-1 max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
-          placeholder="Search products..."
+          placeholder="Buscar productos..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="pl-10"
@@ -30,11 +30,11 @@ export function ProductHomeToolbar() {
           onClick={() => setShowCategories(!showCategories)}
         >
           <FolderOpen className="w-4 h-4 mr-2" />
-          Manage Categories
+          Gestionar Categorías
         </Button>
         <Button onClick={handleAddProduct}>
           <Plus className="w-4 h-4 mr-2" />
-          Add Product
+          Agregar Producto
         </Button>
       </div>
     </div>

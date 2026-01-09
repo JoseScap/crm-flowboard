@@ -26,7 +26,7 @@ export function ProductHomePagination() {
     <div className="flex items-center justify-between border-t border-border pt-4">
       <div className="flex items-center gap-2">
         <Label htmlFor="items-per-page" className="text-sm text-muted-foreground">
-          Items per page:
+          Artículos por página:
         </Label>
         <Select
           value={itemsPerPage.toString()}
@@ -48,7 +48,7 @@ export function ProductHomePagination() {
       </div>
       <div className="flex items-center gap-2">
         <span className="text-sm text-muted-foreground">
-          Showing {paginationData.startIndex + 1} to {paginationData.endIndex} of {totalProducts} products
+          Mostrando {paginationData.startIndex + 1} a {paginationData.endIndex} de {totalProducts} productos
         </span>
         <div className="flex items-center gap-1">
           <Button
@@ -61,7 +61,7 @@ export function ProductHomePagination() {
             <ChevronLeft className="w-4 h-4" />
           </Button>
           <span className="text-sm text-foreground px-2">
-            Page {currentPage} of {paginationData.totalPages || 1}
+            Página {currentPage} de {paginationData.totalPages || 1}
           </span>
           <Button
             variant="outline"

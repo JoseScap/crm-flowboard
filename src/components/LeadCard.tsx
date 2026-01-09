@@ -3,6 +3,7 @@ import { DollarSign, Mail, Archive, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatCurrency, getInitials, getAvatarColor } from '@/lib/lead-utils';
 import { Tables } from '@/modules/types/supabase.schema';
+import { toast } from 'sonner';
 
 interface LeadCardProps {
   lead: Tables<'pipeline_stage_leads'>;
@@ -25,7 +26,7 @@ export function LeadCard({ lead, assignedEmployee, isMe, onArchiveClick, onDetai
     if (pipelineId) {
       navigate(`/user/businesses/${businessId}/pipeline/${pipelineId}/lead/${lead.id}`);
     } else {
-      console.error('pipelineId is required to view lead details');
+      toast.error('Se requiere el ID del pipeline para ver los detalles del lead');
     }
   };
 
@@ -44,8 +45,8 @@ export function LeadCard({ lead, assignedEmployee, isMe, onArchiveClick, onDetai
             {lead.customer_name}
           </h4>
           <p className="text-[10px] text-muted-foreground truncate mt-0.5">
-            Assigned to: <span className="font-medium text-primary/80">
-              {assignedEmployee ? (isMe ? 'Me' : assignedEmployee.email.split('@')[0]) : 'Unassigned'}
+            Asignado a: <span className="font-medium text-primary/80">
+              {assignedEmployee ? (isMe ? 'Yo' : assignedEmployee.email.split('@')[0]) : 'Sin asignar'}
             </span>
           </p>
         </div>

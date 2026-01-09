@@ -7,21 +7,21 @@ export function BusinessViewStatsCards() {
 
   const statsCards = [
     {
-      title: 'Total Revenue',
+      title: 'Ingresos Totales',
       value: `$${stats.totalRevenue.toLocaleString()}`,
       icon: DollarSign,
       color: 'text-emerald-500',
       bgColor: 'bg-emerald-500/10',
     },
     {
-      title: 'Total Sales',
+      title: 'Ventas Totales',
       value: stats.totalSales.toString(),
       icon: ShoppingCart,
       color: 'text-blue-500',
       bgColor: 'bg-blue-500/10',
     },
     {
-      title: 'Products',
+      title: 'Productos',
       value: stats.totalProducts.toString(),
       icon: Package,
       color: 'text-purple-500',

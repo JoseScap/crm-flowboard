@@ -44,37 +44,37 @@ export const SalesHomeDetailsDialog = () => {
     <Dialog open={isDetailsDialogOpen} onOpenChange={setIsDetailsDialogOpen}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Order Details #{selectedSale.order_number}</DialogTitle>
+          <DialogTitle>Detalles del Pedido #{selectedSale.order_number}</DialogTitle>
           <DialogDescription>
-            Created on {formatDate(selectedSale.created_at)}
+            Creado el {formatDate(selectedSale.created_at)}
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-2 gap-4 my-4">
           <div>
-            <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-1">Details</h4>
-            <p className="font-medium">Order #{selectedSale.order_number}</p>
+            <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-1">Detalles</h4>
+            <p className="font-medium">Pedido #{selectedSale.order_number}</p>
             <p className="text-sm text-muted-foreground">{formatDate(selectedSale.created_at)}</p>
             <div className="mt-2">
-              <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Salesperson</h4>
+              <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Vendedor</h4>
               <p className="text-sm font-medium">
                 {selectedSale.business_employees 
                   ? `${selectedSale.business_employees.first_name} ${selectedSale.business_employees.last_name}`
-                  : 'Unknown'}
+                  : 'Desconocido'}
               </p>
             </div>
           </div>
           <div className="text-right">
-            <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-1">Status</h4>
-            <p className="font-medium">{selectedSale.is_open ? 'Open' : 'Completed'}</p>
-            {!selectedSale.is_active && <p className="text-sm text-destructive font-medium">Cancelled</p>}
+            <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-1">Estado</h4>
+            <p className="font-medium">{selectedSale.is_open ? 'Abierto' : 'Completado'}</p>
+            {!selectedSale.is_active && <p className="text-sm text-destructive font-medium">Cancelado</p>}
           </div>
         </div>
 
         <Separator />
 
         <div className="mt-4">
-          <h4 className="text-sm font-semibold mb-3">Products</h4>
+          <h4 className="text-sm font-semibold mb-3">Productos</h4>
           {loadingSnapshots ? (
             <div className="space-y-2">
               <Skeleton className="h-10 w-full" />
@@ -86,9 +86,9 @@ export const SalesHomeDetailsDialog = () => {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-muted/50">
-                    <TableHead>Product</TableHead>
-                    <TableHead className="text-center">Qty</TableHead>
-                    <TableHead className="text-right">Price</TableHead>
+                    <TableHead>Producto</TableHead>
+                    <TableHead className="text-center">Cant.</TableHead>
+                    <TableHead className="text-right">Precio</TableHead>
                     <TableHead className="text-right">Total</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -109,7 +109,7 @@ export const SalesHomeDetailsDialog = () => {
                   {saleSnapshots.length === 0 && (
                     <TableRow>
                       <TableCell colSpan={4} className="text-center py-4 text-muted-foreground">
-                        No products found for this sale.
+                        No se encontraron productos para esta venta.
                       </TableCell>
                     </TableRow>
                   )}
@@ -126,7 +126,7 @@ export const SalesHomeDetailsDialog = () => {
           </div>
           {selectedSale.applied_tax > 0 && (
             <div className="flex justify-between w-full max-w-[240px] text-sm">
-              <span className="text-muted-foreground">Tax ({selectedSale.applied_tax}%):</span>
+              <span className="text-muted-foreground">Impuesto ({selectedSale.applied_tax}%):</span>
               <span>{formatCurrency(taxAmount)}</span>
             </div>
           )}

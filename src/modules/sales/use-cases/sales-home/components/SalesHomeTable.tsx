@@ -61,13 +61,13 @@ export const SalesHomeTable = () => {
               className="cursor-pointer hover:bg-muted/80 transition-colors"
               onClick={() => handleChangeSortSalesBy('created_at')}
             >
-              Date {renderSortIcon('created_at')}
+              Fecha {renderSortIcon('created_at')}
             </TableHead>
             <TableHead 
               className="cursor-pointer hover:bg-muted/80 transition-colors"
               onClick={() => handleChangeSortSalesBy('order_number')}
             >
-              Order {renderSortIcon('order_number')}
+              Pedido {renderSortIcon('order_number')}
             </TableHead>
             <TableHead 
               className="text-right cursor-pointer hover:bg-muted/80 transition-colors"
@@ -75,10 +75,10 @@ export const SalesHomeTable = () => {
             >
               Total {renderSortIcon('total')}
             </TableHead>
-            <TableHead>Salesperson</TableHead>
-            <TableHead className="text-center">Status</TableHead>
-            <TableHead className="text-center">Active</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead>Vendedor</TableHead>
+            <TableHead className="text-center">Estado</TableHead>
+            <TableHead className="text-center">Activo</TableHead>
+            <TableHead className="text-right">Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -87,7 +87,7 @@ export const SalesHomeTable = () => {
               <TableCell colSpan={7} className="text-center py-8">
                 <div className="flex items-center justify-center gap-2">
                   <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
-                  <span className="text-muted-foreground">Loading sales...</span>
+                  <span className="text-muted-foreground">Cargando ventas...</span>
                 </div>
               </TableCell>
             </TableRow>
@@ -112,16 +112,16 @@ export const SalesHomeTable = () => {
                   <TableCell className="text-muted-foreground">
                     {sale.business_employees 
                       ? `${sale.business_employees.first_name} ${sale.business_employees.last_name}`
-                      : 'Unknown'}
+                      : 'Desconocido'}
                   </TableCell>
                   <TableCell className="text-center">
                     <Badge variant={sale.is_open ? 'outline' : 'default'} className={sale.is_open ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-green-50 text-green-700 border-green-200'}>
-                      {sale.is_open ? 'Open' : 'Completed'}
+                      {sale.is_open ? 'Abierto' : 'Completado'}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-center">
                     <Badge variant={sale.is_active ? 'default' : 'secondary'}>
-                      {sale.is_active ? 'Active' : 'Cancelled'}
+                      {sale.is_active ? 'Activo' : 'Cancelado'}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -129,7 +129,7 @@ export const SalesHomeTable = () => {
                       variant="ghost" 
                       size="icon" 
                       onClick={() => handleViewDetails(sale)}
-                      title="View details"
+                      title="Ver detalles"
                     >
                       <Eye className="h-4 w-4" />
                     </Button>
@@ -139,7 +139,7 @@ export const SalesHomeTable = () => {
               {sales.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                    No sales found
+                    No se encontraron ventas
                   </TableCell>
                 </TableRow>
               )}

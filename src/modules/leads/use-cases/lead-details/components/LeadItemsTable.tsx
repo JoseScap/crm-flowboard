@@ -35,10 +35,10 @@ export const LeadItemsTable = () => {
     return (
       <div className="flex flex-col items-center justify-center p-12 border rounded-md bg-muted/20 border-dashed">
         <ShoppingCart className="h-10 w-10 text-muted-foreground mb-4" />
-        <p className="text-muted-foreground text-lg">No items in this lead</p>
-        <p className="text-sm text-muted-foreground mb-4">Add products to start building a proposal</p>
+        <p className="text-muted-foreground text-lg">No hay artículos en este lead</p>
+        <p className="text-sm text-muted-foreground mb-4">Agrega productos para comenzar a crear una propuesta</p>
         <Button onClick={() => setIsAddProductModalOpen(true)} variant="outline">
-          Add Products
+          Agregar productos
         </Button>
       </div>
     );
@@ -47,10 +47,10 @@ export const LeadItemsTable = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Lead Items</h3>
+        <h3 className="text-lg font-semibold">Artículos del Lead</h3>
         <Button onClick={() => setIsAddProductModalOpen(true)} variant="outline" size="sm">
           <Plus className="h-4 w-4 mr-2" />
-          Add Product
+          Agregar producto
         </Button>
       </div>
 
@@ -58,10 +58,10 @@ export const LeadItemsTable = () => {
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
-              <TableHead>Product</TableHead>
+              <TableHead>Producto</TableHead>
               <TableHead>SKU</TableHead>
-              <TableHead className="text-right">Price</TableHead>
-              <TableHead className="text-center w-[150px]">Quantity</TableHead>
+              <TableHead className="text-right">Precio</TableHead>
+              <TableHead className="text-center w-[150px]">Cantidad</TableHead>
               <TableHead className="text-right">Total</TableHead>
               <TableHead className="text-right w-[50px]"></TableHead>
             </TableRow>
@@ -132,12 +132,12 @@ export const LeadItemsTable = () => {
             {isProcessingSale ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Processing...
+                Procesando...
               </>
             ) : (
               <>
                 <ShoppingCart className="mr-2 h-4 w-4" />
-                Process Sale
+                Procesar venta
               </>
             )}
           </Button>

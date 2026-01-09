@@ -60,8 +60,7 @@ export function PipelinesConfigProvider({ children }: { children: ReactNode }) {
           .single();
 
         if (error) {
-          console.error('Error fetching pipeline:', error);
-          toast.error('Error loading pipeline configuration');
+          toast.error('Error al cargar la configuración del pipeline');
           navigate(`/user/businesses/${businessId}/pipelines`);
           return;
         }
@@ -75,8 +74,7 @@ export function PipelinesConfigProvider({ children }: { children: ReactNode }) {
           });
         }
       } catch (error) {
-        console.error('Error fetching pipeline:', error);
-        toast.error('Error loading pipeline configuration');
+        toast.error('Error al cargar la configuración del pipeline');
         navigate(`/user/businesses/${businessId}/pipelines`);
       } finally {
         setLoading(false);
@@ -95,7 +93,7 @@ export function PipelinesConfigProvider({ children }: { children: ReactNode }) {
       const trimmedPhoneNumberId = whatsappFormData.whatsappPhoneNumberId.trim();
       
       if (!trimmedNumber || !trimmedPhoneNumberId) {
-        toast.error('WhatsApp number and phone number ID are required when WhatsApp is enabled');
+        toast.error('El número de WhatsApp y el ID de teléfono son obligatorios cuando WhatsApp está habilitado');
         return;
       }
     }
@@ -113,10 +111,9 @@ export function PipelinesConfigProvider({ children }: { children: ReactNode }) {
         .eq('business_id', parseInt(businessId, 10));
 
       if (error) {
-        console.error('Error updating pipeline:', error);
-        toast.error('Error saving configuration');
+        toast.error('Error al guardar la configuración');
       } else {
-        toast.success('Configuration saved successfully');
+        toast.success('Configuración guardada con éxito');
         // Update local state
         setPipeline({
           ...pipeline,
@@ -126,8 +123,7 @@ export function PipelinesConfigProvider({ children }: { children: ReactNode }) {
         });
       }
     } catch (error) {
-      console.error('Error updating pipeline:', error);
-      toast.error('Error saving configuration');
+      toast.error('Error al guardar la configuración');
     } finally {
       setSaving(false);
     }

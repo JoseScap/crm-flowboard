@@ -47,7 +47,7 @@ export function PipelineViewKanbanBoard() {
               disabled={isReordering}
             >
               <Plus className="w-5 h-5" />
-              {pipelineStages.length === 0 ? 'Create First Stage' : 'Create New Stage'}
+              {pipelineStages.length === 0 ? 'Crear Primera Etapa' : 'Crear Nueva Etapa'}
             </Button>
           </div>
         </div>

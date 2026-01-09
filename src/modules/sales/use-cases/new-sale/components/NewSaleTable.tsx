@@ -39,8 +39,8 @@ export const NewSaleTable = () => {
   if (selectedItems.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center p-12 border rounded-md bg-muted/20 border-dashed">
-        <p className="text-muted-foreground text-lg">No products added yet</p>
-        <p className="text-sm text-muted-foreground">Click "Add Product" to start building the sale</p>
+        <p className="text-muted-foreground text-lg">Aún no se han agregado productos</p>
+        <p className="text-sm text-muted-foreground">Haz clic en "Agregar Producto" para comenzar a crear la venta</p>
       </div>
     );
   }
@@ -51,10 +51,10 @@ export const NewSaleTable = () => {
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
-              <TableHead>Product</TableHead>
+              <TableHead>Producto</TableHead>
               <TableHead>SKU</TableHead>
-              <TableHead className="text-right">Price</TableHead>
-              <TableHead className="text-center w-[150px]">Quantity</TableHead>
+              <TableHead className="text-right">Precio</TableHead>
+              <TableHead className="text-center w-[150px]">Cantidad</TableHead>
               <TableHead className="text-right">Total</TableHead>
               <TableHead className="text-right w-[50px]"></TableHead>
             </TableRow>
@@ -118,12 +118,12 @@ export const NewSaleTable = () => {
               checked={isTaxEnabled} 
               onCheckedChange={setIsTaxEnabled} 
             />
-            <Label htmlFor="tax-toggle">Apply Tax</Label>
+            <Label htmlFor="tax-toggle">Aplicar Impuesto</Label>
           </div>
           
           {isTaxEnabled && (
             <div className="space-y-2">
-              <Label htmlFor="tax-rate" className="text-xs text-muted-foreground">Tax Percentage (%)</Label>
+              <Label htmlFor="tax-rate" className="text-xs text-muted-foreground">Porcentaje de Impuesto (%)</Label>
               <div className="flex items-center gap-2">
                 <Input
                   id="tax-rate"
@@ -145,7 +145,7 @@ export const NewSaleTable = () => {
           </div>
           {isTaxEnabled && (
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Tax ({taxRate}%):</span>
+              <span className="text-muted-foreground">Impuesto ({taxRate}%):</span>
               <span>{formatCurrency(tax)}</span>
             </div>
           )}

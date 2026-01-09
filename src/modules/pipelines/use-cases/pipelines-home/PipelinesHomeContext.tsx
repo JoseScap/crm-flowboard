@@ -55,12 +55,12 @@ export function PipelinesHomeProvider({ children }: { children: ReactNode }) {
         .order('created_at', { ascending: false });
 
       if (error) {
-        toast.error('Error fetching pipelines');
+        toast.error('Error al obtener los pipelines');
       } else if (data) {
         setPipelines(data);
       }
     } catch (error) {
-      toast.error('Error fetching pipelines');
+      toast.error('Error al obtener los pipelines');
     } finally {
       setLoadingData(false);
     }
@@ -108,13 +108,15 @@ export function PipelinesHomeProvider({ children }: { children: ReactNode }) {
         ]);
       
       if (error) {
-        toast.error('Error creating pipeline');
+        toast.error('Error al crear el pipeline');
+      } else {
+        toast.success('Pipeline creado con éxito');
       }
       
       // Step 4: Refetch pipelines (whether it failed or succeeded)
       await getData();
     } catch (error) {
-      console.error('Error creating pipeline:', error);
+      toast.error('Error al crear el pipeline');
       // Still refetch to ensure UI is in sync
       await getData();
     }

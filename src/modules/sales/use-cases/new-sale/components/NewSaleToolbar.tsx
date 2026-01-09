@@ -14,8 +14,8 @@ export const NewSaleToolbar = () => {
   return (
     <div className="flex flex-col sm:flex-row gap-4 items-center justify-between mb-6">
       <div>
-        <h2 className="text-lg font-semibold">New Sale</h2>
-        <p className="text-sm text-muted-foreground">Add products to create a new sale.</p>
+        <h2 className="text-lg font-semibold">Nueva Venta</h2>
+        <p className="text-sm text-muted-foreground">Agrega productos para crear una nueva venta.</p>
       </div>
       
       <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -25,7 +25,7 @@ export const NewSaleToolbar = () => {
           className="w-full sm:w-auto"
         >
           <Plus className="mr-2 h-4 w-4" />
-          Add Product
+          Agregar Producto
         </Button>
         
         <Button 
@@ -38,7 +38,7 @@ export const NewSaleToolbar = () => {
           ) : (
             <Save className="mr-2 h-4 w-4" />
           )}
-          Complete Sale
+          Completar Venta
         </Button>
       </div>
     </div>

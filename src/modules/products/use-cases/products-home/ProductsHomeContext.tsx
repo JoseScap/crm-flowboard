@@ -181,11 +181,11 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
       ]);
 
       if (categoriesResult.error) {
-        toast.error('Error loading categories');
+        toast.error('Error al cargar las categorías');
       }
 
       if (productsResult.error) {
-        toast.error('Error loading products');
+        toast.error('Error al cargar los productos');
       }
 
       // Set total count
@@ -200,7 +200,7 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
 
       setProducts(productsResult.data);
     } catch (error) {
-      toast.error('Error loading products');
+      toast.error('Error al cargar los productos');
     } finally {
       setLoadingData(false);
     }
@@ -263,12 +263,12 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
 
   const handleSaveCategory = async () => {
     if (!newCategoryFormData.name.trim()) {
-      toast.error('Please enter a category name');
+      toast.error('Por favor, ingrese un nombre para la categoría');
       return;
     }
 
     if (!businessId) {
-      toast.error('Business ID is required');
+      toast.error('El ID del negocio es requerido');
       return;
     }
 
@@ -282,15 +282,15 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
         }]);
 
       if (error) {
-        toast.error('Error creating category');
+        toast.error('Error al crear la categoría');
       } else {
-        toast.success('Category created');
+        toast.success('Categoría creada');
         setIsCreateCategoryDialogOpen(false);
         setNewCategoryFormData(defaultCategoryFormData);
         await getData();
       }
     } catch (error) {
-      toast.error('Error creating category');
+      toast.error('Error al crear la categoría');
     }
   };
 
@@ -309,17 +309,15 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
         .eq('id', categoryToDelete.id);
 
       if (error) {
-        console.error('Error deleting category:', error);
-        toast.error('Error deleting category');
+        toast.error('Error al eliminar la categoría');
       } else {
-        toast.success('Category deleted');
+        toast.success('Categoría eliminada');
         setIsDeleteCategoryDialogOpen(false);
         setCategoryToDelete(null);
         await getData();
       }
     } catch (error) {
-      console.error('Error deleting category:', error);
-      toast.error('Error deleting category');
+      toast.error('Error al eliminar la categoría');
     }
   };
 
@@ -345,12 +343,12 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
 
   const handleSaveEditCategory = async () => {
     if (!editingCategoryFormData || !editingCategoryFormData.name?.trim()) {
-      toast.error('Please enter a category name');
+      toast.error('Por favor, ingrese un nombre para la categoría');
       return;
     }
 
     if (!editingCategoryFormData.id) {
-      toast.error('Category ID is required');
+      toast.error('El ID de la categoría es requerido');
       return;
     }
 
@@ -365,22 +363,22 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
         .eq('id', id);
 
       if (error) {
-        toast.error('Error updating category');
+        toast.error('Error al actualizar la categoría');
       } else {
-        toast.success('Category updated');
+        toast.success('Categoría actualizada');
         setIsEditCategoryDialogOpen(false);
         setEditingCategoryFormData(null);
         await getData();
       }
     } catch (error) {
-      toast.error('Error updating category');
+      toast.error('Error al actualizar la categoría');
     }
   };
 
   const getStockStatus = (stock: number, minStock: number | null): StockStatus => {
-    if (stock === 0) return { label: 'Out of Stock', variant: 'destructive' };
-    if (minStock !== null && stock <= minStock) return { label: 'Low Stock', variant: 'warning' };
-    return { label: 'In Stock', variant: 'default' };
+    if (stock === 0) return { label: 'Agotado', variant: 'destructive' };
+    if (minStock !== null && stock <= minStock) return { label: 'Stock Bajo', variant: 'warning' };
+    return { label: 'En Stock', variant: 'default' };
   };
 
   const handleAddProduct = () => {
@@ -390,22 +388,22 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
 
   const handleSaveAddProduct = async () => {
     if (!newProductFormData.name || !newProductFormData.sku) {
-      toast.error('Please fill in all required fields');
+      toast.error('Por favor, complete todos los campos obligatorios');
       return;
     }
 
     if (newProductFormData.price === undefined || newProductFormData.price === null || newProductFormData.price < 0) {
-      toast.error('Please enter a valid price');
+      toast.error('Por favor, ingrese un precio válido');
       return;
     }
 
     if (newProductFormData.stock === undefined || newProductFormData.stock === null || newProductFormData.stock < 0) {
-      toast.error('Please enter a valid stock quantity');
+      toast.error('Por favor, ingrese una cantidad de stock válida');
       return;
     }
 
     if (!businessId) {
-      toast.error('Business ID is required');
+      toast.error('El ID del negocio es requerido');
       return;
     }
 
@@ -425,17 +423,15 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
         .insert([productData]);
 
       if (error) {
-        console.error('Error creating product:', error);
-        toast.error('Error creating product');
+        toast.error('Error al crear el producto');
       } else {
-        toast.success('Product added');
+        toast.success('Producto agregado');
         setIsCreateProductDialogOpen(false);
         setNewProductFormData({ ...defaultProductFormData, business_id: businessId });
         await getData();
       }
     } catch (error) {
-      console.error('Error creating product:', error);
-      toast.error('Error creating product');
+      toast.error('Error al crear el producto');
     }
   };
 
@@ -460,17 +456,15 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
         .eq('id', productToToggleStatus.id);
 
       if (error) {
-        console.error('Error updating product status:', error);
-        toast.error('Error updating product status');
+        toast.error('Error al actualizar el estado del producto');
       } else {
-        toast.success(newStatus ? 'Product activated' : 'Product deactivated');
+        toast.success(newStatus ? 'Producto activado' : 'Producto desactivado');
         setIsToggleStatusDialogOpen(false);
         setProductToToggleStatus(null);
         await getData();
       }
     } catch (error) {
-      console.error('Error updating product status:', error);
-      toast.error('Error updating product status');
+      toast.error('Error al actualizar el estado del producto');
     }
   };
 
@@ -501,7 +495,7 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
 
   const handleSaveEditProduct = async () => {
     if (!editingProductFormData || !editingProductFormData.id) {
-      toast.error('No product selected for editing');
+      toast.error('No se seleccionó ningún producto para editar');
       return;
     }
 
@@ -513,17 +507,15 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
         .eq('id', id);
 
       if (error) {
-        console.error('Error updating product:', error);
-        toast.error('Error updating product');
+        toast.error('Error al actualizar el producto');
       } else {
-        toast.success('Product updated');
+        toast.success('Producto actualizado');
         setIsEditProductDialogOpen(false);
         setEditingProductFormData(null);
         await getData();
       }
     } catch (error) {
-      console.error('Error updating product:', error);
-      toast.error('Error updating product');
+      toast.error('Error al actualizar el producto');
     }
   };
 

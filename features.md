@@ -13,9 +13,9 @@ Este módulo gestiona la integración de servicios de terceros mediante flujos d
 - Inicio del flujo de autorización OAuth mediante redirección externa ✅
 - Capacidad para revocar el acceso y eliminar conexiones de forma segura ✅
 - Soporte para contextos multi-negocio, aislando las conexiones por empresa ✅
-- Migrar el nombre a "Conectores" como lo tiene ChatGPT.
-- Poder configurar la Aplicación de WhatsApp personal para recibir mensajes críticos del CRM.
-    - Mensajes críticos: Fuera de stock por ejemplo.
+- Migrar el nombre a "Conectores" como lo tiene ChatGPT. ❓
+- Poder configurar la Aplicación de WhatsApp personal para recibir mensajes críticos del CRM. ❓
+    - Mensajes críticos: Fuera de stock por ejemplo. ❓
 
 ### Google OAuth Callback
 
@@ -24,7 +24,6 @@ Este módulo gestiona la integración de servicios de terceros mediante flujos d
 - Resolución automática del contexto del empleado y el negocio actual ✅
 - Persistencia de credenciales (`access_token`, `refresh_token`) y metadatos del proveedor ✅
 - Gestión de expiración de tokens para asegurar la disponibilidad del servicio ✅
-
 
 ## Auth
 
@@ -36,12 +35,45 @@ Este módulo se encarga de gestionar el acceso de los usuarios a la plataforma, 
 - Integración con Supabase Auth para validación de credenciales ✅
 - Redirección automática al dashboard principal tras un acceso exitoso ✅
 - Gestión de estados de carga y errores mediante notificaciones visuales ✅
-- Se debe poder recuperar la contraseña si falla.
-- Se debe poder cambiar al registro si es que hace falta.
-- No me gusta el color (blanco) del login > Color del autocompletado.
-- Agregar conexión a google para iniciar sesión con google.
-- Navbar para volver a la página principal si hace falta.
-- Página principal, hace falta >> Landing Page Aparte.
+- Opción de visualización de contraseña con temporizador de seguridad ✅
+- Enlace directo a la recuperación de contraseña ✅
+- Botón de inicio de sesión rápido con Google ✅
+
+### Login Google Callback
+
+- Manejo automático del callback de autenticación tras el inicio de sesión con Google ✅
+- Detección de cambios en el estado de autenticación en tiempo real ✅
+- Gestión de errores provenientes del proveedor OAuth ✅
+- Notificaciones visuales sobre el estado del proceso ✅
+- Sistema de seguridad con tiempo de espera (timeout) para evitar bloqueos ✅
+- Redirección inteligente basada en el resultado de la autenticación ✅
+
+### Password Recovery Request
+
+- Formulario para solicitar el restablecimiento de contraseña vía correo electrónico ✅
+- Integración con Supabase para el envío de enlaces seguros ✅
+- Validación de campos obligatorios ✅
+- Notificaciones de éxito y error claras para el usuario ✅
+- Navegación fluida para volver al inicio de sesión ✅
+
+### Register
+
+- Formulario de creación de cuenta con validación de correo y contraseña ✅
+- Sistema de verificación de coincidencia de contraseñas ✅
+- Validación de longitud mínima de seguridad para la contraseña ✅
+- Creación de usuarios en Supabase Auth ✅
+- Gestión de estados de carga durante el proceso de registro ✅
+- Opción para alternar la visibilidad de las contraseñas ✅
+- Redirección al login tras un registro exitoso para validación de correo ✅
+
+### Update Password
+
+- Formulario dedicado para establecer una nueva contraseña de acceso ✅
+- Validación rigurosa de longitud y coincidencia de contraseñas ✅
+- Actualización segura del perfil de usuario en Supabase ✅
+- Control de visibilidad para mayor comodidad del usuario ✅
+- Redirección automática al inicio de sesión tras completar la actualización ✅
+- Interfaz intuitiva con acceso rápido para volver atrás ✅
 
 ## Businesses
 
@@ -221,3 +253,8 @@ activar notificaciones
 - warn stock synergia (mail)
 - danger stock synergia (mail)
 - out of stock synergia (mail)
+
+## Otros
+
+- Página principal, hace falta >> Landing Page Aparte.
+- No me gusta el color (blanco) del login > Color del autocompletado.

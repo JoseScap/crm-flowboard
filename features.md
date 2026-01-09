@@ -13,6 +13,9 @@ Este módulo gestiona la integración de servicios de terceros mediante flujos d
 - Inicio del flujo de autorización OAuth mediante redirección externa ✅
 - Capacidad para revocar el acceso y eliminar conexiones de forma segura ✅
 - Soporte para contextos multi-negocio, aislando las conexiones por empresa ✅
+- Migrar el nombre a "Conectores" como lo tiene ChatGPT.
+- Poder configurar la Aplicación de WhatsApp personal para recibir mensajes críticos del CRM.
+    - Mensajes críticos: Fuera de stock por ejemplo.
 
 ### Google OAuth Callback
 
@@ -21,6 +24,7 @@ Este módulo gestiona la integración de servicios de terceros mediante flujos d
 - Resolución automática del contexto del empleado y el negocio actual ✅
 - Persistencia de credenciales (`access_token`, `refresh_token`) y metadatos del proveedor ✅
 - Gestión de expiración de tokens para asegurar la disponibilidad del servicio ✅
+
 
 ## Auth
 
@@ -32,6 +36,12 @@ Este módulo se encarga de gestionar el acceso de los usuarios a la plataforma, 
 - Integración con Supabase Auth para validación de credenciales ✅
 - Redirección automática al dashboard principal tras un acceso exitoso ✅
 - Gestión de estados de carga y errores mediante notificaciones visuales ✅
+- Se debe poder recuperar la contraseña si falla.
+- Se debe poder cambiar al registro si es que hace falta.
+- No me gusta el color (blanco) del login > Color del autocompletado.
+- Agregar conexión a google para iniciar sesión con google.
+- Navbar para volver a la página principal si hace falta.
+- Página principal, hace falta >> Landing Page Aparte.
 
 ## Businesses
 
@@ -43,6 +53,12 @@ Este módulo permite la administración centralizada de las empresas o negocios 
 - Creación de nuevos negocios con registro automático del dueño como primer empleado ✅
 - Edición de la información de perfil del negocio (nombre, contacto, ubicación) ✅
 - Interfaz de cuadrícula con acceso directo al panel de control de cada empresa ✅
+- Borrar el createad_at en el calendario.
+- Cantidad de Mensajes (Leads) en un bussiness >> Buscar cual es el mejor indicador. 
+- Ponerlo alargado, osea en el ancho de la pantalla; obviamente manteniendo proporciones; obtener estadísticas rápidas del bussiness.
+- Poder logo específico a un bussiness.
+- Listado de leads por pipeline específicamente, y cantidad de pipelines.
+- Activar o desactivar opción de "Transparencias De Ventas" en la DangerZone. 
 
 ### Business View
 
@@ -51,6 +67,24 @@ Este módulo permite la administración centralizada de las empresas o negocios 
 - Sistema de invitación para añadir nuevos miembros al equipo de trabajo ✅
 - Control de estado (activación/desactivación) de empleados mediante lógica de servidor ✅
 - Visualización detallada de la salud financiera y operativa del negocio ✅
+- Agregar un danger zone con los datos que puedan ser removidso. Baja lógica. 
+- Zona "General" unicamente visible para el usuario de tipo OWNER.
+- Agregar un padding minimo entre aside y el contenido de la pantalla. 
+- Botoncito para cerrar en el medio del aside donde no moleste.
+- Cambiar de un bussines a otro dentro de un dash board no va;
+- Deberias poder volver a lavista de bussiness.
+- Ahí debería aparecer un breadcrumb con indicador haci donde se va: Bussiness / SynergIA.
+
+### Quick Actions (Funcionalidad Adicional)
+- Pasan a ser dinámicas y no estáticas. 
+- Se pueden agregar quick actions específicas
+- Ranking de uso de quick actions
+- Solamente para el dueño 
+
+### Reportes (Funcionalidad Adicional)
+- Migrar todos los reportes solamente para que lo pueda ver el dueño, y a quien permita el dueño.
+- (FEATURE ADICCIONAL) El dueño pueda crear sus propios reporpotes o reportes personalizados. 
+    Robar mercado a negocios con Analíticas. --> Muy a futuro. 
 
 ## Leads
 
@@ -64,6 +98,10 @@ Este módulo se centra en la gestión profunda de prospectos y oportunidades de 
 - Capacidad de asignar y reasignar prospectos entre los miembros del equipo ✅
 - Flujo de conversión directa de prospecto a venta (proceso de cierre) ✅
 - Historial de interacciones y mensajería persistente ✅
+- Back to pipeline boleatear por que el breadcrumb esta en el layout.
+- Replantear UI del Lead Details con 2 Tabs, la tab por default es el chat y la otra tab es la venta, y otra tab la información del propio lead para optimizar el espacio.
+- Cancelar venta / Cancelar Lead para cerrar un lead sin venta.
+- Botón para agregar un item de venta manual, agregar detalles a la venta y no necesariamenmte maneja productos.
 
 ## Pipelines
 
@@ -74,6 +112,12 @@ Este módulo es el núcleo operativo del CRM, permitiendo la visualización y ge
 - Gestión de múltiples embudos de venta por cada unidad de negocio ✅
 - Creación simplificada de pipelines con nombres y descripciones personalizadas ✅
 - Acceso rápido a la vista detallada y configuración de cada tablero ✅
+- Info adicioanl, mostrando leads abiertos.
+- Created_at se boletea del pipelien.
+- Pipeline configuration x2 (está repetido) al editar -- Borrarlo, error de cursor.
+- Que ocupe todo el ancho de la página, si no queda raro.
+- Generación de una key para la seguridad bidireccional; configuración adicional para la seguridad de  Kapso.
+- Ver si se puede integrar todo configurable via API Kapso. 
 
 ### Pipeline View
 
@@ -84,6 +128,22 @@ Este módulo es el núcleo operativo del CRM, permitiendo la visualización y ge
 - Métricas clave integradas: valor total del embudo, ingresos cerrados y tasa de conversión ✅
 - Filtrado dinámico de leads por responsable asignado ✅
 - Definición de "Etapa de Ingresos" para el seguimiento automático de cierres exitosos ✅
+- Estadísticas no se muestran a los salesperson.
+- Boton adicional de estadísticas de Pipeline. (Owner | Admins)
+- All Assigness -> Utilizar el select de la librería y no el nativo. Utilizar la imagen de perfil,
+- Ventas por WA, no existe si no tenes que volver por el breadcrumb a otro pipeline si es que necesitas cambiar.
+- Modal de creación de nuevo stagenuevo debe permitir crear que sea de tipo input. (Buscarle un nombre más representativo)
+- Si es un modal de tipo input, hay que indicar quien se le asigna por default, solo si es de tipo input.
+- Barrita para mover leads; debería tener el color del CRM. (Scroll Lateral)
+- Al reordenar los leads hace falta un loader.
+- Al cambiar de columnas hace falta mejorar el cambio de columna.
+- Assigned to : Cambie a la foto de la persona que lo tiene asignado. 
+- (?) Futuro: Buscar mostrar por donde es el contacto (Wpp | Facebook, etc)
+- El modal de archivar va dentro del lead, no en el pipeline.
+- El N/A del correo no aporta, y se rompe la UI.
+- Al tocar un lead; debe abrir los datos del lead, no hay necesidads de tocar el ojito.
+
+
 
 ### Pipelines Config
 
@@ -103,6 +163,7 @@ Este módulo permite la gestión integral del catálogo de productos y servicios
 - Motor de búsqueda por texto libre (nombre) y códigos SKU ✅
 - Sincronización automática de existencias ante cambios en la base de datos ✅
 - Configuración de umbrales de stock mínimo para la prevención de quiebres de inventario ✅
+- (Feature Futura) - Gestión de Estados // Definir la cantidad. (Danger Stock & Warning Stock)
 
 ## Sales
 
@@ -115,6 +176,14 @@ Este módulo gestiona el registro histórico y la creación de nuevas transaccio
 - Rastreo de vendedores asociados a cada operación comercial ✅
 - Sistema de búsqueda por número de orden y filtrado por montos o fechas ✅
 - Gestión de estados de venta (completada, abierta, cancelada) ✅
+- Order no aportada nada; la fecha tampoco. (Persona (fotito) | Fecha)
+- Tabla de la siguiente forma: 
+    | Id | Persona (fotito) - Date | Total Venta
+        Desplegable donde se pueda mostrar los productos de la venta. 
+    Background para las canceladas, y si no es cancelada entonces el bg normal.
+    Active lo volaría también 
+- Agregar el listado del producto porque esta roto 
+- Owner debería poder modificar la venta si hace falta.
 
 ### New Sale
 
@@ -130,3 +199,25 @@ Módulo técnico que centraliza la definición de estructuras de datos y esquema
 
 - Definición de tipos TypeScript basados en el esquema de base de datos de Supabase ✅
 - Tipado estricto para las respuestas de la API y estados globales ✅
+
+## User Profile
+
+### Profile Page
+- La persona debe poder modificar su propia foto y esta se debe poder utilizar en toda la página.
+- La persona puede modificar el perfil.
+- La persona puede ver sus ventas y que sea una opción configurable en el bussiness (%); opción configurable por el owner.
+
+
+
+## Alerts
+aplicaciones
+
+conectas telegram, queda la conexion
+
+notificaciones por usuario
+
+activar notificaciones
+
+- warn stock synergia (mail)
+- danger stock synergia (mail)
+- out of stock synergia (mail)

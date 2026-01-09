@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useParams } from 'react-router-dom';
 import supabase from '@/modules/common/lib/supabase';
-import { Tables } from '@/modules/types/supabase.schema';
+import { Tables, TablesInsert } from '@/modules/types/supabase.schema';
 import { toast } from 'sonner';
 import apiClient from '@/lib/api-client';
 
@@ -63,9 +63,26 @@ interface LeadDetailsContextType {
   handleKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   handleUpdateLeadAssignment: (employeeId: number | null) => Promise<void>;
 
+  // Lead Items state
+  leadItems: Tables<'pipeline_stage_lead_items'>[];
+  loadingItems: boolean;
+  isAddProductModalOpen: boolean;
+  setIsAddProductModalOpen: (open: boolean) => void;
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
+  availableProducts: Tables<'products'>[];
+  
+  // Lead Items handlers
+  handleAddProduct: (product: TablesInsert<'pipeline_stage_lead_items'>) => Promise<void>;
+  handleRemoveProduct: (itemId: number) => Promise<void>;
+  handleUpdateQuantity: (itemId: number, quantity: number) => Promise<void>;
+  handleProcessSale: () => Promise<void>;
+  isProcessingSale: boolean;
+
   // Computed values
   contactName: string | undefined;
   getBackUrl: () => string;
+  subtotal: number;
 }
 
 const LeadDetailsContext = createContext<LeadDetailsContextType | undefined>(undefined);
@@ -87,6 +104,14 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
   const [sendingMessage, setSendingMessage] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [messageText, setMessageText] = useState('');
+
+  // Lead Items state
+  const [leadItems, setLeadItems] = useState<Tables<'pipeline_stage_lead_items'>[]>([]);
+  const [loadingItems, setLoadingItems] = useState(false);
+  const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [availableProducts, setAvailableProducts] = useState<Tables<'products'>[]>([]);
+  const [isProcessingSale, setIsProcessingSale] = useState(false);
 
   useEffect(() => {
     const getData = async () => {
@@ -117,6 +142,17 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
 
         if (leadData) {
           setLead(leadData);
+
+          // Fetch lead items
+          const { data: itemsData, error: itemsError } = await (supabase
+            .from('pipeline_stage_lead_items')
+            .select('*') as any)
+            .eq('lead_id', leadIdNum)
+            .eq('business_id', businessIdNum);
+          
+          if (!itemsError && itemsData) {
+            setLeadItems(itemsData);
+          }
 
           // Fetch business employees
           const { data: employeesData, error: employeesError } = await supabase
@@ -173,6 +209,177 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
 
     getData();
   }, [businessId, leadId]);
+
+  // Fetch available products for modal
+  useEffect(() => {
+    const fetchProducts = async () => {
+      if (!businessId || !isAddProductModalOpen) return;
+
+      try {
+        setLoadingItems(true);
+        let query = supabase
+          .from('products')
+          .select('*')
+          .eq('business_id', parseInt(businessId, 10))
+          .eq('is_active', true)
+          .gt('stock', 0);
+
+        if (searchTerm) {
+          query = query.or(`name.ilike.%${searchTerm}%,sku.ilike.%${searchTerm}%`);
+        }
+
+        const { data, error } = await query.limit(7);
+        if (error) throw error;
+        setAvailableProducts(data || []);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoadingItems(false);
+      }
+    };
+
+    const timer = setTimeout(() => {
+      fetchProducts();
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [businessId, isAddProductModalOpen, searchTerm]);
+
+  // Lead Items handlers
+  const syncLeadValue = async (items: Tables<'pipeline_stage_lead_items'>[]) => {
+    if (!lead || !businessId) return;
+    const newValue = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+    
+    try {
+      const { error } = await supabase
+        .from('pipeline_stage_leads')
+        .update({ value: newValue })
+        .eq('id', lead.id)
+        .eq('business_id', parseInt(businessId, 10));
+
+      if (error) throw error;
+      setLead(prev => prev ? { ...prev, value: newValue } : null);
+    } catch (error) {
+      console.error('Error syncing lead value:', error);
+    }
+  };
+
+  const handleAddProduct = async (product: TablesInsert<'pipeline_stage_lead_items'>) => {
+    if (!lead || !businessId) return;
+
+    try {
+      const existingItem = leadItems.find(item => item.product_id === product.product_id);
+
+      if (existingItem) {
+        await handleUpdateQuantity(existingItem.id, existingItem.quantity + 1);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('pipeline_stage_lead_items')
+        .insert({
+          ...product,
+          business_id: parseInt(businessId, 10),
+          lead_id: lead.id,
+          quantity: product.quantity || 1,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      if (data) {
+        const updatedItems = [...leadItems, data];
+        setLeadItems(updatedItems);
+        await syncLeadValue(updatedItems);
+        toast.success(`${product.name} added to lead`);
+      }
+    } catch (error) {
+      console.error('Error adding product:', error);
+      toast.error('Error adding product to lead');
+    }
+  };
+
+  const handleRemoveProduct = async (itemId: number) => {
+    try {
+      const { error } = await supabase
+        .from('pipeline_stage_lead_items')
+        .delete()
+        .eq('id', itemId);
+
+      if (error) throw error;
+      const updatedItems = leadItems.filter(item => item.id !== itemId);
+      setLeadItems(updatedItems);
+      await syncLeadValue(updatedItems);
+      toast.success('Product removed from lead');
+    } catch (error) {
+      console.error('Error removing product:', error);
+      toast.error('Error removing product');
+    }
+  };
+
+  const handleUpdateQuantity = async (itemId: number, quantity: number) => {
+    if (quantity <= 0) {
+      await handleRemoveProduct(itemId);
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('pipeline_stage_lead_items')
+        .update({ quantity } as any)
+        .eq('id', itemId)
+        .select()
+        .single();
+
+      if (error) throw error;
+      if (data) {
+        const updatedItems = leadItems.map(item => item.id === itemId ? data : item);
+        setLeadItems(updatedItems);
+        await syncLeadValue(updatedItems);
+      }
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+      toast.error('Error updating quantity');
+    }
+  };
+
+  const handleProcessSale = async () => {
+    if (leadItems.length === 0 || !lead || !businessId || !currentUserEmployee) {
+      toast.error('No se puede procesar la venta: faltan datos');
+      return;
+    }
+
+    try {
+      setIsProcessingSale(true);
+      const subtotal = leadItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+      const total = subtotal; // Assuming no tax for now, matching simple replication
+
+      const { data: saleId, error: saleError } = await supabase.rpc('process_new_sale', {
+        p_business_id: parseInt(businessId, 10),
+        p_business_employee_id: currentUserEmployee.id,
+        p_subtotal: subtotal,
+        p_applied_tax: 0,
+        p_total: total,
+        p_items: leadItems.map(item => ({
+          product_id: item.product_id,
+          name: item.name,
+          sku: item.sku,
+          price: item.price,
+          quantity: item.quantity
+        })),
+        p_lead_id: lead.id,
+      });
+
+      if (saleError) throw saleError;
+
+      toast.success('Venta procesada correctamente');
+    } catch (error: any) {
+      console.error('Error processing sale:', error);
+      toast.error(error.message || 'Error processing sale');
+    } finally {
+      setIsProcessingSale(false);
+    }
+  };
 
   // WhatsApp Chat handlers
   const fetchMessages = async () => {
@@ -339,6 +546,8 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
     return `/user/businesses/${businessIdNum}`;
   };
 
+  const subtotal = leadItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
   const value: LeadDetailsContextType = {
     loadingData,
     lead,
@@ -360,8 +569,21 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
     setMessageText,
     handleKeyPress,
     handleUpdateLeadAssignment,
+    leadItems,
+    loadingItems,
+    isAddProductModalOpen,
+    setIsAddProductModalOpen,
+    searchTerm,
+    setSearchTerm,
+    availableProducts,
+    handleAddProduct,
+    handleRemoveProduct,
+    handleUpdateQuantity,
+    handleProcessSale,
+    isProcessingSale,
     contactName,
     getBackUrl,
+    subtotal,
   };
 
   return (

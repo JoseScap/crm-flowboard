@@ -1,5 +1,5 @@
 import { LeadDetailsProvider, useLeadDetailsContext } from './LeadDetailsContext';
-import { LeadDetailsCard } from './components/LeadDetailsCard';
+import { LeadDetailsSection } from './components/LeadDetailsSection';
 import { LeadDetailsLoading } from './components/LeadDetailsLoading';
 
 const LeadDetails = () => {
@@ -21,8 +21,8 @@ const LeadDetails = () => {
   }
 
   return (
-    <div className="p-6 lg:p-8 h-full">
-      <LeadDetailsCard />
+    <div className="p-6 lg:p-12 min-h-full">
+      <LeadDetailsSection />
     </div>
   );
 };

@@ -157,6 +157,64 @@ export type Database = {
         }
         Relationships: []
       }
+      pipeline_stage_lead_items: {
+        Row: {
+          business_id: number
+          created_at: string
+          id: number
+          lead_id: number
+          name: string
+          price: number
+          product_id: number | null
+          quantity: number
+          sku: string
+        }
+        Insert: {
+          business_id: number
+          created_at?: string
+          id?: number
+          lead_id: number
+          name: string
+          price: number
+          product_id?: number | null
+          quantity: number
+          sku: string
+        }
+        Update: {
+          business_id?: number
+          created_at?: string
+          id?: number
+          lead_id?: number
+          name?: string
+          price?: number
+          product_id?: number | null
+          quantity?: number
+          sku?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pipeline_stage_lead_items_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "pipeline_stage_leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stage_lead_items_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stage_lead_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pipeline_stage_leads: {
         Row: {
           business_employee_id: number
@@ -376,67 +434,6 @@ export type Database = {
           },
         ]
       }
-      product_snapshots: {
-        Row: {
-          business_id: number
-          created_at: string
-          id: number
-          is_active: boolean
-          name: string
-          price: string
-          product_id: number | null
-          quantity: number
-          sale_id: number
-          sku: string
-        }
-        Insert: {
-          business_id: number
-          created_at?: string
-          id?: number
-          is_active?: boolean
-          name: string
-          price: string
-          product_id?: number | null
-          quantity: number
-          sale_id: number
-          sku: string
-        }
-        Update: {
-          business_id?: number
-          created_at?: string
-          id?: number
-          is_active?: boolean
-          name?: string
-          price?: string
-          product_id?: number | null
-          quantity?: number
-          sale_id?: number
-          sku?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "product_snapshots_business_id_fkey"
-            columns: ["business_id"]
-            isOneToOne: false
-            referencedRelation: "businesses"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "product_snapshots_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "product_snapshots_sale_id_fkey"
-            columns: ["sale_id"]
-            isOneToOne: false
-            referencedRelation: "sales"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       products: {
         Row: {
           business_id: number
@@ -487,6 +484,67 @@ export type Database = {
             columns: ["product_category_id"]
             isOneToOne: false
             referencedRelation: "product_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sale_items: {
+        Row: {
+          business_id: number
+          created_at: string
+          id: number
+          is_active: boolean
+          name: string
+          price: number
+          product_id: number | null
+          quantity: number
+          sale_id: number
+          sku: string
+        }
+        Insert: {
+          business_id: number
+          created_at?: string
+          id?: number
+          is_active?: boolean
+          name: string
+          price: number
+          product_id?: number | null
+          quantity: number
+          sale_id: number
+          sku: string
+        }
+        Update: {
+          business_id?: number
+          created_at?: string
+          id?: number
+          is_active?: boolean
+          name?: string
+          price?: number
+          product_id?: number | null
+          quantity?: number
+          sale_id?: number
+          sku?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sale_items_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sale_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sale_items_sale_id_fkey"
+            columns: ["sale_id"]
+            isOneToOne: false
+            referencedRelation: "sales"
             referencedColumns: ["id"]
           },
         ]
@@ -601,6 +659,7 @@ export type Database = {
           p_business_employee_id: number
           p_business_id: number
           p_items: Json
+          p_lead_id: number
           p_subtotal: number
           p_total: number
         }

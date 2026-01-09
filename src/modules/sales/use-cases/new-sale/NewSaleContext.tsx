@@ -4,7 +4,7 @@ import supabase from '@/modules/common/lib/supabase';
 import { toast } from 'sonner';
 import { Tables, TablesInsert } from '@/modules/types/supabase.schema';
 
-export type SaleItem = Omit<TablesInsert<'product_snapshots'>, 'business_id' | 'sale_id'> & { 
+export type SaleItem = Omit<TablesInsert<'sale_items'>, 'business_id' | 'sale_id'> & { 
   stock: number; // To check against current stock
 };
 
@@ -135,7 +135,7 @@ export function NewSaleProvider({ children }: { children: ReactNode }) {
         product_id: product.id,
         name: product.name,
         sku: product.sku,
-        price: product.price.toString(),
+        price: product.price,
         quantity: 1,
         stock: product.stock
       }];
@@ -184,7 +184,8 @@ export function NewSaleProvider({ children }: { children: ReactNode }) {
         p_subtotal: subtotal,
         p_applied_tax: isTaxEnabled ? taxRate : 0,
         p_total: total,
-        p_items: selectedItems as any // The items array matches the expected JSON structure
+        p_items: selectedItems,
+        p_lead_id: null,
       });
 
       if (saleError) throw saleError;

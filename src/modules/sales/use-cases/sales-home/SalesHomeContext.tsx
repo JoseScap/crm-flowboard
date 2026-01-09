@@ -36,7 +36,7 @@ interface SalesHomeContextType {
   setSelectedSale: Dispatch<SetStateAction<SaleWithDetails | null>>;
   isDetailsDialogOpen: boolean;
   setIsDetailsDialogOpen: Dispatch<SetStateAction<boolean>>;
-  saleSnapshots: Tables<'product_snapshots'>[];
+  saleSnapshots: Tables<'sale_items'>[];
   loadingSnapshots: boolean;
   
   refreshData: () => Promise<void>;
@@ -64,14 +64,14 @@ export function SalesHomeProvider({ children }: { children: ReactNode }) {
   // Selection
   const [selectedSale, setSelectedSale] = useState<SaleWithDetails | null>(null);
   const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
-  const [saleSnapshots, setSaleSnapshots] = useState<Tables<'product_snapshots'>[]>([]);
+  const [saleSnapshots, setSaleSnapshots] = useState<Tables<'sale_items'>[]>([]);
   const [loadingSnapshots, setLoadingSnapshots] = useState(false);
 
   const fetchSnapshots = useCallback(async (saleId: number) => {
     try {
       setLoadingSnapshots(true);
       const { data, error } = await supabase
-        .from('product_snapshots')
+        .from('sale_items')
         .select('*')
         .eq('sale_id', saleId);
       

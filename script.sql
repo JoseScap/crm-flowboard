@@ -2,6 +2,7 @@
 DROP FUNCTION IF EXISTS process_new_sale(
   p_business_id BIGINT,
   p_business_employee_id BIGINT,
+  p_lead_id BIGINT,
   p_subtotal NUMERIC,
   p_applied_tax NUMERIC,
   p_total NUMERIC,
@@ -11,6 +12,7 @@ DROP FUNCTION IF EXISTS process_new_sale(
 CREATE OR REPLACE FUNCTION process_new_sale(
   p_business_id BIGINT,
   p_business_employee_id BIGINT,
+  p_lead_id BIGINT,
   p_subtotal NUMERIC,
   p_applied_tax NUMERIC,
   p_total NUMERIC,
@@ -33,6 +35,7 @@ BEGIN
   INSERT INTO sales (
     business_id, 
     business_employee_id, 
+    lead_id,
     order_number, 
     subtotal, 
     applied_tax, 
@@ -43,6 +46,7 @@ BEGIN
   VALUES (
     p_business_id, 
     p_business_employee_id, 
+    p_lead_id,
     v_next_order_number, 
     p_subtotal, 
     p_applied_tax, 
@@ -69,7 +73,7 @@ BEGIN
     END IF;
 
     -- 3b. Create product snapshot for the sale
-    INSERT INTO product_snapshots (
+    INSERT INTO sale_items (
       business_id,
       sale_id,
       product_id,
@@ -85,7 +89,7 @@ BEGIN
       (v_item->>'product_id')::BIGINT,
       v_item->>'name',
       v_item->>'sku',
-      v_item->>'price',
+      v_item->>'price'::NUMERIC,
       (v_item->>'quantity')::INT,
       true
     );
@@ -95,6 +99,13 @@ BEGIN
     SET stock = stock - (v_item->>'quantity')::INT 
     WHERE id = (v_item->>'product_id')::BIGINT;
   END LOOP;
+
+  -- 4. If lead_id is provided, mark the lead as revenue
+  IF p_lead_id IS NOT NULL THEN
+    UPDATE pipeline_stage_leads
+    SET is_revenue = true, closed_at = NOW(), "value" = p_total
+    WHERE id = p_lead_id AND business_id = p_business_id;
+  END IF;
 
   -- Return the ID of the created sale
   RETURN v_sale_id;

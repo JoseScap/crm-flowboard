@@ -1,5 +1,4 @@
 import { ProductsHomeProvider } from '@/modules/products/use-cases/products-home/ProductsHomeContext';
-import { ProductHomeStockAlerts } from './components/ProductHomeStockAlerts';
 import { ProductHomeToolbar } from './components/ProductHomeToolbar';
 import { ProductHomeCategoriesSection } from './components/ProductHomeCategoriesSection';
 import { ProductHomeTable } from './components/ProductHomeTable';
@@ -9,7 +8,6 @@ import { ProductHomeDialogs } from './components/ProductHomeDialogs';
 const ProductsHome = () => {
   return (
     <div className="p-6 space-y-6">
-      <ProductHomeStockAlerts />
       <ProductHomeToolbar />
       <ProductHomeCategoriesSection />
       <ProductHomeTable />

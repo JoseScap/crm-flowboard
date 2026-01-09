@@ -3,6 +3,11 @@ import { Tables, TablesInsert, TablesUpdate } from "@/modules/types/supabase.sch
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 
+interface NewBusinessFormData extends Pick<TablesInsert<'businesses'>, 'name' | 'description' | 'address' | 'phone' | 'email'> {
+  owner_first_name: string;
+  owner_last_name: string;
+}
+
 interface BusinessesHomeContextType {
   // Loading state
   loadingData: boolean;
@@ -10,14 +15,14 @@ interface BusinessesHomeContextType {
   // Business states
   businesses: Tables<'businesses'>[];
   isCreateBusinessDialogOpen: boolean;
-  newBusinessFormData: Omit<TablesInsert<'businesses'>, 'owner_id'>;
+  newBusinessFormData: NewBusinessFormData;
   isEditBusinessDialogOpen: boolean;
   editBusinessFormData: TablesUpdate<'businesses'>;
   editingBusiness: Tables<'businesses'> | null;
 
   // Handlers
   handleCreateBusiness: () => void;
-  handleChangeNewBusinessFormData: <T extends keyof Omit<TablesInsert<'businesses'>, 'owner_id'>>(field: T, value: Omit<TablesInsert<'businesses'>, 'owner_id'>[T]) => void;
+  handleChangeNewBusinessFormData: <T extends keyof NewBusinessFormData>(field: T, value: NewBusinessFormData[T]) => void;
   handleCancelCreateBusiness: () => void;
   handleSaveBusiness: () => Promise<void>;
   handleOpenEditBusiness: (business: Tables<'businesses'>) => void;
@@ -28,12 +33,14 @@ interface BusinessesHomeContextType {
 
 const BusinessesHomeContext = createContext<BusinessesHomeContextType | undefined>(undefined);
 
-const defaultNewBusinessFormData: Omit<TablesInsert<'businesses'>, 'owner_id'> = {
+const defaultNewBusinessFormData: NewBusinessFormData = {
   name: '',
   description: null,
   address: null,
   phone: null,
   email: null,
+  owner_first_name: '',
+  owner_last_name: '',
 }
 
 export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
@@ -43,7 +50,7 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
   // Business states
   const [businesses, setBusinesses] = useState<Tables<'businesses'>[]>([]);
   const [isCreateBusinessDialogOpen, setIsCreateBusinessDialogOpen] = useState(false);
-  const [newBusinessFormData, setNewBusinessFormData] = useState<Omit<TablesInsert<'businesses'>, 'owner_id'>>(defaultNewBusinessFormData);
+  const [newBusinessFormData, setNewBusinessFormData] = useState<NewBusinessFormData>(defaultNewBusinessFormData);
   const [isEditBusinessDialogOpen, setIsEditBusinessDialogOpen] = useState(false);
   const [editBusinessFormData, setEditBusinessFormData] = useState<TablesUpdate<'businesses'>>({});
   const [editingBusiness, setEditingBusiness] = useState<Tables<'businesses'> | null>(null);
@@ -80,7 +87,7 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
     setIsCreateBusinessDialogOpen(true);
   };
 
-  const handleChangeNewBusinessFormData = <T extends keyof Omit<TablesInsert<'businesses'>, 'owner_id'>>(field: T, value: Omit<TablesInsert<'businesses'>, 'owner_id'>[T]) => {
+  const handleChangeNewBusinessFormData = <T extends keyof NewBusinessFormData>(field: T, value: NewBusinessFormData[T]) => {
     setNewBusinessFormData({ ...newBusinessFormData, [field]: value });
   };
 
@@ -90,18 +97,33 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
   };
 
   const handleSaveBusiness = async () => {
+    // Validation
+    if (!newBusinessFormData.name.trim()) {
+      toast.error('Business name is required');
+      return;
+    }
+    if (!newBusinessFormData.owner_first_name.trim()) {
+      toast.error('Owner first name is required');
+      return;
+    }
+    if (!newBusinessFormData.owner_last_name.trim()) {
+      toast.error('Owner last name is required');
+      return;
+    }
+
     setIsCreateBusinessDialogOpen(false);
-    setNewBusinessFormData(defaultNewBusinessFormData);
     setLoadingData(true);
     
     try {
       // Use the RPC function instead of direct INSERT
       const { data, error } = await supabase.rpc('create_new_business', {
-        p_name: newBusinessFormData.name.trim(),
-        p_description: newBusinessFormData.description?.trim() ?? null,
-        p_address: newBusinessFormData.address?.trim() ?? null,
-        p_phone: newBusinessFormData.phone?.trim() ?? null,
-        p_email: newBusinessFormData.email?.trim() ?? null,
+        p_business_name: newBusinessFormData.name.trim(),
+        p_business_description: newBusinessFormData.description?.trim() ?? null,
+        p_business_address: newBusinessFormData.address?.trim() ?? null,
+        p_business_phone: newBusinessFormData.phone?.trim() ?? null,
+        p_business_email: newBusinessFormData.email?.trim() ?? null,
+        p_owner_first_name: newBusinessFormData.owner_first_name.trim(),
+        p_owner_last_name: newBusinessFormData.owner_last_name.trim(),
       });
       
       if (error) {
@@ -109,6 +131,7 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
         console.error('Error creating business:', error);
       } else {
         toast.success('Business created successfully');
+        setNewBusinessFormData(defaultNewBusinessFormData);
       }
       
       // Refetch businesses (whether it failed or succeeded)

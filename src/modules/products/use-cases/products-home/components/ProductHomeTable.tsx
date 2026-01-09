@@ -1,4 +1,4 @@
-import { Package, Pencil, Power, PowerOff, Loader2 } from 'lucide-react';
+import { Package, Pencil, Power, PowerOff, Loader2, ChevronUp, ChevronDown } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -10,6 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useProductsHomeContext } from '../ProductsHomeContext';
+import { Tables } from '@/modules/types/supabase.schema';
 
 export function ProductHomeTable() {
   const {
@@ -18,20 +19,57 @@ export function ProductHomeTable() {
     getStockStatus,
     handleEditProduct,
     toggleActiveStatus,
+    sortProductsBy,
+    sortProductsAscending,
+    handleChangeSortProductsBy,
   } = useProductsHomeContext();
+
+  const renderSortIcon = (field: keyof Tables<'products'>) => {
+    if (sortProductsBy !== field) return null;
+    return sortProductsAscending ? (
+      <ChevronUp className="w-4 h-4 inline-block ml-1" />
+    ) : (
+      <ChevronDown className="w-4 h-4 inline-block ml-1" />
+    );
+  };
 
   return (
     <div className="border border-border rounded-lg overflow-hidden bg-card">
       <Table>
         <TableHeader>
           <TableRow className="bg-muted/50">
-            <TableHead>Product</TableHead>
-            <TableHead>SKU</TableHead>
+            <TableHead 
+              className="cursor-pointer hover:bg-muted/80 transition-colors"
+              onClick={() => handleChangeSortProductsBy('name')}
+            >
+              Product {renderSortIcon('name')}
+            </TableHead>
+            <TableHead 
+              className="cursor-pointer hover:bg-muted/80 transition-colors"
+              onClick={() => handleChangeSortProductsBy('sku')}
+            >
+              SKU {renderSortIcon('sku')}
+            </TableHead>
             <TableHead>Category</TableHead>
-            <TableHead className="text-right">Precio</TableHead>
-            <TableHead className="text-center">Stock</TableHead>
+            <TableHead 
+              className="text-right cursor-pointer hover:bg-muted/80 transition-colors"
+              onClick={() => handleChangeSortProductsBy('price')}
+            >
+              Precio {renderSortIcon('price')}
+            </TableHead>
+            <TableHead 
+              className="text-center cursor-pointer hover:bg-muted/80 transition-colors"
+              onClick={() => handleChangeSortProductsBy('stock')}
+            >
+              Stock {renderSortIcon('stock')}
+            </TableHead>
             <TableHead className="text-center">Estado</TableHead>
-            <TableHead className="text-center">Active</TableHead>
+            <TableHead 
+              className="text-center cursor-pointer hover:bg-muted/80 transition-colors"
+              onClick={() => handleChangeSortProductsBy('is_active')}
+            >
+              Active {renderSortIcon('is_active')}
+            </TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>

@@ -29,13 +29,33 @@ export function BusinessesHomeCreateDialog() {
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
-            <Label htmlFor="name">Name *</Label>
+            <Label htmlFor="name">Business Name *</Label>
             <Input
               id="name"
               placeholder="Enter business name"
               value={newBusinessFormData.name}
               onChange={(e) => handleChangeNewBusinessFormData('name', e.target.value)}
             />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="owner_first_name">Owner First Name *</Label>
+              <Input
+                id="owner_first_name"
+                placeholder="First name"
+                value={newBusinessFormData.owner_first_name}
+                onChange={(e) => handleChangeNewBusinessFormData('owner_first_name', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="owner_last_name">Owner Last Name *</Label>
+              <Input
+                id="owner_last_name"
+                placeholder="Last name"
+                value={newBusinessFormData.owner_last_name}
+                onChange={(e) => handleChangeNewBusinessFormData('owner_last_name', e.target.value)}
+              />
+            </div>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="description">Description</Label>
@@ -84,7 +104,10 @@ export function BusinessesHomeCreateDialog() {
           <Button variant="outline" onClick={handleCancelCreateBusiness}>
             Cancel
           </Button>
-          <Button onClick={handleSaveBusiness} disabled={!newBusinessFormData.name.trim()}>
+          <Button 
+            onClick={handleSaveBusiness} 
+            disabled={!newBusinessFormData.name.trim() || !newBusinessFormData.owner_first_name.trim() || !newBusinessFormData.owner_last_name.trim()}
+          >
             Create Business
           </Button>
         </div>

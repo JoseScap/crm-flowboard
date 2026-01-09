@@ -1,6 +1,5 @@
-import { FolderOpen, Plus, Pencil, Trash2, X, Check, Loader2 } from 'lucide-react';
+import { FolderOpen, Plus, Pencil, Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { useProductsHomeContext } from '../ProductsHomeContext';
 
 export function ProductHomeCategoriesSection() {
@@ -9,19 +8,9 @@ export function ProductHomeCategoriesSection() {
     setShowCategories,
     categories,
     loadingData,
-    isAddingCategory,
-    newCategoryName,
-    setNewCategoryName,
-    editingCategory,
-    editingCategoryName,
-    setEditingCategoryName,
     handleAddCategory,
-    handleCancelAddCategory,
-    handleSaveCategory,
     handleDeleteCategory,
     handleEditCategory,
-    handleCancelEditCategory,
-    handleSaveEditCategory,
   } = useProductsHomeContext();
 
   if (!showCategories) return null;
@@ -38,9 +27,9 @@ export function ProductHomeCategoriesSection() {
           Hide
         </Button>
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {loadingData ? (
-          <div className="col-span-3 flex items-center justify-center py-8">
+          <div className="col-span-full flex items-center justify-center py-8">
             <div className="flex items-center gap-2">
               <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
               <span className="text-muted-foreground">Loading categories...</span>
@@ -49,129 +38,58 @@ export function ProductHomeCategoriesSection() {
         ) : (
           <>
             {categories.map((category) => (
-              editingCategory && editingCategory.id === category.id ? (
-                <div key={category.id} className="bg-card border border-border rounded-lg p-4">
-                  <div className="flex items-center gap-2">
-                    <Input
-                      value={editingCategoryName}
-                      onChange={(e) => setEditingCategoryName(e.target.value)}
-                      placeholder="Category name"
-                      className="flex-1"
-                      autoFocus
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          handleSaveEditCategory();
-                        } else if (e.key === 'Escape') {
-                          handleCancelEditCategory();
-                        }
-                      }}
-                    />
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={handleSaveEditCategory}
-                      className="h-8 w-8"
-                    >
-                      <Check className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={handleCancelEditCategory}
-                      className="h-8 w-8"
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
+              <div
+                key={category.id}
+                className="bg-card border border-border rounded-lg p-4 hover:border-primary/50 transition-colors group relative"
+              >
+                <div className="flex items-center gap-3 pr-20">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <FolderOpen className="w-5 h-5 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-medium text-foreground truncate">{category.name}</h3>
+                    {category.description && (
+                      <p className="text-sm text-muted-foreground mt-1 line-clamp-1">
+                        {category.description}
+                      </p>
+                    )}
                   </div>
                 </div>
-              ) : (
-                <div
-                  key={category.id}
-                  className="bg-card border border-border rounded-lg p-4 hover:border-primary/50 transition-colors group relative"
-                >
-                  <div className="flex items-center gap-2 pr-16">
-                    <FolderOpen className="w-4 h-4 text-primary flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-foreground truncate">{category.name}</h3>
-                      {category.description && (
-                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                          {category.description}
-                        </p>
-                      )}
-                    </div>
-                  </div>
+                <div className="absolute top-1/2 right-3 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="absolute top-1/2 right-10 -translate-y-1/2 h-6 w-6 hover:bg-primary transition-colors [&:hover_svg]:text-primary-foreground"
+                    className="h-8 w-8 hover:bg-primary hover:text-primary-foreground"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleEditCategory(category);
                     }}
                   >
-                    <Pencil className="w-3.5 h-3.5 text-primary transition-colors" />
+                    <Pencil className="w-4 h-4" />
                   </Button>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="absolute top-1/2 right-2 -translate-y-1/2 h-6 w-6 hover:bg-destructive transition-colors [&:hover_svg]:text-destructive-foreground"
+                    className="h-8 w-8 hover:bg-destructive hover:text-destructive-foreground"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleDeleteCategory(category);
                     }}
                   >
-                    <Trash2 className="w-3.5 h-3.5 text-destructive transition-colors" />
+                    <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
-              )
+              </div>
             ))}
-            {isAddingCategory && (
-              <div className="bg-card border border-border rounded-lg p-4">
-                <div className="flex items-center gap-2">
-                  <Input
-                    value={newCategoryName}
-                    onChange={(e) => setNewCategoryName(e.target.value)}
-                    placeholder="Category name"
-                    className="flex-1"
-                    autoFocus
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        handleSaveCategory();
-                      } else if (e.key === 'Escape') {
-                        handleCancelAddCategory();
-                      }
-                    }}
-                  />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleSaveCategory}
-                    className="h-8 w-8"
-                  >
-                    <Check className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleCancelAddCategory}
-                    className="h-8 w-8"
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
-                </div>
+            <div 
+              className="bg-card border border-border border-dashed rounded-lg p-4 hover:border-primary/50 transition-colors cursor-pointer group flex items-center justify-center min-h-[74px]"
+              onClick={handleAddCategory}
+            >
+              <div className="flex items-center gap-2 text-muted-foreground group-hover:text-primary transition-colors">
+                <Plus className="w-5 h-5" />
+                <span className="font-medium">New Category</span>
               </div>
-            )}
-            {!isAddingCategory && (
-              <div 
-                className="bg-card border border-border border-dashed rounded-lg p-4 hover:border-primary/50 transition-colors cursor-pointer"
-                onClick={handleAddCategory}
-              >
-                <div className="flex items-center gap-2">
-                  <Plus className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="font-medium text-foreground">Add Category</span>
-                </div>
-              </div>
-            )}
+            </div>
           </>
         )}
       </div>

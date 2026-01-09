@@ -34,15 +34,17 @@ interface ProductsHomeContextType {
   showCategories: boolean;
   setShowCategories: Dispatch<SetStateAction<boolean>>;
   categories: Tables<'product_categories'>[];
-  isAddingCategory: boolean;
-  newCategoryName: string;
-  setNewCategoryName: Dispatch<SetStateAction<string>>;
+  isCreateCategoryDialogOpen: boolean;
+  setIsCreateCategoryDialogOpen: Dispatch<SetStateAction<boolean>>;
+  newCategoryFormData: TablesInsert<'product_categories'>;
+  setNewCategoryFormData: Dispatch<SetStateAction<TablesInsert<'product_categories'>>>;
   isDeleteCategoryDialogOpen: boolean;
   setIsDeleteCategoryDialogOpen: Dispatch<SetStateAction<boolean>>;
   categoryToDelete: Tables<'product_categories'> | null;
-  editingCategory: TablesUpdate<'product_categories'> | null;
-  editingCategoryName: string;
-  setEditingCategoryName: Dispatch<SetStateAction<string>>;
+  isEditCategoryDialogOpen: boolean;
+  setIsEditCategoryDialogOpen: Dispatch<SetStateAction<boolean>>;
+  editingCategoryFormData: TablesUpdate<'product_categories'> | null;
+  setEditingCategoryFormData: Dispatch<SetStateAction<TablesUpdate<'product_categories'> | null>>;
   
   // Pagination states
   currentPage: number;
@@ -55,13 +57,11 @@ interface ProductsHomeContextType {
     startIndex: number;
     endIndex: number;
   }
-  
-  // Stock filter states
-  lowStockCount: number;
-  showLowStockOnly: boolean;
-  outOfStockCount: number;
-  showOutOfStockOnly: boolean;
-  
+
+  // Sort by
+  sortProductsBy: keyof Tables<'products'>;
+  sortProductsAscending: boolean;
+
   // Handlers
   handleAddCategory: () => void;
   handleCancelAddCategory: () => void;
@@ -82,9 +82,7 @@ interface ProductsHomeContextType {
   handleEditProduct: (product: TablesUpdate<'products'>) => void;
   handleCancelEditProduct: () => void;
   handleSaveEditProduct: () => Promise<void>;
-  handleViewLowStockProducts: () => void;
-  handleViewOutOfStockProducts: () => void;
-  handleViewAllProducts: () => void;
+  handleChangeSortProductsBy: (field: keyof Tables<'products'>) => void;
 }
 
 const ProductsHomeContext = createContext<ProductsHomeContextType | undefined>(undefined);
@@ -97,6 +95,12 @@ const defaultProductFormData: TablesInsert<'products'> = {
   product_category_id: null,
   minimum_stock: 0,
   business_id: 0, // Will be set from route params
+}
+
+const defaultCategoryFormData: TablesInsert<'product_categories'> = {
+  name: '',
+  description: null,
+  business_id: 0,
 }
 
 export function ProductsHomeProvider({ children }: { children: ReactNode }) {
@@ -119,23 +123,22 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
   // Category states
   const [showCategories, setShowCategories] = useState(false);
   const [categories, setCategories] = useState<Tables<'product_categories'>[]>([]);
-  const [isAddingCategory, setIsAddingCategory] = useState(false);
-  const [newCategoryName, setNewCategoryName] = useState('');
+  const [isCreateCategoryDialogOpen, setIsCreateCategoryDialogOpen] = useState(false);
+  const [newCategoryFormData, setNewCategoryFormData] = useState<TablesInsert<'product_categories'>>(defaultCategoryFormData);
   const [isDeleteCategoryDialogOpen, setIsDeleteCategoryDialogOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState<Tables<'product_categories'> | null>(null);
-  const [editingCategory, setEditingCategory] = useState<TablesUpdate<'product_categories'> | null>(null);
-  const [editingCategoryName, setEditingCategoryName] = useState('');
+  const [isEditCategoryDialogOpen, setIsEditCategoryDialogOpen] = useState(false);
+  const [editingCategoryFormData, setEditingCategoryFormData] = useState<TablesUpdate<'product_categories'> | null>(null);
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [totalProducts, setTotalProducts] = useState(0);
 
-  // Stock filter states
-  const [lowStockCount, setLowStockCount] = useState(0);
-  const [showLowStockOnly, setShowLowStockOnly] = useState(false);
-  const [outOfStockCount, setOutOfStockCount] = useState(0);
-  const [showOutOfStockOnly, setShowOutOfStockOnly] = useState(false);
+  // Sort by
+  const [sortProductsBy, setSortProductsBy] = useState<keyof Tables<'products'>>('created_at');
+  const [sortProductsAscending, setSortProductsAscending] = useState(false);
+
   
   const getData = useCallback(async () => {
     try {
@@ -143,10 +146,6 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
       
       const startIndex = (currentPage - 1) * itemsPerPage;
       const endIndex = startIndex + itemsPerPage - 1;
-      
-      // Determine which view to use
-      const useLowStock = showLowStockOnly && !showOutOfStockOnly;
-      const useOutOfStock = showOutOfStockOnly && !showLowStockOnly;
       
       if (!businessId) {
         setLoadingData(false);
@@ -157,11 +156,7 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
       const [
         categoriesResult,
         productsResult,
-        lowStockProductsResult,
-        outOfStockProductsResult,
         productsCountResult,
-        lowStockCountResult,
-        outOfStockCountResult
       ] = await Promise.all([
         supabase
           .from('product_categories')
@@ -172,17 +167,17 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
            .from('products')
            .select('*, product_categories (name)')
            .eq('business_id', businessId)
-           .order('created_at', { ascending: false })
+           .ilike('name', `%${searchTerm}%`)
+           .ilike('sku', `%${searchTerm}%`)
+           .order(sortProductsBy, { ascending: sortProductsAscending })
            .range(startIndex, endIndex),
-        supabase.rpc('get_products_low_stock', { p_business_id: businessId }),
-        supabase.rpc('get_products_out_of_stock', { p_business_id: businessId }),
         supabase
           .from('products')
           .select('count', { count: 'exact', head: true })
           .eq('business_id', businessId)
+          .ilike('name', `%${searchTerm}%`)
+          .ilike('sku', `%${searchTerm}%`)
           .single(),
-        supabase.rpc('get_products_low_stock_total', { p_business_id: businessId }),
-        supabase.rpc('get_products_out_of_stock_total', { p_business_id: businessId }),
       ]);
 
       if (categoriesResult.error) {
@@ -193,47 +188,9 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
         toast.error('Error loading products');
       }
 
-      if (lowStockProductsResult.error) {
-        console.error('Error loading low stock products:', lowStockProductsResult.error);
-        toast.error('Error loading low stock products');
-      }
-
-      if (outOfStockProductsResult.error) {
-        console.error('Error loading out of stock products:', outOfStockProductsResult.error);
-        toast.error('Error loading out of stock products');
-      }
-
-      if (lowStockCountResult.error) {
-        console.error('Error loading low stock count:', lowStockCountResult.error);
-        toast.error('Error loading low stock count');
-      }
-
-      if (outOfStockCountResult.error) {
-        console.error('Error loading out of stock count:', outOfStockCountResult.error);
-        toast.error('Error loading out of stock count');
-      }
-
       // Set total count
-      if (productsCountResult.data && productsCountResult.data.count !== null) {
-        setTotalProducts(productsCountResult.data.count);
-      }
-
-      // Get low stock count from the function (returns BIGINT directly)
-      if (lowStockCountResult.data !== null && lowStockCountResult.data !== undefined) {
-        const count = Number(lowStockCountResult.data);
-        setLowStockCount(count);
-        if (useLowStock) {
-          setTotalProducts(count);
-        }
-      }
-
-      // Get out of stock count from the function (returns BIGINT directly)
-      if (outOfStockCountResult.data !== null && outOfStockCountResult.data !== undefined) {
-        const count = Number(outOfStockCountResult.data);
-        setOutOfStockCount(count);
-        if (useOutOfStock) {
-          setTotalProducts(count);
-        }
+      if (productsCountResult.count !== null) {
+        setTotalProducts(productsCountResult.count);
       }
 
       // Set categories
@@ -241,39 +198,13 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
         setCategories(categoriesResult.data);
       }
 
-      // Helper function to map products with categories
-      const mapProductsWithCategories = (productsData: any[]) => {
-        if (!productsData || !categoriesResult.data) return productsData;
-        return productsData.map((product) => ({
-          ...product,
-          product_categories: product.product_category_id
-            ? categoriesResult.data.find((cat) => cat.id === product.product_category_id)
-              ? { name: categoriesResult.data.find((cat) => cat.id === product.product_category_id)!.name }
-              : null
-            : null,
-        }));
-      };
-
-      // Map products with categories based on view mode
-      if (useOutOfStock && outOfStockProductsResult.data) {
-        const productsWithCategories = mapProductsWithCategories(outOfStockProductsResult.data);
-        // Apply pagination manually since RPC doesn't support range
-        const paginatedProducts = productsWithCategories.slice(startIndex, endIndex + 1);
-        setProducts(paginatedProducts);
-      } else if (useLowStock && lowStockProductsResult.data) {
-        const productsWithCategories = mapProductsWithCategories(lowStockProductsResult.data);
-        // Apply pagination manually since RPC doesn't support range
-        const paginatedProducts = productsWithCategories.slice(startIndex, endIndex + 1);
-        setProducts(paginatedProducts);
-      } else if (productsResult.data) {
-        setProducts(productsResult.data);
-      }
+      setProducts(productsResult.data);
     } catch (error) {
       toast.error('Error loading products');
     } finally {
       setLoadingData(false);
     }
-  }, [currentPage, itemsPerPage, showLowStockOnly, showOutOfStockOnly, searchTerm, businessId]);
+  }, [currentPage, itemsPerPage, searchTerm, businessId, sortProductsBy, sortProductsAscending]);
 
   // Fetch data when dependencies change
   useEffect(() => {
@@ -317,21 +248,21 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
   // Reset to page 1 when search term, items per page, or view mode changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, itemsPerPage, showLowStockOnly, showOutOfStockOnly]);
+  }, [searchTerm, itemsPerPage]);
 
   // Category handlers
   const handleAddCategory = () => {
-    setIsAddingCategory(true);
-    setNewCategoryName('');
+    setIsCreateCategoryDialogOpen(true);
+    setNewCategoryFormData({ ...defaultCategoryFormData, business_id: businessId || 0 });
   };
 
   const handleCancelAddCategory = () => {
-    setIsAddingCategory(false);
-    setNewCategoryName('');
+    setIsCreateCategoryDialogOpen(false);
+    setNewCategoryFormData(defaultCategoryFormData);
   };
 
   const handleSaveCategory = async () => {
-    if (!newCategoryName.trim()) {
+    if (!newCategoryFormData.name.trim()) {
       toast.error('Please enter a category name');
       return;
     }
@@ -344,14 +275,18 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
     try {
       const { error } = await supabase
         .from('product_categories')
-        .insert([{ name: newCategoryName.trim(), business_id: businessId }]);
+        .insert([{ 
+          name: newCategoryFormData.name.trim(), 
+          description: newCategoryFormData.description?.trim() || null,
+          business_id: businessId 
+        }]);
 
       if (error) {
         toast.error('Error creating category');
       } else {
         toast.success('Category created');
-        setIsAddingCategory(false);
-        setNewCategoryName('');
+        setIsCreateCategoryDialogOpen(false);
+        setNewCategoryFormData(defaultCategoryFormData);
         await getData();
       }
     } catch (error) {
@@ -393,39 +328,48 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
     setCategoryToDelete(null);
   };
 
-  const handleEditCategory = (category: TablesUpdate<'product_categories'>) => {
-    setEditingCategory(category);
-    setEditingCategoryName(category.name || '');
+  const handleEditCategory = (category: Tables<'product_categories'>) => {
+    setEditingCategoryFormData({
+      id: category.id,
+      name: category.name,
+      description: category.description,
+      business_id: category.business_id
+    });
+    setIsEditCategoryDialogOpen(true);
   };
 
   const handleCancelEditCategory = () => {
-    setEditingCategory(null);
-    setEditingCategoryName('');
+    setIsEditCategoryDialogOpen(false);
+    setEditingCategoryFormData(null);
   };
 
   const handleSaveEditCategory = async () => {
-    if (!editingCategory || !editingCategoryName.trim()) {
+    if (!editingCategoryFormData || !editingCategoryFormData.name?.trim()) {
       toast.error('Please enter a category name');
       return;
     }
 
-    if (!editingCategory.id) {
+    if (!editingCategoryFormData.id) {
       toast.error('Category ID is required');
       return;
     }
 
     try {
+      const { id, ...updateData } = editingCategoryFormData;
       const { error } = await supabase
         .from('product_categories')
-        .update({ name: editingCategoryName.trim() })
-        .eq('id', editingCategory.id);
+        .update({ 
+          name: updateData.name?.trim(),
+          description: updateData.description?.trim() || null
+        })
+        .eq('id', id);
 
       if (error) {
         toast.error('Error updating category');
       } else {
         toast.success('Category updated');
-        setEditingCategory(null);
-        setEditingCategoryName('');
+        setIsEditCategoryDialogOpen(false);
+        setEditingCategoryFormData(null);
         await getData();
       }
     } catch (error) {
@@ -583,24 +527,22 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // View mode handlers
-  const handleViewLowStockProducts = () => {
-    setShowLowStockOnly(true);
-    setShowOutOfStockOnly(false);
-    setCurrentPage(1);
+  const handleChangeSortProductsBy = (field: keyof Tables<'products'>) => {
+    if (field !== sortProductsBy) {
+      setSortProductsBy(field);
+      setSortProductsAscending(true);
+      return;
+    }
+
+    if (field === sortProductsBy && sortProductsAscending) {
+      setSortProductsAscending(false);
+      return;
+    }
+
+    setSortProductsBy('created_at');
+    setSortProductsAscending(true);
   };
 
-  const handleViewOutOfStockProducts = () => {
-    setShowOutOfStockOnly(true);
-    setShowLowStockOnly(false);
-    setCurrentPage(1);
-  };
-
-  const handleViewAllProducts = () => {
-    setShowLowStockOnly(false);
-    setShowOutOfStockOnly(false);
-    setCurrentPage(1);
-  };
 
   const value: ProductsHomeContextType = {
     loadingData,
@@ -625,15 +567,17 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
     showCategories,
     setShowCategories,
     categories,
-    isAddingCategory,
-    newCategoryName,
-    setNewCategoryName,
+    isCreateCategoryDialogOpen,
+    setIsCreateCategoryDialogOpen,
+    newCategoryFormData,
+    setNewCategoryFormData,
     isDeleteCategoryDialogOpen,
     setIsDeleteCategoryDialogOpen,
     categoryToDelete,
-    editingCategory,
-    editingCategoryName,
-    setEditingCategoryName,
+    isEditCategoryDialogOpen,
+    setIsEditCategoryDialogOpen,
+    editingCategoryFormData,
+    setEditingCategoryFormData,
     
     // Pagination states
     currentPage,
@@ -642,12 +586,10 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
     setItemsPerPage,
     totalProducts,
     paginationData,
-    
-    // Stock filter states
-    lowStockCount,
-    showLowStockOnly,
-    outOfStockCount,
-    showOutOfStockOnly,
+
+    // Sort by
+    sortProductsBy,
+    sortProductsAscending,
     
     // Handlers
     handleAddCategory,
@@ -669,9 +611,7 @@ export function ProductsHomeProvider({ children }: { children: ReactNode }) {
     handleEditProduct,
     handleCancelEditProduct,
     handleSaveEditProduct,
-    handleViewLowStockProducts,
-    handleViewOutOfStockProducts,
-    handleViewAllProducts,
+    handleChangeSortProductsBy,
   };
 
   return (

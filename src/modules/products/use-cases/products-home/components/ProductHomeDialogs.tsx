@@ -2,6 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
@@ -35,6 +36,16 @@ export function ProductHomeDialogs() {
     setIsDeleteCategoryDialogOpen,
     categoryToDelete,
     
+    // Category create/edit dialogs
+    isCreateCategoryDialogOpen,
+    setIsCreateCategoryDialogOpen,
+    newCategoryFormData,
+    setNewCategoryFormData,
+    isEditCategoryDialogOpen,
+    setIsEditCategoryDialogOpen,
+    editingCategoryFormData,
+    setEditingCategoryFormData,
+    
     // Handlers
     categories,
     handleSaveAddProduct,
@@ -45,10 +56,92 @@ export function ProductHomeDialogs() {
     handleCancelToggleStatus,
     handleConfirmDeleteCategory,
     handleCancelDeleteCategory,
+    handleSaveCategory,
+    handleCancelAddCategory,
+    handleSaveEditCategory,
+    handleCancelEditCategory,
   } = useProductsHomeContext();
 
   return (
     <>
+      {/* Create Category Dialog */}
+      <Dialog open={isCreateCategoryDialogOpen} onOpenChange={setIsCreateCategoryDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>New Category</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="category-name">Name *</Label>
+              <Input
+                id="category-name"
+                placeholder="Enter category name"
+                value={newCategoryFormData.name || ''}
+                onChange={(e) => setNewCategoryFormData({ ...newCategoryFormData, name: e.target.value })}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="category-description">Description</Label>
+              <Textarea
+                id="category-description"
+                placeholder="Enter category description (optional)"
+                value={newCategoryFormData.description || ''}
+                onChange={(e) => setNewCategoryFormData({ ...newCategoryFormData, description: e.target.value })}
+                rows={3}
+              />
+            </div>
+          </div>
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" onClick={handleCancelAddCategory}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveCategory} disabled={!newCategoryFormData.name?.trim()}>
+              Create Category
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Category Dialog */}
+      <Dialog open={isEditCategoryDialogOpen} onOpenChange={setIsEditCategoryDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Category</DialogTitle>
+          </DialogHeader>
+          {editingCategoryFormData && (
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="edit-category-name">Name *</Label>
+                <Input
+                  id="edit-category-name"
+                  placeholder="Enter category name"
+                  value={editingCategoryFormData.name || ''}
+                  onChange={(e) => setEditingCategoryFormData({ ...editingCategoryFormData, name: e.target.value })}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-category-description">Description</Label>
+                <Textarea
+                  id="edit-category-description"
+                  placeholder="Enter category description (optional)"
+                  value={editingCategoryFormData.description || ''}
+                  onChange={(e) => setEditingCategoryFormData({ ...editingCategoryFormData, description: e.target.value })}
+                  rows={3}
+                />
+              </div>
+            </div>
+          )}
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" onClick={handleCancelEditCategory}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveEditCategory} disabled={!editingCategoryFormData?.name?.trim()}>
+              Save Changes
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Create Product Dialog */}
       <Dialog open={isCreateProductDialogOpen} onOpenChange={setIsCreateProductDialogOpen}>
         <DialogContent>

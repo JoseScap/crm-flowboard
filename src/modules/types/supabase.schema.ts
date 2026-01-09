@@ -565,11 +565,13 @@ export type Database = {
       }
       create_new_business: {
         Args: {
-          p_address: string
-          p_description: string
-          p_email: string
-          p_name: string
-          p_phone: string
+          p_business_address: string
+          p_business_description: string
+          p_business_email: string
+          p_business_name: string
+          p_business_phone: string
+          p_owner_first_name: string
+          p_owner_last_name: string
         }
         Returns: undefined
       }

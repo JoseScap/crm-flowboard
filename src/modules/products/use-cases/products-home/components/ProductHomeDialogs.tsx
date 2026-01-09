@@ -68,23 +68,23 @@ export function ProductHomeDialogs() {
       <Dialog open={isCreateCategoryDialogOpen} onOpenChange={setIsCreateCategoryDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>New Category</DialogTitle>
+            <DialogTitle>Nueva Categoría</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="category-name">Name *</Label>
+              <Label htmlFor="category-name">Nombre *</Label>
               <Input
                 id="category-name"
-                placeholder="Enter category name"
+                placeholder="Ingrese el nombre de la categoría"
                 value={newCategoryFormData.name || ''}
                 onChange={(e) => setNewCategoryFormData({ ...newCategoryFormData, name: e.target.value })}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="category-description">Description</Label>
+              <Label htmlFor="category-description">Descripción</Label>
               <Textarea
                 id="category-description"
-                placeholder="Enter category description (optional)"
+                placeholder="Ingrese una descripción (opcional)"
                 value={newCategoryFormData.description || ''}
                 onChange={(e) => setNewCategoryFormData({ ...newCategoryFormData, description: e.target.value })}
                 rows={3}
@@ -93,10 +93,10 @@ export function ProductHomeDialogs() {
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={handleCancelAddCategory}>
-              Cancel
+              Cancelar
             </Button>
             <Button onClick={handleSaveCategory} disabled={!newCategoryFormData.name?.trim()}>
-              Create Category
+              Crear Categoría
             </Button>
           </div>
         </DialogContent>
@@ -106,24 +106,24 @@ export function ProductHomeDialogs() {
       <Dialog open={isEditCategoryDialogOpen} onOpenChange={setIsEditCategoryDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Category</DialogTitle>
+            <DialogTitle>Editar Categoría</DialogTitle>
           </DialogHeader>
           {editingCategoryFormData && (
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="edit-category-name">Name *</Label>
+                <Label htmlFor="edit-category-name">Nombre *</Label>
                 <Input
                   id="edit-category-name"
-                  placeholder="Enter category name"
+                  placeholder="Ingrese el nombre de la categoría"
                   value={editingCategoryFormData.name || ''}
                   onChange={(e) => setEditingCategoryFormData({ ...editingCategoryFormData, name: e.target.value })}
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="edit-category-description">Description</Label>
+                <Label htmlFor="edit-category-description">Descripción</Label>
                 <Textarea
                   id="edit-category-description"
-                  placeholder="Enter category description (optional)"
+                  placeholder="Ingrese una descripción (opcional)"
                   value={editingCategoryFormData.description || ''}
                   onChange={(e) => setEditingCategoryFormData({ ...editingCategoryFormData, description: e.target.value })}
                   rows={3}
@@ -133,10 +133,10 @@ export function ProductHomeDialogs() {
           )}
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={handleCancelEditCategory}>
-              Cancel
+              Cancelar
             </Button>
             <Button onClick={handleSaveEditCategory} disabled={!editingCategoryFormData?.name?.trim()}>
-              Save Changes
+              Guardar Cambios
             </Button>
           </div>
         </DialogContent>
@@ -146,13 +146,14 @@ export function ProductHomeDialogs() {
       <Dialog open={isCreateProductDialogOpen} onOpenChange={setIsCreateProductDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>New Product</DialogTitle>
+            <DialogTitle>Nuevo Producto</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="create-name">Name *</Label>
+              <Label htmlFor="create-name">Nombre *</Label>
               <Input
                 id="create-name"
+                placeholder="Ingrese el nombre del producto"
                 value={newProductFormData.name || ''}
                 onChange={(e) => setNewProductFormData({ ...newProductFormData, name: e.target.value })}
               />
@@ -162,19 +163,20 @@ export function ProductHomeDialogs() {
                 <Label htmlFor="create-sku">SKU *</Label>
                 <Input
                   id="create-sku"
+                  placeholder="Ingrese el SKU"
                   value={newProductFormData.sku || ''}
                   onChange={(e) => setNewProductFormData({ ...newProductFormData, sku: e.target.value })}
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="create-category">Category</Label>
+                <Label htmlFor="create-category">Categoría</Label>
                 <Select
                   value={newProductFormData.product_category_id ? String(newProductFormData.product_category_id) : 'N/A'}
                   onValueChange={(value) => setNewProductFormData({
                     ...newProductFormData, product_category_id: value === 'N/A' ? null : Number(value) })}
                 >
                   <SelectTrigger id="create-category">
-                    <SelectValue placeholder="Select a category" />
+                    <SelectValue placeholder="Seleccione una categoría" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="N/A">N/A</SelectItem>
@@ -188,11 +190,12 @@ export function ProductHomeDialogs() {
               </div>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="create-price">Price *</Label>
+              <Label htmlFor="create-price">Precio *</Label>
               <Input
                 id="create-price"
                 type="number"
                 step="0.01"
+                placeholder="0.00"
                 value={newProductFormData.price || ''}
                 onChange={(e) => setNewProductFormData({ ...newProductFormData, price: parseFloat(e.target.value) || 0 })}
               />
@@ -203,15 +206,17 @@ export function ProductHomeDialogs() {
                 <Input
                   id="create-stock"
                   type="number"
+                  placeholder="0"
                   value={newProductFormData.stock || ''}
                   onChange={(e) => setNewProductFormData({ ...newProductFormData, stock: parseInt(e.target.value) || 0 })}
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="create-minStock">Minimum Stock</Label>
+                <Label htmlFor="create-minStock">Stock Mínimo</Label>
                 <Input
                   id="create-minStock"
                   type="number"
+                  placeholder="0"
                   value={newProductFormData.minimum_stock || ''}
                   onChange={(e) => setNewProductFormData({ ...newProductFormData, minimum_stock: e.target.value ? parseInt(e.target.value) : null })}
                 />
@@ -220,9 +225,9 @@ export function ProductHomeDialogs() {
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={handleCancelAddProduct}>
-              Cancel
+              Cancelar
             </Button>
-            <Button onClick={handleSaveAddProduct}>Save</Button>
+            <Button onClick={handleSaveAddProduct}>Guardar</Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -231,14 +236,15 @@ export function ProductHomeDialogs() {
       <Dialog open={isEditProductDialogOpen} onOpenChange={setIsEditProductDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Product</DialogTitle>
+            <DialogTitle>Editar Producto</DialogTitle>
           </DialogHeader>
           {editingProductFormData && (
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="edit-name">Name *</Label>
+                <Label htmlFor="edit-name">Nombre *</Label>
                 <Input
                   id="edit-name"
+                  placeholder="Ingrese el nombre del producto"
                   value={editingProductFormData.name || ''}
                   onChange={(e) => setEditingProductFormData({ ...editingProductFormData, name: e.target.value })}
                 />
@@ -248,12 +254,13 @@ export function ProductHomeDialogs() {
                   <Label htmlFor="edit-sku">SKU *</Label>
                   <Input
                     id="edit-sku"
+                    placeholder="Ingrese el SKU"
                     value={editingProductFormData.sku || ''}
                     onChange={(e) => setEditingProductFormData({ ...editingProductFormData, sku: e.target.value })}
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-category">Category</Label>
+                  <Label htmlFor="edit-category">Categoría</Label>
                   <Select
                     value={editingProductFormData.product_category_id ? String(editingProductFormData.product_category_id) : 'N/A'}
                     onValueChange={(value) => setEditingProductFormData({
@@ -262,7 +269,7 @@ export function ProductHomeDialogs() {
                     })}
                   >
                     <SelectTrigger id="edit-category">
-                      <SelectValue placeholder="Select a category" />
+                      <SelectValue placeholder="Seleccione una categoría" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="N/A">N/A</SelectItem>
@@ -276,11 +283,12 @@ export function ProductHomeDialogs() {
                 </div>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="edit-price">Price *</Label>
+                <Label htmlFor="edit-price">Precio *</Label>
                 <Input
                   id="edit-price"
                   type="number"
                   step="0.01"
+                  placeholder="0.00"
                   value={editingProductFormData.price || ''}
                   onChange={(e) => setEditingProductFormData({ ...editingProductFormData, price: parseFloat(e.target.value) || 0 })}
                 />
@@ -291,15 +299,17 @@ export function ProductHomeDialogs() {
                   <Input
                     id="edit-stock"
                     type="number"
+                    placeholder="0"
                     value={editingProductFormData.stock || ''}
                     onChange={(e) => setEditingProductFormData({ ...editingProductFormData, stock: parseInt(e.target.value) || 0 })}
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-minStock">Minimum Stock</Label>
+                  <Label htmlFor="edit-minStock">Stock Mínimo</Label>
                   <Input
                     id="edit-minStock"
                     type="number"
+                    placeholder="0"
                     value={editingProductFormData.minimum_stock || ''}
                     onChange={(e) => setEditingProductFormData({ ...editingProductFormData, minimum_stock: e.target.value ? parseInt(e.target.value) : null })}
                   />
@@ -309,9 +319,9 @@ export function ProductHomeDialogs() {
           )}
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={handleCancelEditProduct}>
-              Cancel
+              Cancelar
             </Button>
-            <Button onClick={handleSaveEditProduct}>Save</Button>
+            <Button onClick={handleSaveEditProduct}>Guardar</Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -321,23 +331,23 @@ export function ProductHomeDialogs() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {productToToggleStatus?.is_active ? 'Deactivate Product' : 'Activate Product'}
+              {productToToggleStatus?.is_active ? 'Desactivar Producto' : 'Activar Producto'}
             </DialogTitle>
           </DialogHeader>
           <div className="py-4">
             <p className="text-foreground">
-              Are you sure you want to {productToToggleStatus?.is_active ? 'deactivate' : 'activate'} the product <strong>"{productToToggleStatus?.name}"</strong>?
+              ¿Está seguro que desea {productToToggleStatus?.is_active ? 'desactivar' : 'activar'} el producto <strong>"{productToToggleStatus?.name}"</strong>?
             </p>
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={handleCancelToggleStatus}>
-              Cancel
+              Cancelar
             </Button>
             <Button 
               variant={productToToggleStatus?.is_active ? 'destructive' : 'default'}
               onClick={handleConfirmToggleStatus}
             >
-              {productToToggleStatus?.is_active ? 'Deactivate' : 'Activate'}
+              {productToToggleStatus?.is_active ? 'Desactivar' : 'Activar'}
             </Button>
           </div>
         </DialogContent>
@@ -347,19 +357,19 @@ export function ProductHomeDialogs() {
       <Dialog open={isDeleteCategoryDialogOpen} onOpenChange={setIsDeleteCategoryDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Category</DialogTitle>
+            <DialogTitle>Eliminar Categoría</DialogTitle>
           </DialogHeader>
           <div className="py-4">
             <p className="text-foreground">
-              Are you sure you want to delete the category <strong>"{categoryToDelete?.name}"</strong>? This action cannot be undone.
+              ¿Está seguro que desea eliminar la categoría <strong>"{categoryToDelete?.name}"</strong>? Esta acción no se puede deshacer.
             </p>
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={handleCancelDeleteCategory}>
-              Cancel
+              Cancelar
             </Button>
             <Button variant="destructive" onClick={handleConfirmDeleteCategory}>
-              Delete
+              Eliminar
             </Button>
           </div>
         </DialogContent>

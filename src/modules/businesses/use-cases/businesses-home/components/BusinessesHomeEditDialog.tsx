@@ -28,23 +28,23 @@ export function BusinessesHomeEditDialog() {
     <Dialog open={isEditBusinessDialogOpen} onOpenChange={(open) => !open && handleCloseEditBusiness()}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Edit Business</DialogTitle>
+          <DialogTitle>Editar Negocio</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
-            <Label htmlFor="edit-name">Name *</Label>
+            <Label htmlFor="edit-name">Nombre *</Label>
             <Input
               id="edit-name"
-              placeholder="Enter business name"
+              placeholder="Ingrese el nombre del negocio"
               value={editBusinessFormData.name || editingBusiness.name}
               onChange={(e) => handleChangeEditBusinessFormData('name', e.target.value)}
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="edit-description">Description</Label>
+            <Label htmlFor="edit-description">Descripción</Label>
             <Textarea
               id="edit-description"
-              placeholder="Enter business description (optional)"
+              placeholder="Ingrese la descripción del negocio (opcional)"
               value={editBusinessFormData.description !== undefined ? (editBusinessFormData.description || '') : (editingBusiness.description || '')}
               onChange={(e) => handleChangeEditBusinessFormData('description', e.target.value || null)}
               rows={4}
@@ -52,17 +52,17 @@ export function BusinessesHomeEditDialog() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="edit-email">Email</Label>
+              <Label htmlFor="edit-email">Correo Electrónico</Label>
               <Input
                 id="edit-email"
                 type="email"
-                placeholder="business@example.com"
+                placeholder="negocio@ejemplo.com"
                 value={editBusinessFormData.email !== undefined ? (editBusinessFormData.email || '') : (editingBusiness.email || '')}
                 onChange={(e) => handleChangeEditBusinessFormData('email', e.target.value || null)}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="edit-phone">Phone</Label>
+              <Label htmlFor="edit-phone">Teléfono</Label>
               <Input
                 id="edit-phone"
                 type="tel"
@@ -73,10 +73,10 @@ export function BusinessesHomeEditDialog() {
             </div>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="edit-address">Address</Label>
+            <Label htmlFor="edit-address">Dirección</Label>
             <Textarea
               id="edit-address"
-              placeholder="Enter business address (optional)"
+              placeholder="Ingrese la dirección del negocio (opcional)"
               value={editBusinessFormData.address !== undefined ? (editBusinessFormData.address || '') : (editingBusiness.address || '')}
               onChange={(e) => handleChangeEditBusinessFormData('address', e.target.value || null)}
               rows={2}
@@ -85,10 +85,10 @@ export function BusinessesHomeEditDialog() {
         </div>
         <div className="flex justify-end gap-3">
           <Button variant="outline" onClick={handleCloseEditBusiness}>
-            Cancel
+            Cancelar
           </Button>
           <Button onClick={handleUpdateBusiness} disabled={!editBusinessFormData.name?.trim() && !editingBusiness.name.trim()}>
-            Update Business
+            Actualizar Negocio
           </Button>
         </div>
       </DialogContent>

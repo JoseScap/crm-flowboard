@@ -42,7 +42,7 @@ export function ProductHomeTable() {
               className="cursor-pointer hover:bg-muted/80 transition-colors"
               onClick={() => handleChangeSortProductsBy('name')}
             >
-              Product {renderSortIcon('name')}
+              Producto {renderSortIcon('name')}
             </TableHead>
             <TableHead 
               className="cursor-pointer hover:bg-muted/80 transition-colors"
@@ -50,7 +50,7 @@ export function ProductHomeTable() {
             >
               SKU {renderSortIcon('sku')}
             </TableHead>
-            <TableHead>Category</TableHead>
+            <TableHead>Categoría</TableHead>
             <TableHead 
               className="text-right cursor-pointer hover:bg-muted/80 transition-colors"
               onClick={() => handleChangeSortProductsBy('price')}
@@ -68,9 +68,9 @@ export function ProductHomeTable() {
               className="text-center cursor-pointer hover:bg-muted/80 transition-colors"
               onClick={() => handleChangeSortProductsBy('is_active')}
             >
-              Active {renderSortIcon('is_active')}
+              Activo {renderSortIcon('is_active')}
             </TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead className="text-right">Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -79,7 +79,7 @@ export function ProductHomeTable() {
               <TableCell colSpan={8} className="text-center py-8">
                 <div className="flex items-center justify-center gap-2">
                   <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
-                  <span className="text-muted-foreground">Loading products...</span>
+                  <span className="text-muted-foreground">Cargando productos...</span>
                 </div>
               </TableCell>
             </TableRow>
@@ -107,7 +107,7 @@ export function ProductHomeTable() {
                         {product.stock}
                       </span>
                       {product.minimum_stock !== null && product.minimum_stock > 0 && (
-                        <span className="text-muted-foreground text-sm"> / {product.minimum_stock} min</span>
+                        <span className="text-muted-foreground text-sm"> / {product.minimum_stock} mín</span>
                       )}
                     </TableCell>
                     <TableCell className="text-center">
@@ -115,7 +115,7 @@ export function ProductHomeTable() {
                     </TableCell>
                     <TableCell className="text-center">
                       <Badge variant={product.is_active ? 'default' : 'secondary'}>
-                        {product.is_active ? 'Active' : 'Inactive'}
+                        {product.is_active ? 'Activo' : 'Inactivo'}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
@@ -131,7 +131,7 @@ export function ProductHomeTable() {
                           variant="ghost"
                           size="icon"
                           onClick={() => toggleActiveStatus(product)}
-                          title={product.is_active ? 'Deactivate product' : 'Activate product'}
+                          title={product.is_active ? 'Desactivar producto' : 'Activar producto'}
                         >
                           {product.is_active ? (
                             <PowerOff className="w-4 h-4 text-red-500" />
@@ -147,7 +147,7 @@ export function ProductHomeTable() {
               {products.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
-                    No products found
+                    No se encontraron productos
                   </TableCell>
                 </TableRow>
               )}

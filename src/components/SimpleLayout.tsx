@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { getInitials, getAvatarColor } from '@/lib/lead-utils';
 import supabase from '@/modules/common/lib/supabase';
+import { toast } from 'sonner';
 
 interface SimpleLayoutProps {
   children: ReactNode;
@@ -26,7 +27,7 @@ export function SimpleLayout({ children, requireAuth = true }: SimpleLayoutProps
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex items-center gap-2">
           <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
-          <span className="text-muted-foreground">Loading...</span>
+          <span className="text-muted-foreground">Cargando...</span>
         </div>
       </div>
     );
@@ -40,12 +41,12 @@ export function SimpleLayout({ children, requireAuth = true }: SimpleLayoutProps
     try {
       const { error } = await supabase.auth.signOut();
       if (error) {
-        console.error('Error signing out:', error);
+        toast.error('Error al cerrar sesión');
       } else {
         navigate('/login');
       }
     } catch (error) {
-      console.error('Error signing out:', error);
+      toast.error('Error al cerrar sesión');
     }
   };
 
@@ -81,7 +82,7 @@ export function SimpleLayout({ children, requireAuth = true }: SimpleLayoutProps
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
                   <LogOut className="w-4 h-4 mr-2" />
-                  <span>Logout</span>
+                  <span>Cerrar Sesión</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

@@ -82,14 +82,12 @@ export function BusinessViewProvider({ children }: { children: ReactNode }) {
         .order('created_at', { ascending: false });
 
       if (employeesError) {
-        console.error('Error fetching employees:', employeesError);
-        toast.error('Error fetching employees');
+        toast.error('Error al obtener los empleados');
       } else if (employeesData) {
         setEmployees(employeesData);
       }
     } catch (error) {
-      console.error('Error fetching employees:', error);
-      toast.error('Error fetching employees');
+      toast.error('Error al obtener los empleados');
     } finally {
       setLoadingEmployees(false);
     }
@@ -149,7 +147,7 @@ export function BusinessViewProvider({ children }: { children: ReactNode }) {
         // Fetch business employees
         await fetchEmployees();
       } catch (error) {
-        console.error('Error fetching business data:', error);
+        toast.error('Error al obtener los datos del negocio');
       } finally {
         setLoading(false);
       }
@@ -171,13 +169,13 @@ export function BusinessViewProvider({ children }: { children: ReactNode }) {
 
   const handleAddEmployee = async () => {
     if (!id || !newEmployeeEmail.trim() || !newEmployeeFirstName.trim() || !newEmployeeLastName.trim()) {
-      toast.error('Please fill in all required fields');
+      toast.error('Por favor complete todos los campos requeridos');
       return;
     }
 
     const businessId = parseInt(id || '0', 10);
     if (isNaN(businessId)) {
-      toast.error('Invalid business ID');
+      toast.error('ID de negocio inválido');
       return;
     }
 
@@ -191,19 +189,18 @@ export function BusinessViewProvider({ children }: { children: ReactNode }) {
       });
 
       if (error) {
-        toast.error(error.message || 'Error adding employee');
+        toast.error(error.message || 'Error al agregar el empleado');
         return;
       }
 
-      toast.success('Employee added successfully');
+      toast.success('Empleado agregado con éxito');
       setIsAddEmployeeDialogOpen(false);
       setNewEmployeeEmail('');
       setNewEmployeeFirstName('');
       setNewEmployeeLastName('');
       await fetchEmployees();
     } catch (error: any) {
-      console.error('Error adding employee:', error);
-      toast.error(error.message || 'Error adding employee');
+      toast.error(error.message || 'Error al agregar el empleado');
     } finally {
       setAddingEmployee(false);
     }
@@ -225,15 +222,14 @@ export function BusinessViewProvider({ children }: { children: ReactNode }) {
       });
 
       if (error) {
-        toast.error(error.message || `Error ${employee.is_active ? 'deactivating' : 'activating'} employee`);
+        toast.error(error.message || `Error al ${employee.is_active ? 'desactivar' : 'activar'} al empleado`);
         return;
       }
 
-      toast.success(`Employee ${employee.is_active ? 'deactivated' : 'activated'} successfully`);
+      toast.success(`Empleado ${employee.is_active ? 'desactivado' : 'activado'} con éxito`);
       await fetchEmployees();
     } catch (error: any) {
-      console.error(`Error toggling employee status:`, error);
-      toast.error(error.message || 'Error updating employee status');
+      toast.error(error.message || 'Error al actualizar el estado del empleado');
     } finally {
       setTogglingStatus(false);
     }

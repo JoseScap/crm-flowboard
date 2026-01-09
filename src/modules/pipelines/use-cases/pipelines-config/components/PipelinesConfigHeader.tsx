@@ -19,9 +19,9 @@ export function PipelinesConfigHeader() {
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Pipeline Configuration</h1>
+          <h1 className="text-3xl font-bold text-foreground">Configuración del Pipeline</h1>
           <p className="text-muted-foreground mt-1">
-            Configure settings for {pipeline?.name}
+            Configura los ajustes para {pipeline?.name}
           </p>
         </div>
       </div>

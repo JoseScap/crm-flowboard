@@ -66,12 +66,12 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
         .order('created_at', { ascending: false });
 
       if (error) {
-        toast.error('Error fetching businesses');
+        toast.error('Error al obtener los negocios');
       } else if (data) {
         setBusinesses(data);
       }
     } catch (error) {
-      toast.error('Error fetching businesses');
+      toast.error('Error al obtener los negocios');
     } finally {
       setLoadingData(false);
     }
@@ -99,15 +99,15 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
   const handleSaveBusiness = async () => {
     // Validation
     if (!newBusinessFormData.name.trim()) {
-      toast.error('Business name is required');
+      toast.error('El nombre del negocio es obligatorio');
       return;
     }
     if (!newBusinessFormData.owner_first_name.trim()) {
-      toast.error('Owner first name is required');
+      toast.error('El nombre del dueño es obligatorio');
       return;
     }
     if (!newBusinessFormData.owner_last_name.trim()) {
-      toast.error('Owner last name is required');
+      toast.error('El apellido del dueño es obligatorio');
       return;
     }
 
@@ -127,18 +127,16 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
       });
       
       if (error) {
-        toast.error('Error creating business');
-        console.error('Error creating business:', error);
+        toast.error('Error al crear el negocio');
       } else {
-        toast.success('Business created successfully');
+        toast.success('Negocio creado con éxito');
         setNewBusinessFormData(defaultNewBusinessFormData);
       }
       
       // Refetch businesses (whether it failed or succeeded)
       await getData();
     } catch (error) {
-      console.error('Error creating business:', error);
-      toast.error('Error creating business');
+      toast.error('Error al crear el negocio');
       // Still refetch to ensure UI is in sync
       await getData();
     }
@@ -186,16 +184,15 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
         .eq('id', editingBusiness.id);
 
       if (error) {
-        toast.error('Error updating business');
+        toast.error('Error al actualizar el negocio');
       } else {
-        toast.success('Business updated successfully');
+        toast.success('Negocio actualizado con éxito');
       }
 
       // Refetch businesses
       await getData();
     } catch (error) {
-      console.error('Error updating business:', error);
-      toast.error('Error updating business');
+      toast.error('Error al actualizar el negocio');
       await getData();
     } finally {
       setLoadingData(false);

@@ -11,12 +11,12 @@ export function PipelinesHomeHeader() {
         <div>
           <h1 className="text-3xl font-bold text-foreground">Pipelines</h1>
           <p className="text-muted-foreground mt-1">
-            Manage and organize your sales pipelines
+            Gestiona y organiza tus flujos de ventas
           </p>
         </div>
         <Button onClick={handleCreatePipeline} className="flex items-center gap-2">
           <Plus className="w-5 h-5" />
-          New Pipeline
+          Nuevo Pipeline
         </Button>
       </div>
     </div>

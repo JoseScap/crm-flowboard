@@ -41,26 +41,26 @@ export function PipelineViewHeader() {
 
   const stats = [
     {
-      label: 'Total Pipeline',
+      label: 'Pipeline Total',
       value: formatCurrency(totalValue),
       icon: DollarSign,
       color: 'text-primary',
     },
     {
-      label: 'Won Revenue',
+      label: 'Ingresos Ganados',
       value: revenueValue,
       icon: TrendingUp,
       color: 'text-success',
       isRevenue: true,
     },
     {
-      label: 'Active Leads',
+      label: 'Leads Activos',
       value: activeLeads.toString(),
       icon: Users,
       color: 'text-warning',
     },
     {
-      label: 'Conversion Rate',
+      label: 'Tasa de Conversión',
       value: `${conversionRate}%`,
       icon: Target,
       color: 'text-primary',
@@ -78,12 +78,12 @@ export function PipelineViewHeader() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-foreground">
-            {currentPipeline ? currentPipeline.name : 'Sales Pipeline'}
+            {currentPipeline ? currentPipeline.name : 'Pipeline de Ventas'}
           </h1>
           <p className="text-muted-foreground mt-1">
             {currentPipeline?.description || (pipelineStages.length > 0 
-              ? `Track and manage your leads across ${pipelineStages.length} stages`
-              : 'Create your first stage')}
+              ? `Rastrea y gestiona tus leads a través de ${pipelineStages.length} etapas`
+              : 'Crea tu primera etapa')}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -93,11 +93,11 @@ export function PipelineViewHeader() {
               onChange={(e) => setEmployeeFilterId(e.target.value)}
               className="bg-card border border-border text-foreground px-4 py-2.5 rounded-lg font-medium hover:bg-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
-              <option value="all">All Assignees</option>
-              <option value="unassigned">Unassigned</option>
+              <option value="all">Todos los Asignados</option>
+              <option value="unassigned">Sin Asignar</option>
               {businessEmployees.map((employee) => (
                 <option key={employee.id} value={employee.id.toString()}>
-                  {employee.id === currentUserEmployee?.id ? 'Assigned to: Me' : `Assigned to: ${employee.email.split('@')[0]}`}
+                  {employee.id === currentUserEmployee?.id ? 'Asignado a: Mí' : `Asignado a: ${employee.email.split('@')[0]}`}
                 </option>
               ))}
             </select>
@@ -119,7 +119,7 @@ export function PipelineViewHeader() {
             onClick={handleNewLeadClick}
             className="bg-primary text-primary-foreground px-5 py-2.5 rounded-lg font-medium hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
           >
-            + New Lead
+            + Nuevo Lead
           </button>
         </div>
       </div>

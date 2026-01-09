@@ -29,6 +29,7 @@ export function PipelineCard({ pipeline }: PipelineCardProps) {
             e.stopPropagation();
             navigate(`/user/businesses/${businessId}/pipeline/${pipeline.id}/config`);
           }}
+          title="Configuración del Pipeline"
         >
           <Settings className="w-4 h-4" />
         </Button>

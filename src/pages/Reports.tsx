@@ -32,18 +32,18 @@ const salesByMonth = [
 ];
 
 const salesByCategory = [
-  { name: 'Electronics', value: 45000, color: 'hsl(var(--primary))' },
-  { name: 'Accessories', value: 28000, color: 'hsl(var(--chart-2))' },
+  { name: 'Electrónica', value: 45000, color: 'hsl(var(--primary))' },
+  { name: 'Accesorios', value: 28000, color: 'hsl(var(--chart-2))' },
   { name: 'Software', value: 15000, color: 'hsl(var(--chart-3))' },
-  { name: 'Services', value: 12000, color: 'hsl(var(--chart-4))' },
+  { name: 'Servicios', value: 12000, color: 'hsl(var(--chart-4))' },
 ];
 
 const topProducts = [
   { name: 'Laptop Pro 15"', ventas: 156, ingresos: 202644 },
   { name: 'Monitor 27"', ventas: 98, ingresos: 39102 },
-  { name: 'Headphones', ventas: 87, ingresos: 17313 },
-  { name: 'Keyboard', ventas: 76, ingresos: 9804 },
-  { name: 'Wireless Mouse', ventas: 134, ingresos: 6566 },
+  { name: 'Audífonos', ventas: 87, ingresos: 17313 },
+  { name: 'Teclado', ventas: 76, ingresos: 9804 },
+  { name: 'Mouse Inalámbrico', ventas: 134, ingresos: 6566 },
 ];
 
 const dailySales = [

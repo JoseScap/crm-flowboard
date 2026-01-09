@@ -25,43 +25,43 @@ export function BusinessesHomeCreateDialog() {
     <Dialog open={isCreateBusinessDialogOpen} onOpenChange={handleCancelCreateBusiness}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>New Business</DialogTitle>
+          <DialogTitle>Nuevo Negocio</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
-            <Label htmlFor="name">Business Name *</Label>
+            <Label htmlFor="name">Nombre del Negocio *</Label>
             <Input
               id="name"
-              placeholder="Enter business name"
+              placeholder="Ingrese el nombre del negocio"
               value={newBusinessFormData.name}
               onChange={(e) => handleChangeNewBusinessFormData('name', e.target.value)}
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="owner_first_name">Owner First Name *</Label>
+              <Label htmlFor="owner_first_name">Nombre del Dueño *</Label>
               <Input
                 id="owner_first_name"
-                placeholder="First name"
+                placeholder="Nombre"
                 value={newBusinessFormData.owner_first_name}
                 onChange={(e) => handleChangeNewBusinessFormData('owner_first_name', e.target.value)}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="owner_last_name">Owner Last Name *</Label>
+              <Label htmlFor="owner_last_name">Apellido del Dueño *</Label>
               <Input
                 id="owner_last_name"
-                placeholder="Last name"
+                placeholder="Apellido"
                 value={newBusinessFormData.owner_last_name}
                 onChange={(e) => handleChangeNewBusinessFormData('owner_last_name', e.target.value)}
               />
             </div>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">Descripción</Label>
             <Textarea
               id="description"
-              placeholder="Enter business description (optional)"
+              placeholder="Ingrese la descripción del negocio (opcional)"
               value={newBusinessFormData.description || ''}
               onChange={(e) => handleChangeNewBusinessFormData('description', e.target.value || null)}
               rows={4}
@@ -69,17 +69,17 @@ export function BusinessesHomeCreateDialog() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Correo Electrónico</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="business@example.com"
+                placeholder="negocio@ejemplo.com"
                 value={newBusinessFormData.email || ''}
                 onChange={(e) => handleChangeNewBusinessFormData('email', e.target.value || null)}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="phone">Teléfono</Label>
               <Input
                 id="phone"
                 type="tel"
@@ -90,10 +90,10 @@ export function BusinessesHomeCreateDialog() {
             </div>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="address">Address</Label>
+            <Label htmlFor="address">Dirección</Label>
             <Textarea
               id="address"
-              placeholder="Enter business address (optional)"
+              placeholder="Ingrese la dirección del negocio (opcional)"
               value={newBusinessFormData.address || ''}
               onChange={(e) => handleChangeNewBusinessFormData('address', e.target.value || null)}
               rows={2}
@@ -102,13 +102,13 @@ export function BusinessesHomeCreateDialog() {
         </div>
         <div className="flex justify-end gap-3">
           <Button variant="outline" onClick={handleCancelCreateBusiness}>
-            Cancel
+            Cancelar
           </Button>
           <Button 
             onClick={handleSaveBusiness} 
             disabled={!newBusinessFormData.name.trim() || !newBusinessFormData.owner_first_name.trim() || !newBusinessFormData.owner_last_name.trim()}
           >
-            Create Business
+            Crear Negocio
           </Button>
         </div>
       </DialogContent>

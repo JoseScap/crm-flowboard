@@ -19,7 +19,7 @@ const PipelinesHome = () => {
         <div className="flex items-center justify-end mb-6">
           <Button onClick={handleCreatePipeline} className="flex items-center gap-2">
             <Plus className="w-5 h-5" />
-            New Pipeline
+            Nuevo Pipeline
           </Button>
         </div>
       </div>

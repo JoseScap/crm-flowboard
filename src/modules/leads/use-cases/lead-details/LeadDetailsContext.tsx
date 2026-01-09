@@ -134,8 +134,7 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
           .single();
 
         if (leadError) {
-          console.error('Error fetching lead:', leadError);
-          toast.error('Error fetching lead details');
+          toast.error('Error al obtener los detalles del lead');
           setLoadingData(false);
           return;
         }
@@ -200,8 +199,7 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
           }
         }
       } catch (error) {
-        console.error('Error fetching lead details:', error);
-        toast.error('Error fetching lead details');
+        toast.error('Error al obtener los detalles del lead');
       } finally {
         setLoadingData(false);
       }
@@ -232,7 +230,7 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
         if (error) throw error;
         setAvailableProducts(data || []);
       } catch (error) {
-        console.error('Error fetching products:', error);
+        toast.error('Error al obtener los productos');
       } finally {
         setLoadingItems(false);
       }
@@ -260,7 +258,7 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
       if (error) throw error;
       setLead(prev => prev ? { ...prev, value: newValue } : null);
     } catch (error) {
-      console.error('Error syncing lead value:', error);
+      toast.error('Error al sincronizar el valor del lead');
     }
   };
 
@@ -291,11 +289,10 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
         const updatedItems = [...leadItems, data];
         setLeadItems(updatedItems);
         await syncLeadValue(updatedItems);
-        toast.success(`${product.name} added to lead`);
+        toast.success(`${product.name} agregado al lead`);
       }
     } catch (error) {
-      console.error('Error adding product:', error);
-      toast.error('Error adding product to lead');
+      toast.error('Error al agregar el producto al lead');
     }
   };
 
@@ -310,10 +307,9 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
       const updatedItems = leadItems.filter(item => item.id !== itemId);
       setLeadItems(updatedItems);
       await syncLeadValue(updatedItems);
-      toast.success('Product removed from lead');
+      toast.success('Producto eliminado del lead');
     } catch (error) {
-      console.error('Error removing product:', error);
-      toast.error('Error removing product');
+      toast.error('Error al eliminar el producto');
     }
   };
 
@@ -338,8 +334,7 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
         await syncLeadValue(updatedItems);
       }
     } catch (error) {
-      console.error('Error updating quantity:', error);
-      toast.error('Error updating quantity');
+      toast.error('Error al actualizar la cantidad');
     }
   };
 
@@ -374,8 +369,7 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
 
       toast.success('Venta procesada correctamente');
     } catch (error: any) {
-      console.error('Error processing sale:', error);
-      toast.error(error.message || 'Error processing sale');
+      toast.error(error.message || 'Error al procesar la venta');
     } finally {
       setIsProcessingSale(false);
     }
@@ -404,11 +398,7 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
         setPagingNext(response.data.paging?.next);
       }
     } catch (error) {
-      console.error('Error fetching WhatsApp messages:', error);
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as { response?: { data?: unknown }; message?: string };
-        console.error('Error details:', axiosError.response?.data || axiosError.message);
-      }
+      toast.error('Error al obtener los mensajes de WhatsApp');
     }
   };
 
@@ -422,7 +412,7 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
       await fetchMessages();
       setIsChatModalOpen(true);
     } catch (error) {
-      console.error('Error opening chat:', error);
+      toast.error('Error al abrir el chat');
     } finally {
       setLoadingChat(false);
     }
@@ -458,12 +448,7 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
       // Refresh messages
       await fetchMessages();
     } catch (error) {
-      console.error('Error sending message:', error);
       toast.error('Error al enviar el mensaje');
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as { response?: { data?: unknown }; message?: string };
-        console.error('Error details:', axiosError.response?.data || axiosError.message);
-      }
     } finally {
       setSendingMessage(false);
     }
@@ -494,12 +479,7 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
         setPagingNext(response.data.paging?.next);
       }
     } catch (error) {
-      console.error('Error loading more messages:', error);
       toast.error('Error al cargar más mensajes');
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as { response?: { data?: unknown }; message?: string };
-        console.error('Error details:', axiosError.response?.data || axiosError.message);
-      }
     } finally {
       setLoadingMore(false);
     }
@@ -525,10 +505,9 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
       if (error) throw error;
 
       setLead(prev => prev ? { ...prev, business_employee_id: employeeId } : null);
-      toast.success('Lead assignment updated');
+      toast.success('Asignación del lead actualizada');
     } catch (error) {
-      console.error('Error updating lead assignment:', error);
-      toast.error('Error updating lead assignment');
+      toast.error('Error al actualizar la asignación del lead');
     }
   };
 

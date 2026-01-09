@@ -71,8 +71,8 @@ const App = () => (
                 path="/user/businesses/:id"
                 element={
                   <BusinessLayout
-                    title="Dashboard"
-                    description="Overview of your business performance"
+                    title="Panel de Control"
+                    description="Resumen del rendimiento de tu negocio"
                   >
                     <BusinessView />
                   </BusinessLayout>
@@ -83,7 +83,7 @@ const App = () => (
                 element={
                   <BusinessLayout
                     title="Pipelines"
-                    description="Manage and organize your sales pipelines"
+                    description="Gestiona y organiza tus flujos de venta"
                   >
                     <PipelinesHomePage />
                   </BusinessLayout>
@@ -93,8 +93,8 @@ const App = () => (
                 path="/user/businesses/:id/products"
                 element={
                   <BusinessLayout
-                    title="Products"
-                    description="Manage your product inventory and stock levels"
+                    title="Productos"
+                    description="Gestiona tu inventario de productos y niveles de stock"
                   >
                     <ProductsHomePage />
                   </BusinessLayout>
@@ -104,8 +104,8 @@ const App = () => (
                 path="/user/businesses/:id/sales"
                 element={
                   <BusinessLayout
-                    title="Sales History"
-                    description="View and manage your business sales history and details."
+                    title="Historial de Ventas"
+                    description="Consulta y gestiona el historial de ventas y detalles de tu negocio."
                   >
                     <SalesHomePage />
                   </BusinessLayout>
@@ -115,8 +115,8 @@ const App = () => (
                 path="/user/businesses/:id/sales/new"
                 element={
                   <BusinessLayout
-                    title="New Sale"
-                    description="Create a new sale by adding products from your inventory."
+                    title="Nueva Venta"
+                    description="Crea una nueva venta añadiendo productos de tu inventario."
                   >
                     <NewSalePage />
                   </BusinessLayout>
@@ -126,8 +126,8 @@ const App = () => (
                 path="/user/businesses/:id/applications"
                 element={
                   <BusinessLayout
-                    title="Applications"
-                    description="Connect your favorite apps to enhance your CRM experience"
+                    title="Aplicaciones"
+                    description="Conecta tus aplicaciones favoritas para mejorar tu experiencia CRM"
                   >
                     <ApplicationsHomePage />
                   </BusinessLayout>
@@ -138,7 +138,7 @@ const App = () => (
                 element={
                   <BusinessLayout
                     title="Pipeline"
-                    description="View and manage your sales pipeline"
+                    description="Consulta y gestiona tu flujo de ventas"
                   >
                     <PipelineViewPage />
                   </BusinessLayout>
@@ -148,8 +148,8 @@ const App = () => (
                 path="/user/businesses/:id/pipeline/:pipelineId/lead/:leadId"
                 element={
                   <BusinessLayout
-                    title="Lead Details"
-                    description="View lead information and details"
+                    title="Detalles del Lead"
+                    description="Consulta la información y detalles del lead"
                   >
                     <LeadDetailsPage />
                   </BusinessLayout>
@@ -159,8 +159,8 @@ const App = () => (
                 path="/user/businesses/:id/pipeline/:pipelineId/config"
                 element={
                   <BusinessLayout
-                    title="Pipeline Configuration"
-                    description="Configure settings for your pipeline"
+                    title="Configuración del Pipeline"
+                    description="Configura los ajustes de tu pipeline"
                   >
                     <PipelinesConfigPage />
                   </BusinessLayout>

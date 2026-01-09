@@ -57,7 +57,7 @@ export function LeadDetailsSection() {
           className="hover:bg-transparent px-0 h-auto"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Pipeline
+          Volver al Pipeline
         </Button>
         {lead.whatsapp_conversation_id && pipeline?.whatsapp_phone_number_id && (
           <Button
@@ -89,17 +89,17 @@ export function LeadDetailsSection() {
               {lead.is_active ? (
                 <Badge variant="default" className="h-5 px-1.5 text-[10px] flex items-center gap-1">
                   <CheckCircle2 className="w-2.5 h-2.5" />
-                  Active
+                  Activo
                 </Badge>
               ) : (
                 <Badge variant="secondary" className="h-5 px-1.5 text-[10px] flex items-center gap-1">
                   <XCircle className="w-2.5 h-2.5" />
-                  Inactive
+                  Inactivo
                 </Badge>
               )}
               {lead.is_revenue && (
                 <Badge variant="default" className="h-5 px-1.5 text-[10px] bg-green-600">
-                  Revenue
+                  Ingresos
                 </Badge>
               )}
             </div>
@@ -114,7 +114,7 @@ export function LeadDetailsSection() {
                   <span className="text-sm font-medium">{pipeline.name}</span>
                 </div>
                 <div className="flex flex-col items-start sm:items-end">
-                  <span className="text-[10px] font-semibold uppercase text-muted-foreground">Stage</span>
+                  <span className="text-[10px] font-semibold uppercase text-muted-foreground">Etapa</span>
                   <Badge 
                     variant="outline"
                     className="h-5 px-1.5 text-[10px] font-medium"
@@ -139,14 +139,14 @@ export function LeadDetailsSection() {
           <div className="space-y-3">
             <h2 className="text-sm font-bold text-foreground flex items-center gap-2 uppercase tracking-wider text-muted-foreground">
               <User className="w-4 h-4" />
-              Contact Information
+              Información de contacto
             </h2>
             
             <div className="grid gap-3">
               {lead.email && (
                 <div className="flex items-center gap-2">
                   <Mail className="w-3.5 h-3.5 text-primary" />
-                  <span className="text-xs text-muted-foreground w-12">Email:</span>
+                  <span className="text-xs text-muted-foreground w-12">Correo:</span>
                   <a 
                     href={`mailto:${lead.email}`}
                     className="text-sm text-foreground font-medium hover:text-primary transition-colors underline-offset-4 hover:underline"
@@ -159,7 +159,7 @@ export function LeadDetailsSection() {
               {lead.phone_number && (
                 <div className="flex items-center gap-2">
                   <Phone className="w-3.5 h-3.5 text-primary" />
-                  <span className="text-xs text-muted-foreground w-12">Phone:</span>
+                  <span className="text-xs text-muted-foreground w-12">Teléfono:</span>
                   <a 
                     href={`tel:${lead.phone_number}`}
                     className="text-sm text-foreground font-medium hover:text-primary transition-colors underline-offset-4 hover:underline"
@@ -183,13 +183,13 @@ export function LeadDetailsSection() {
           <div className="space-y-3">
             <h2 className="text-sm font-bold text-foreground flex items-center gap-2 uppercase tracking-wider text-muted-foreground">
               <DollarSign className="w-4 h-4" />
-              Lead Information
+              Información del Lead
             </h2>
             
             <div className="grid gap-3">
               <div className="flex items-center gap-2">
                 <DollarSign className="w-3.5 h-3.5 text-primary" />
-                <span className="text-xs text-muted-foreground w-16">Value:</span>
+                <span className="text-xs text-muted-foreground w-16">Valor:</span>
                 <span className="text-lg font-bold text-primary">{formatCurrency(lead.value)}</span>
               </div>
 
@@ -197,16 +197,16 @@ export function LeadDetailsSection() {
                 <Calendar className="w-3.5 h-3.5 text-primary mt-0.5" />
                 <span className="text-xs text-muted-foreground w-16">Timeline:</span>
                 <div className="flex flex-wrap gap-x-3 gap-y-0.5">
-                  <span className="text-xs text-foreground font-medium">Created: {formatDate(lead.created_at)}</span>
+                  <span className="text-xs text-foreground font-medium">Creado: {formatDate(lead.created_at)}</span>
                   {lead.closed_at && (
-                    <span className="text-xs text-green-600 font-semibold">Closed: {formatDate(lead.closed_at)}</span>
+                    <span className="text-xs text-green-600 font-semibold">Cerrado: {formatDate(lead.closed_at)}</span>
                   )}
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
                 <User className="w-3.5 h-3.5 text-primary" />
-                <span className="text-xs text-muted-foreground w-16">Assignee:</span>
+                <span className="text-xs text-muted-foreground w-16">Asignado:</span>
                 <div className="flex-1 max-w-[200px]">
                   <Select
                     value={currentEmployeeId}
@@ -216,13 +216,13 @@ export function LeadDetailsSection() {
                     }}
                   >
                     <SelectTrigger className="h-8 py-0 px-2 text-xs bg-background border-border hover:border-primary/50 transition-colors">
-                      <SelectValue placeholder="Unassigned" />
+                      <SelectValue placeholder="Sin asignar" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="unassigned" className="text-xs">Unassigned</SelectItem>
+                      <SelectItem value="unassigned" className="text-xs">Sin asignar</SelectItem>
                       {businessEmployees.map((employee) => (
                         <SelectItem key={employee.id} value={employee.id.toString()} className="text-xs">
-                          {employee.email} {employee.id === currentUserEmployee?.id ? '(Me)' : ''}
+                          {employee.email} {employee.id === currentUserEmployee?.id ? '(Yo)' : ''}
                         </SelectItem>
                       ))}
                     </SelectContent>

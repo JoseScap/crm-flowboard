@@ -14,6 +14,7 @@ import Placeholder from "./pages/Placeholder";
 import NotFound from "./pages/NotFound";
 import ProductsHomePage from "./modules/products/use-cases/products-home/ProductsHome";
 import SalesHomePage from "./modules/sales/use-cases/sales-home/SalesHome";
+import NewSalePage from "./modules/sales/use-cases/new-sale/NewSale";
 import PipelinesHomePage from "./modules/pipelines/use-cases/pipelines-home/PipelinesHome";
 import PipelineViewPage from "./modules/pipelines/use-cases/pipeline-view/PipelineView";
 import BusinessesHomePage from "./modules/businesses/use-cases/businesses-home/BusinessesHome";
@@ -103,10 +104,21 @@ const App = () => (
                 path="/user/businesses/:id/sales"
                 element={
                   <BusinessLayout
-                    title="Nueva Venta"
-                    description="Selecciona productos y procesa la venta"
+                    title="Sales History"
+                    description="View and manage your business sales history and details."
                   >
                     <SalesHomePage />
+                  </BusinessLayout>
+                }
+              />
+              <Route
+                path="/user/businesses/:id/sales/new"
+                element={
+                  <BusinessLayout
+                    title="New Sale"
+                    description="Create a new sale by adding products from your inventory."
+                  >
+                    <NewSalePage />
                   </BusinessLayout>
                 }
               />

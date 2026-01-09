@@ -494,6 +494,7 @@ export type Database = {
       sales: {
         Row: {
           applied_tax: number
+          business_employee_id: number
           business_id: number
           created_at: string
           id: number
@@ -506,6 +507,7 @@ export type Database = {
         }
         Insert: {
           applied_tax?: number
+          business_employee_id: number
           business_id: number
           created_at?: string
           id?: number
@@ -518,6 +520,7 @@ export type Database = {
         }
         Update: {
           applied_tax?: number
+          business_employee_id?: number
           business_id?: number
           created_at?: string
           id?: number
@@ -529,6 +532,13 @@ export type Database = {
           total?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "sales_business_employee_id_fkey"
+            columns: ["business_employee_id"]
+            isOneToOne: false
+            referencedRelation: "business_employees"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "sales_business_id_fkey"
             columns: ["business_id"]
@@ -585,6 +595,17 @@ export type Database = {
       }
       is_business_member: { Args: { p_business_id: number }; Returns: boolean }
       is_business_owner: { Args: { p_business_id: number }; Returns: boolean }
+      process_new_sale: {
+        Args: {
+          p_applied_tax: number
+          p_business_employee_id: number
+          p_business_id: number
+          p_items: Json
+          p_subtotal: number
+          p_total: number
+        }
+        Returns: number
+      }
     }
     Enums: {
       business_employee_type: "owner" | "salesperson"

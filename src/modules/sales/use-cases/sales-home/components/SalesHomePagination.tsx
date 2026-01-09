@@ -32,14 +32,14 @@ export const SalesHomePagination = () => {
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 py-2">
       <div className="text-sm text-muted-foreground order-2 sm:order-1">
-        Showing <span className="font-medium">{startIndex + 1}</span> to{' '}
-        <span className="font-medium">{endIndex}</span> of{' '}
-        <span className="font-medium">{totalSales}</span> sales
+        Mostrando <span className="font-medium">{startIndex + 1}</span> a{' '}
+        <span className="font-medium">{endIndex}</span> de{' '}
+        <span className="font-medium">{totalSales}</span> ventas
       </div>
       
       <div className="flex items-center gap-6 order-1 sm:order-2 w-full sm:w-auto justify-between sm:justify-end">
         <div className="flex items-center gap-2">
-          <p className="text-sm font-medium hidden sm:block">Rows per page</p>
+          <p className="text-sm font-medium hidden sm:block">Filas por página</p>
           <Select
             value={itemsPerPage.toString()}
             onValueChange={(value) => {
@@ -61,8 +61,8 @@ export const SalesHomePagination = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-            Page {currentPage} of {totalPages}
+          <div className="flex w-[110px] items-center justify-center text-sm font-medium">
+            Página {currentPage} de {totalPages}
           </div>
           <div className="flex items-center gap-1">
             <Button

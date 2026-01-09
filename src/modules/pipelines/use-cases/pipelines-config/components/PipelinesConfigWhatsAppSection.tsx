@@ -32,9 +32,9 @@ export function PipelinesConfigWhatsAppSection() {
               <Settings className="w-6 h-6" />
             </div>
             <div className="flex-1 text-left">
-              <h2 className="text-xl font-semibold text-foreground">WhatsApp Integration</h2>
+              <h2 className="text-xl font-semibold text-foreground">Integración de WhatsApp</h2>
               <p className="text-sm text-muted-foreground">
-                Enable WhatsApp notifications and set up your WhatsApp number
+                Habilita las notificaciones de WhatsApp y configura tu número de WhatsApp
               </p>
             </div>
             {isOpen ? (
@@ -55,10 +55,10 @@ export function PipelinesConfigWhatsAppSection() {
                 <MessageCircle className="w-5 h-5 text-primary" />
                 <div>
                   <Label htmlFor="whatsapp-enabled" className="text-base font-medium">
-                    Enable WhatsApp
+                    Habilitar WhatsApp
                   </Label>
                   <p className="text-sm text-muted-foreground">
-                    Activate WhatsApp notifications for this pipeline
+                    Activar las notificaciones de WhatsApp para este pipeline
                   </p>
                 </div>
               </div>
@@ -73,7 +73,7 @@ export function PipelinesConfigWhatsAppSection() {
             {whatsappFormData.whatsappEnabled && (
               <>
                 <div className="grid gap-2">
-                  <Label htmlFor="whatsapp-number">WhatsApp Number</Label>
+                  <Label htmlFor="whatsapp-number">Número de WhatsApp</Label>
                   <Input
                     id="whatsapp-number"
                     placeholder="+1234567890"
@@ -82,19 +82,19 @@ export function PipelinesConfigWhatsAppSection() {
                     type="tel"
                   />
                   <p className="text-xs text-muted-foreground">
-                    Enter your WhatsApp number in international format (e.g., +1234567890)
+                    Ingrese su número de WhatsApp en formato internacional (ej., +1234567890)
                   </p>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="whatsapp-phone-number-id">WhatsApp Phone Number ID</Label>
+                  <Label htmlFor="whatsapp-phone-number-id">ID de Teléfono de WhatsApp</Label>
                   <Input
                     id="whatsapp-phone-number-id"
-                    placeholder="Enter phone number ID"
+                    placeholder="Ingrese el ID del número de teléfono"
                     value={whatsappFormData.whatsappPhoneNumberId}
                     onChange={(e) => handleChangeWhatsAppFormData('whatsappPhoneNumberId', e.target.value)}
                   />
                   <p className="text-xs text-muted-foreground">
-                    Enter the WhatsApp phone number ID (optional)
+                    Ingrese el ID del número de teléfono de WhatsApp (opcional)
                   </p>
                 </div>
               </>
@@ -107,7 +107,7 @@ export function PipelinesConfigWhatsAppSection() {
               variant="outline"
               onClick={handleCancelWhatsAppConfig}
             >
-              Cancel
+              Cancelar
             </Button>
             <Button
               onClick={handleSaveWhatsAppConfig}
@@ -116,10 +116,10 @@ export function PipelinesConfigWhatsAppSection() {
               {saving ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Saving...
+                  Guardando...
                 </>
               ) : (
-                'Save Configuration'
+                'Guardar Configuración'
               )}
             </Button>
           </div>

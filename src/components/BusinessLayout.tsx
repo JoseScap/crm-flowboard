@@ -7,6 +7,7 @@ import { Loader2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import supabase from '@/modules/common/lib/supabase';
 import { Tables } from '@/modules/types/supabase.schema';
+import { toast } from 'sonner';
 
 interface BusinessLayoutProps {
   children: ReactNode;
@@ -40,12 +41,12 @@ export function BusinessLayout({
           .order('created_at', { ascending: false });
 
         if (error) {
-          console.error('Error fetching businesses:', error);
+          toast.error('Error al obtener los negocios');
         } else {
           setBusinesses(data || []);
         }
       } catch (error) {
-        console.error('Error fetching businesses:', error);
+        toast.error('Error al obtener los negocios');
       } finally {
         setLoadingBusinesses(false);
       }
@@ -70,7 +71,7 @@ export function BusinessLayout({
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex items-center gap-2">
           <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
-          <span className="text-muted-foreground">Loading...</span>
+          <span className="text-muted-foreground">Cargando...</span>
         </div>
       </div>
     );
@@ -102,7 +103,7 @@ export function BusinessLayout({
                       onValueChange={handleBusinessChange}
                     >
                       <SelectTrigger className="w-[200px]">
-                        <SelectValue placeholder="Select business" />
+                        <SelectValue placeholder="Seleccionar negocio" />
                       </SelectTrigger>
                       <SelectContent>
                         {businesses.map((business) => (

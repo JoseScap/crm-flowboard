@@ -116,7 +116,7 @@ export function WhatsAppChatModal({
         <DialogHeader className="px-6 pt-6 pb-4 border-b">
           <DialogTitle className="flex items-center gap-2">
             <MessageCircle className="w-5 h-5" />
-            WhatsApp Chat {contactName && `- ${contactName}`}
+            Chat de WhatsApp {contactName && `- ${contactName}`}
           </DialogTitle>
         </DialogHeader>
 

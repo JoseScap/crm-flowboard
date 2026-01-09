@@ -78,8 +78,7 @@ export function SalesHomeProvider({ children }: { children: ReactNode }) {
       if (error) throw error;
       setSaleSnapshots(data || []);
     } catch (error) {
-      console.error('Error fetching snapshots:', error);
-      toast.error('Error loading sale details');
+      toast.error('Error al cargar los detalles de la venta');
     } finally {
       setLoadingSnapshots(false);
     }
@@ -137,8 +136,7 @@ export function SalesHomeProvider({ children }: { children: ReactNode }) {
       if (error) throw error;
       setSales(data as SaleWithDetails[]);
     } catch (error) {
-      console.error('Error loading sales:', error);
-      toast.error('Error loading sales history');
+      toast.error('Error al cargar el historial de ventas');
     } finally {
       setLoadingData(false);
     }

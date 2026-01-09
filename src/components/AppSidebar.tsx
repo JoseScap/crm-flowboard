@@ -35,14 +35,14 @@ import { useTheme } from '@/hooks/use-theme';
 // Business navigation items - only shown when inside a business route
 const businessNavItems = [
   { title: 'Pipeline', path: 'pipelines', icon: LayoutDashboard },
-  { title: 'Products', path: 'products', icon: Package },
-  { title: 'Sales', path: 'sales', icon: ShoppingCart },
-  { title: 'Contacts', path: 'contacts', icon: Users },
-  { title: 'Companies', path: 'companies', icon: Building2 },
-  { title: 'Tasks', path: 'tasks', icon: Calendar },
-  { title: 'Reports', path: 'reports', icon: BarChart3 },
-  { title: 'Emails', path: 'emails', icon: Mail },
-  { title: 'Documents', path: 'documents', icon: FileText },
+  { title: 'Productos', path: 'products', icon: Package },
+  { title: 'Ventas', path: 'sales', icon: ShoppingCart },
+  { title: 'Contactos', path: 'contacts', icon: Users },
+  { title: 'Empresas', path: 'companies', icon: Building2 },
+  { title: 'Tareas', path: 'tasks', icon: Calendar },
+  { title: 'Reportes', path: 'reports', icon: BarChart3 },
+  { title: 'Correos', path: 'emails', icon: Mail },
+  { title: 'Documentos', path: 'documents', icon: FileText },
 ];
 
 export function AppSidebar() {
@@ -60,15 +60,13 @@ export function AppSidebar() {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) {
-        console.error('Error logging out:', error);
-        toast.error('Error logging out');
+        toast.error('Error al cerrar sesión');
       } else {
-        toast.success('Logged out successfully');
+        toast.success('Sesión cerrada con éxito');
         navigate('/login');
       }
     } catch (error) {
-      console.error('Error logging out:', error);
-      toast.error('An unexpected error occurred');
+      toast.error('Ocurrió un error inesperado');
     }
   };
 
@@ -84,7 +82,7 @@ export function AppSidebar() {
           </div>
           <div>
             <h1 className="font-bold text-foreground text-lg leading-tight">SynergIA</h1>
-            <p className="text-xs text-muted-foreground">Sales Pipeline</p>
+            <p className="text-xs text-muted-foreground">Flujo de Ventas</p>
           </div>
         </Link>
       </SidebarHeader>
@@ -112,7 +110,7 @@ export function AppSidebar() {
                       }`}
                     >
                       <LayoutDashboard className="w-5 h-5" />
-                      <span className="font-medium">Dashboard</span>
+                      <span className="font-medium">Panel de Control</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -124,7 +122,7 @@ export function AppSidebar() {
         {isInBusinessRoute && (
           <SidebarGroup className="mt-6">
             <SidebarGroupLabel className="text-xs text-muted-foreground uppercase tracking-wider px-3 mb-2">
-              Business
+              Negocio
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
@@ -162,7 +160,7 @@ export function AppSidebar() {
         {isInBusinessRoute && (
           <SidebarGroup className="mt-6">
             <SidebarGroupLabel className="text-xs text-muted-foreground uppercase tracking-wider px-3 mb-2">
-              User
+              Usuario
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
@@ -181,7 +179,7 @@ export function AppSidebar() {
                       }`}
                     >
                       <Plug className="w-5 h-5" />
-                      <span className="font-medium">Applications</span>
+                      <span className="font-medium">Aplicaciones</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -195,7 +193,7 @@ export function AppSidebar() {
         <div className="flex items-center justify-between px-3 py-2">
           <div className="flex items-center gap-3 text-muted-foreground">
             {theme === 'dark' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-            <span className="font-medium text-sm">Dark Mode</span>
+            <span className="font-medium text-sm">Modo Oscuro</span>
           </div>
           <Switch
             checked={theme === 'dark'}
@@ -207,7 +205,7 @@ export function AppSidebar() {
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors w-full text-muted-foreground hover:bg-secondary hover:text-foreground"
         >
           <LogOut className="w-5 h-5" />
-          <span className="font-medium">Logout</span>
+          <span className="font-medium">Cerrar Sesión</span>
         </button>
       </SidebarFooter>
     </Sidebar>

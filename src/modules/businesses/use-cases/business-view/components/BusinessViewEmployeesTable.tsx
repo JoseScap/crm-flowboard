@@ -28,7 +28,7 @@ export function BusinessViewEmployeesTable() {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <Users className="w-5 h-5" />
-            Employees
+            Empleados
           </CardTitle>
           <Button
             onClick={handleOpenAddEmployeeDialog}
@@ -36,7 +36,7 @@ export function BusinessViewEmployeesTable() {
             className="flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
-            Add Employee
+            Agregar Empleado
           </Button>
         </div>
       </CardHeader>
@@ -45,12 +45,12 @@ export function BusinessViewEmployeesTable() {
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Created At</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>Nombre</TableHead>
+                <TableHead>Correo Electrónico</TableHead>
+                <TableHead>Tipo</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead>Fecha de Creación</TableHead>
+                <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -59,14 +59,14 @@ export function BusinessViewEmployeesTable() {
                   <TableCell colSpan={6} className="text-center py-8">
                     <div className="flex items-center justify-center gap-2">
                       <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
-                      <span className="text-muted-foreground">Loading employees...</span>
+                      <span className="text-muted-foreground">Cargando empleados...</span>
                     </div>
                   </TableCell>
                 </TableRow>
               ) : employees.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8">
-                    <span className="text-muted-foreground">No employees found</span>
+                    <span className="text-muted-foreground">No se encontraron empleados</span>
                   </TableCell>
                 </TableRow>
               ) : (
@@ -78,16 +78,16 @@ export function BusinessViewEmployeesTable() {
                     <TableCell>{employee.email}</TableCell>
                     <TableCell>
                       <Badge variant={employee.employee_type === 'owner' ? 'default' : 'secondary'}>
-                        {employee.employee_type}
+                        {employee.employee_type === 'owner' ? 'dueño' : employee.employee_type}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <Badge variant={employee.is_active ? 'default' : 'destructive'}>
-                        {employee.is_active ? 'Active' : 'Inactive'}
+                        {employee.is_active ? 'Activo' : 'Inactivo'}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-muted-foreground">
-                      {new Date(employee.created_at).toLocaleDateString('en-US', {
+                      {new Date(employee.created_at).toLocaleDateString('es-ES', {
                         year: 'numeric',
                         month: 'short',
                         day: 'numeric',
@@ -114,7 +114,7 @@ export function BusinessViewEmployeesTable() {
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>{employee.is_active ? 'Deactivate Employee' : 'Activate Employee'}</p>
+                            <p>{employee.is_active ? 'Desactivar Empleado' : 'Activar Empleado'}</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>

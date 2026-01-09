@@ -12,7 +12,7 @@ const Placeholder = () => {
       </div>
       <h1 className="text-2xl font-bold text-foreground mb-2">{pageName}</h1>
       <p className="text-muted-foreground text-center max-w-md">
-        This page is coming soon. Use the sidebar to navigate back to the Pipeline.
+        Esta página estará disponible pronto. Utiliza la barra lateral para volver al Pipeline.
       </p>
     </div>
   );

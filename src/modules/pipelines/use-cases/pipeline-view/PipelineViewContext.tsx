@@ -4,6 +4,7 @@ import { DropResult } from '@hello-pangea/dnd';
 import supabase from '@/modules/common/lib/supabase';
 import { STAGE_COLORS } from '@/constants/colors';
 import { Tables, TablesInsert, TablesUpdate } from '@/modules/types/supabase.schema';
+import { toast } from 'sonner';
 
 interface PipelineViewContextType {
   // Pipeline states
@@ -186,19 +187,19 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
     }
 
     if (error) {
-      console.error('Error fetching pipelines:', error);
+      toast.error('Error al cargar los pipelines');
     }
     
     if (pipelineStagesError) {
-      console.error('Error fetching pipeline stages:', pipelineStagesError);
+      toast.error('Error al cargar las etapas del pipeline');
     }
     
     if (pipelineLeadsError) {
-      console.error('Error fetching pipeline leads:', pipelineLeadsError);
+      toast.error('Error al cargar los leads del pipeline');
     }
 
     if (employeesError) {
-      console.error('Error fetching business employees:', employeesError);
+      toast.error('Error al cargar los empleados');
     }
     
     if (pipelines) {
@@ -253,13 +254,12 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
           filter: `business_id=eq.${businessId}`,
         },
         (payload) => {
-          console.log('Realtime lead change received:', payload);
           // Refresh leads data when there are changes
           getData();
         }
       )
       .subscribe((status) => {
-        console.log(`Leads subscription status: ${status}`);
+        // Leads subscription status
       });
 
     // Subscribe to stages changes
@@ -274,12 +274,11 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
           filter: `pipeline_id=eq.${pipelineId}`,
         },
         (payload) => {
-          console.log('Realtime stage change received:', payload);
           getData();
         }
       )
       .subscribe((status) => {
-        console.log(`Stages subscription status: ${status}`);
+        // Stages subscription status
       });
 
     // Cleanup subscriptions on unmount
@@ -329,13 +328,13 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
         .eq('business_id', parseInt(businessId, 10));
 
       if (error) {
-        console.error('Error updating lead stage:', error);
+        toast.error('Error al actualizar la etapa del lead');
       } else {
         // Refetch leads to update UI
         await getData();
       }
     } catch (error) {
-      console.error('Error updating lead stage:', error);
+      toast.error('Error al actualizar la etapa del lead');
     }
   };
 
@@ -456,7 +455,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
           ]);
 
           if (result1.error || result2.error) {
-            console.error('Error creating stage:', result1.error || result2.error);
+            toast.error('Error al crear la etapa');
           }
         } else {
           // No existing revenue stage, just create normally
@@ -477,7 +476,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
             ]);
 
           if (error) {
-            console.error('Error creating stage:', error);
+            toast.error('Error al crear la etapa');
           }
         }
       } else {
@@ -499,14 +498,15 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
           ]);
 
         if (error) {
-          console.error('Error creating stage:', error);
+          toast.error('Error al crear la etapa');
         }
       }
 
       // Refetch pipeline stages
       await getData();
+      toast.success('Etapa creada con éxito');
     } catch (error) {
-      console.error('Error creating stage:', error);
+      toast.error('Error al crear la etapa');
       await getData();
     }
   };
@@ -550,13 +550,15 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
         ]);
 
       if (error) {
-        console.error('Error creating lead:', error);
+        toast.error('Error al crear el lead');
+      } else {
+        toast.success('Lead creado con éxito');
       }
 
       // Refetch leads
       await getData();
     } catch (error) {
-      console.error('Error creating lead:', error);
+      toast.error('Error al crear el lead');
       await getData();
     }
   };
@@ -615,7 +617,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
           ]);
 
           if (result1.error || result2.error) {
-            console.error('Error updating stage:', result1.error || result2.error);
+            toast.error('Error al actualizar la etapa');
           }
         } else {
           // No existing revenue stage or it's the same stage, just update normally
@@ -633,7 +635,7 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
             .eq('id', editingStage.id);
 
           if (error) {
-            console.error('Error updating stage:', error);
+            toast.error('Error al actualizar la etapa');
           }
         }
       } else {
@@ -652,14 +654,15 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
           .eq('id', editingStage.id);
 
         if (error) {
-          console.error('Error updating stage:', error);
+          toast.error('Error al actualizar la etapa');
         }
       }
 
       // Refetch pipeline stages
       await getData();
+      toast.success('Etapa actualizada con éxito');
     } catch (error) {
-      console.error('Error updating stage:', error);
+      toast.error('Error al actualizar la etapa');
       await getData();
     }
   };
@@ -691,13 +694,15 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
         .eq('id', archivingLead.id);
 
       if (error) {
-        console.error('Error archiving lead:', error);
+        toast.error('Error al archivar el lead');
+      } else {
+        toast.success('Lead archivado con éxito');
       }
 
       // Refetch leads
       await getData();
     } catch (error) {
-      console.error('Error archiving lead:', error);
+      toast.error('Error al archivar el lead');
       await getData();
     }
   };
@@ -734,13 +739,13 @@ export function PipelineViewProvider({ children }: { children: ReactNode }) {
       ]);
 
       if (result1.error || result2.error) {
-        console.error('Error reordering stages:', result1.error || result2.error);
+        toast.error('Error al reordenar las etapas');
       }
 
       // Refetch pipeline stages
       await getData();
     } catch (error) {
-      console.error('Error reordering stages:', error);
+      toast.error('Error al reordenar las etapas');
       await getData();
     } finally {
       setIsReordering(false);

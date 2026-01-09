@@ -18,13 +18,13 @@ export function ProductHomeCategoriesSection() {
   return (
     <div className="mb-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold text-foreground">Categories</h2>
+        <h2 className="text-xl font-semibold text-foreground">Categorías</h2>
         <Button 
           variant="ghost" 
           size="sm"
           onClick={() => setShowCategories(false)}
         >
-          Hide
+          Ocultar
         </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -32,7 +32,7 @@ export function ProductHomeCategoriesSection() {
           <div className="col-span-full flex items-center justify-center py-8">
             <div className="flex items-center gap-2">
               <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
-              <span className="text-muted-foreground">Loading categories...</span>
+              <span className="text-muted-foreground">Cargando categorías...</span>
             </div>
           </div>
         ) : (
@@ -87,7 +87,7 @@ export function ProductHomeCategoriesSection() {
             >
               <div className="flex items-center gap-2 text-muted-foreground group-hover:text-primary transition-colors">
                 <Plus className="w-5 h-5" />
-                <span className="font-medium">New Category</span>
+                <span className="font-medium">Nueva Categoría</span>
               </div>
             </div>
           </>

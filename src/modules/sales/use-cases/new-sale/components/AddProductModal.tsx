@@ -47,16 +47,16 @@ export const AddProductModal = () => {
     <Dialog open={isAddProductModalOpen} onOpenChange={setIsAddProductModalOpen}>
       <DialogContent className="max-w-3xl max-h-[80vh] flex flex-col">
         <DialogHeader>
-          <DialogTitle>Add Products to Sale</DialogTitle>
+          <DialogTitle>Agregar Productos a la Venta</DialogTitle>
           <DialogDescription>
-            Search and select products to add to your current sale.
+            Busca y selecciona productos para agregar a tu venta actual.
           </DialogDescription>
         </DialogHeader>
 
         <div className="relative my-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search by name or SKU..."
+            placeholder="Buscar por nombre o SKU..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
@@ -67,11 +67,11 @@ export const AddProductModal = () => {
           <Table>
             <TableHeader className="sticky top-0 bg-card z-10">
               <TableRow>
-                <TableHead>Product</TableHead>
+                <TableHead>Producto</TableHead>
                 <TableHead>SKU</TableHead>
-                <TableHead className="text-right">Price</TableHead>
+                <TableHead className="text-right">Precio</TableHead>
                 <TableHead className="text-right">Stock</TableHead>
-                <TableHead className="text-right w-[100px]">Action</TableHead>
+                <TableHead className="text-right w-[100px]">Acción</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -80,14 +80,14 @@ export const AddProductModal = () => {
                   <TableCell colSpan={5} className="text-center py-8">
                     <div className="flex items-center justify-center gap-2">
                       <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
-                      <span className="text-muted-foreground">Loading products...</span>
+                      <span className="text-muted-foreground">Cargando productos...</span>
                     </div>
                   </TableCell>
                 </TableRow>
               ) : availableProducts.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                    No products found
+                    No se encontraron productos
                   </TableCell>
                 </TableRow>
               ) : (
@@ -114,7 +114,7 @@ export const AddProductModal = () => {
                         className="h-8"
                       >
                         <Plus className="h-4 w-4 mr-1" />
-                        {isProductSelected(product.id) ? "Add More" : "Add"}
+                        {isProductSelected(product.id) ? "Agregar más" : "Agregar"}
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -126,7 +126,7 @@ export const AddProductModal = () => {
 
         <div className="flex justify-end mt-4">
           <Button variant="outline" onClick={() => setIsAddProductModalOpen(false)}>
-            Close
+            Cerrar
           </Button>
         </div>
       </DialogContent>

@@ -66,7 +66,7 @@ export function NewSaleProvider({ children }: { children: ReactNode }) {
         if (error) throw error;
         setEmployeeId(data as number);
       } catch (error) {
-        console.error('Error fetching employee ID:', error);
+        toast.error('Error al obtener el ID del empleado');
       }
     };
     fetchEmployeeId();
@@ -99,7 +99,7 @@ export function NewSaleProvider({ children }: { children: ReactNode }) {
       setAvailableProducts(data || []);
     } catch (error: any) {
       if (error.name.includes('AbortError')) return;
-      toast.error('Error fetching products');
+      toast.error('Error al obtener los productos');
     } finally {
       if (!signal?.aborted) {
         setLoading(false);
@@ -140,7 +140,7 @@ export function NewSaleProvider({ children }: { children: ReactNode }) {
         stock: product.stock
       }];
     });
-    toast.success(`${product.name} added to sale`);
+    toast.success(`${product.name} agregado a la venta`);
   };
 
   const removeItem = (productId: number) => {
@@ -166,12 +166,12 @@ export function NewSaleProvider({ children }: { children: ReactNode }) {
 
   const handleSaveSale = async () => {
     if (selectedItems.length === 0) {
-      toast.error('Add at least one product to the sale');
+      toast.error('Agregue al menos un producto a la venta');
       return;
     }
 
     if (!businessId || !employeeId) {
-      toast.error('Unable to complete sale: missing business or employee info');
+      toast.error('No se puede completar la venta: falta información del negocio o del empleado');
       return;
     }
 
@@ -190,11 +190,10 @@ export function NewSaleProvider({ children }: { children: ReactNode }) {
 
       if (saleError) throw saleError;
 
-      toast.success(`Sale created successfully`);
+      toast.success(`Venta creada con éxito`);
       navigate(`/user/businesses/${businessId}/sales`);
     } catch (error: any) {
-      console.error('Error saving sale:', error);
-      toast.error(error.message || 'Error saving sale');
+      toast.error(error.message || 'Error al guardar la venta');
     } finally {
       setSaving(false);
     }

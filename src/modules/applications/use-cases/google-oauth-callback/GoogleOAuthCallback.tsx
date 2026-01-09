@@ -18,13 +18,13 @@ const GoogleOAuthCallback = () => {
         const error = searchParams.get('error');
 
         if (error) {
-          toast.error(`OAuth error: ${error}`);
+          toast.error(`Error de OAuth: ${error}`);
           navigate('/user/businesses');
           return;
         }
 
         if (!code || !state) {
-          toast.error('Missing authorization code or state');
+          toast.error('Falta el código de autorización o el estado');
           navigate('/user/businesses');
           return;
         }
@@ -77,11 +77,10 @@ const GoogleOAuthCallback = () => {
           throw upsertError;
         }
 
-        toast.success('Google Calendar connected successfully!');
+        toast.success('Google Calendar conectado con éxito!');
         navigate(`/user/businesses/${employee.business_id}/applications`);
       } catch (error: any) {
-        console.error('Error processing OAuth callback:', error);
-        toast.error(error.message || 'Failed to connect Google Calendar');
+        toast.error('Error al procesar la autenticación OAuth');
         navigate('/user/businesses');
       }
     };

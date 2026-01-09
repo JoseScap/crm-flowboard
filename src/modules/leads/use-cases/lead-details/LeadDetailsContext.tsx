@@ -369,7 +369,7 @@ export function LeadDetailsProvider({ children }: { children: ReactNode }) {
 
       toast.success('Venta procesada correctamente');
     } catch (error: any) {
-      toast.error(error.message || 'Error al procesar la venta');
+      toast.error('Error al procesar la venta');
     } finally {
       setIsProcessingSale(false);
     }

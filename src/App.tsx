@@ -8,6 +8,9 @@ import { SimpleLayout } from "@/components/SimpleLayout";
 import { LayoutProvider } from "@/components/LayoutContext";
 import { ThemeProvider } from "@/hooks/use-theme";
 import LoginPage from "./modules/auth/use-cases/login/Login";
+import RegisterPage from "./modules/auth/use-cases/register/Register";
+import PasswordRecoveryRequestPage from "./modules/auth/use-cases/password-recovery-request/PasswordRecoveryRequest";
+import UpdatePasswordPage from "./modules/auth/use-cases/update-password/UpdatePassword";
 import PipelinesConfigPage from "./modules/pipelines/use-cases/pipelines-config/PipelinesConfig";
 import Reports from "./pages/Reports";
 import Placeholder from "./pages/Placeholder";
@@ -22,6 +25,7 @@ import BusinessView from "./modules/businesses/use-cases/business-view/BusinessV
 import LeadDetailsPage from "./modules/leads/use-cases/lead-details/LeadDetails";
 import ApplicationsHomePage from "./modules/applications/use-cases/applications-home/ApplicationsHome";
 import GoogleOAuthCallbackPage from "./modules/applications/use-cases/google-oauth-callback/GoogleOAuthCallback";
+import LoginGoogleCallbackPage from "./modules/auth/use-cases/login-google-callback/LoginGoogleCallback";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +42,22 @@ const App = () => (
               <Route
                 path="/login"
                 element={<LoginPage />}
+              />
+              <Route
+                path="/login/google/callback"
+                element={<LoginGoogleCallbackPage />}
+              />
+              <Route
+                path="/register"
+                element={<RegisterPage />}
+              />
+              <Route
+                path="/password-recovery-request"
+                element={<PasswordRecoveryRequestPage />}
+              />
+              <Route
+                path="/update-password"
+                element={<UpdatePasswordPage />}
               />
               
               {/* OAuth callback route */}

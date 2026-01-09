@@ -1,7 +1,11 @@
 // src/lib/google-oauth.ts
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-const GOOGLE_REDIRECT_URI = import.meta.env.VITE_GOOGLE_REDIRECT_URI || `${window.location.origin}/auth/google/callback`;
+const GOOGLE_REDIRECT_URI = import.meta.env.VITE_GOOGLE_REDIRECT_URI_FOR_CONNECTORS
+
+if (!GOOGLE_CLIENT_ID || !GOOGLE_REDIRECT_URI) {
+  throw new Error('Google Client ID or Redirect URI is not configured');
+}
 
 // Scopes necesarios para Google Calendar
 const GOOGLE_SCOPES = [

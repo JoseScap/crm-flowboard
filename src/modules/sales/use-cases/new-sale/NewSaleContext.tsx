@@ -193,7 +193,7 @@ export function NewSaleProvider({ children }: { children: ReactNode }) {
       toast.success(`Venta creada con éxito`);
       navigate(`/user/businesses/${businessId}/sales`);
     } catch (error: any) {
-      toast.error(error.message || 'Error al guardar la venta');
+      toast.error('Error al guardar la venta');
     } finally {
       setSaving(false);
     }

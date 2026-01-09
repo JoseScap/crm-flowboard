@@ -45,13 +45,12 @@ export function ApplicationsHomeProvider({ children }: { children: ReactNode }) 
         .eq('business_id', parseInt(businessId, 10));
 
       if (connectionsError) {
-        console.error('Error fetching connections:', connectionsError);
+        toast.error('Error al obtener las conexiones');
       } else {
         setConnections(connectionsData || []);
       }
     } catch (error) {
-      console.error('Error fetching applications:', error);
-      toast.error('Error fetching applications');
+      toast.error('Error al obtener las aplicaciones');
     } finally {
       setLoadingData(false);
     }
@@ -80,11 +79,10 @@ export function ApplicationsHomeProvider({ children }: { children: ReactNode }) 
 
         initiateGoogleOAuth(employeeId);
       } catch (error: any) {
-        console.error('Error initiating OAuth:', error);
-        toast.error(error.message || 'Error connecting application');
+        toast.error('Error al iniciar la autenticación OAuth');
       }
     } else {
-      toast.info(`Connecting to ${applicationId}...`);
+      toast.info(`Conectando a ${applicationId}...`);
     }
   };
 
@@ -112,10 +110,9 @@ export function ApplicationsHomeProvider({ children }: { children: ReactNode }) 
       // Refrescar los datos
       await getData();
 
-      toast.success('Application disconnected successfully');
+      toast.success('Aplicación desconectada con éxito');
     } catch (error: any) {
-      console.error('Error disconnecting application:', error);
-      toast.error(error.message || 'Error disconnecting application');
+      toast.error('Error al desconectar la aplicación');
     }
   };
 

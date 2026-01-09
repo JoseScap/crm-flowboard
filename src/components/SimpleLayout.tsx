@@ -58,7 +58,7 @@ export function SimpleLayout({ children, requireAuth = true }: SimpleLayoutProps
   };
 
   const userDisplayName = getUserDisplayName();
-  const userInitials = getInitials(userDisplayName);
+  const userInitials = getInitials(userDisplayName).slice(0, 3);
   const avatarColor = getAvatarColor(userDisplayName);
 
   return (

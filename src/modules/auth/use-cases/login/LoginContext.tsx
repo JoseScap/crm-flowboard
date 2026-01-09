@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import supabase from '@/modules/common/lib/supabase';
 import { toast } from 'sonner';
 
+const GOOGLE_REDIRECT_URI = import.meta.env.VITE_GOOGLE_REDIRECT_URI_FOR_LOGIN
+
 interface LoginFormData {
   email: string;
   password: string;
@@ -15,9 +17,14 @@ interface LoginContextType {
   // Loading state
   loading: boolean;
   
+  // UI state
+  showPassword: boolean;
+  
   // Handlers
   handleChangeLoginFormData: <T extends keyof LoginFormData>(field: T, value: LoginFormData[T]) => void;
   handleLogin: () => Promise<void>;
+  handleGoogleLogin: () => Promise<void>;
+  setShowPassword: (show: boolean) => void;
 }
 
 const LoginContext = createContext<LoginContextType | undefined>(undefined);
@@ -31,6 +38,19 @@ export function LoginProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const [loginFormData, setLoginFormData] = useState<LoginFormData>(defaultLoginFormData);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (showPassword) {
+      timer = setTimeout(() => {
+        setShowPassword(false);
+      }, 20000);
+    }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [showPassword]);
 
 
   const handleChangeLoginFormData = <T extends keyof LoginFormData>(field: T, value: LoginFormData[T]) => {
@@ -39,7 +59,7 @@ export function LoginProvider({ children }: { children: ReactNode }) {
 
   const handleLogin = async () => {
     if (!loginFormData.email.trim() || !loginFormData.password.trim()) {
-      toast.error('Please fill in all fields');
+      toast.error('Por favor, completa todos los campos');
       return;
     }
 
@@ -52,18 +72,37 @@ export function LoginProvider({ children }: { children: ReactNode }) {
       });
 
       if (error) {
-        console.error('Error logging in:', error);
-        toast.error(error.message || 'Error logging in');
+        toast.error('Error al iniciar sesión');
         return;
       }
 
       if (data.user) {
-        toast.success('Login successful');
+        toast.success('Inicio de sesión exitoso');
         navigate('/user');
       }
     } catch (error) {
-      console.error('Error logging in:', error);
-      toast.error('An unexpected error occurred');
+      toast.error('Ocurrió un error inesperado');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: GOOGLE_REDIRECT_URI,
+        },
+      });
+
+      if (error) {
+        toast.error('Error al iniciar sesión con Google');
+        return;
+      }
+    } catch (error) {
+      toast.error('Ocurrió un error inesperado al conectar con Google');
     } finally {
       setLoading(false);
     }
@@ -72,8 +111,11 @@ export function LoginProvider({ children }: { children: ReactNode }) {
   const value: LoginContextType = {
     loginFormData,
     loading,
+    showPassword,
     handleChangeLoginFormData,
     handleLogin,
+    handleGoogleLogin,
+    setShowPassword,
   };
 
   return (

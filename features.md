@@ -87,8 +87,6 @@ Este módulo permite la administración centralizada de las empresas o negocios 
 - Interfaz de cuadrícula con acceso directo al panel de control de cada empresa ✅
 - Visualización de métricas rápidas (leads activos y pipelines) por negocio ✅
 - Interfaz de tarjeta mejorada con indicadores visuales coloreados y mayor legibilidad ✅
-- Poder logo específico a un bussiness. (Pendiente)
-- Activar o desactivar opción de "Transparencias De Ventas" en la DangerZone. (Pendiente)
 
 ### Business View
 
@@ -97,13 +95,14 @@ Este módulo permite la administración centralizada de las empresas o negocios 
 - Sistema de invitación para añadir nuevos miembros al equipo de trabajo ✅
 - Control de estado (activación/desactivación) de empleados mediante lógica de servidor ✅
 - Visualización detallada de la salud financiera y operativa del negocio ✅
-- Agregar un danger zone con los datos que puedan ser removidso. Baja lógica. 
-- Zona "General" unicamente visible para el usuario de tipo OWNER.
-- Agregar un padding minimo entre aside y el contenido de la pantalla. 
-- Botoncito para cerrar en el medio del aside donde no moleste.
-- Cambiar de un bussines a otro dentro de un dash board no va;
-- Deberias poder volver a lavista de bussiness.
-- Ahí debería aparecer un breadcrumb con indicador haci donde se va: Bussiness / SynergIA.
+- Agregar un danger zone con los datos que puedan ser removidso. Baja lógica. (Pendiente)
+- Agregar un padding minimo entre aside y el contenido de la pantalla. (Pendiente)
+- Botoncito para cerrar en el medio del aside donde no moleste. (Pendiente)
+- Cambiar de un bussines a otro dentro de un dash board no va; (Pendiente)
+- Deberias poder volver a lavista de bussiness. (Pendiente)
+- Ahí debería aparecer un breadcrumb con indicador haci donde se va: Bussiness / SynergIA. (Pendiente)
+- Activar o desactivar opción de "Transparencias De Ventas" en la DangerZone. (Pendiente)
+- Poder logo específico a un bussiness. (Pendiente)
 
 ### Quick Actions (Funcionalidad Adicional)
 - Pasan a ser dinámicas y no estáticas. 

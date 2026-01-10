@@ -1,4 +1,5 @@
 import { useLocation, Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import {
   LayoutDashboard,
   Users,
@@ -31,6 +32,8 @@ import {
 } from '@/components/ui/sidebar';
 import { Switch } from '@/components/ui/switch';
 import { useTheme } from '@/hooks/use-theme';
+import { useLayoutContext } from './LayoutContext';
+import { Tables } from '@/modules/types/supabase.schema';
 
 // Business navigation items - only shown when inside a business route
 const businessNavItems = [
@@ -50,11 +53,35 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const currentPath = location.pathname;
   const { theme, toggleTheme } = useTheme();
+  const { user } = useLayoutContext();
+  const [business, setBusiness] = useState<Tables<'businesses'> | null>(null);
 
   // Extract business ID from path if we're in a business route
   const businessIdMatch = currentPath.match(/\/user\/businesses\/(\d+)/);
   const businessId = businessIdMatch ? businessIdMatch[1] : null;
   const isInBusinessRoute = businessId !== null;
+
+  useEffect(() => {
+    const fetchBusiness = async () => {
+      if (businessId) {
+        const { data, error } = await supabase
+          .from('businesses')
+          .select('*')
+          .eq('id', parseInt(businessId, 10))
+          .single();
+        
+        if (!error && data) {
+          setBusiness(data);
+        }
+      } else {
+        setBusiness(null);
+      }
+    };
+
+    fetchBusiness();
+  }, [businessId]);
+
+  const isOwner = user && business && business.owner_id === user.id;
 
   const handleLogout = async () => {
     try {
@@ -88,7 +115,7 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="px-2 py-4">
-        {isInBusinessRoute && (
+        {isInBusinessRoute && isOwner && (
           <SidebarGroup>
             <SidebarGroupLabel className="text-xs text-muted-foreground uppercase tracking-wider px-3 mb-2">
               General

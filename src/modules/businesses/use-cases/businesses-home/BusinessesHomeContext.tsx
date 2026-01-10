@@ -1,6 +1,6 @@
 import supabase from "@/modules/common/lib/supabase";
 import { Tables, TablesInsert, TablesUpdate, Database } from "@/modules/types/supabase.schema";
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 interface NewBusinessFormData extends Pick<TablesInsert<'businesses'>, 'name' | 'description' | 'address' | 'phone' | 'email'> {
@@ -59,10 +59,17 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
   const [isEditBusinessDialogOpen, setIsEditBusinessDialogOpen] = useState(false);
   const [editBusinessFormData, setEditBusinessFormData] = useState<TablesUpdate<'businesses'>>({});
   const [editingBusiness, setEditingBusiness] = useState<Tables<'businesses'> | null>(null);
+  const [myEmployeeProfile, setMyEmployeeProfile] = useState<Tables<'business_employees'> | null>(null);
+
+  const isOwner = useMemo(() => {
+    return myEmployeeProfile?.employee_type === 'owner';
+  }, [myEmployeeProfile]);
 
   const getData = async () => {
     try {
       setLoadingData(true);
+
+      const { data: { user } } = await supabase.auth.getUser();
       
       // Get businesses (RLS policies will filter based on business_users)
       const [businesses, pipelinesCountByBusinesses, leadsCountByBusinesses] = await Promise.all([
@@ -70,7 +77,7 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
         supabase.rpc('get_businesses_with_pipelines_count_where_user_is_member').select('*'),
         supabase.rpc('get_businesses_with_leads_count_where_user_is_member').select('*'),
       ]);
-
+      
       const businessesWithCountsData: BusinessesWithCounts[] = [];
 
       if (businesses.data) {

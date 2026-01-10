@@ -117,6 +117,16 @@ export function BusinessViewProvider({ children }: { children: ReactNode }) {
           .eq('id', businessId)
           .single();
 
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (user && businessData) {
+          const isOwner = businessData.owner_id === user.id;
+          if (!isOwner) {
+            navigate(`/user/businesses/${businessData.owner_id}/pipelines`);
+            return;
+          }
+        }
+
         if (businessError) throw businessError;
         setBusiness(businessData);
 

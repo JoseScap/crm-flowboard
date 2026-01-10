@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import { Building2, FolderKanban, Settings, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useBusinessesHomeContext, BusinessesWithCounts } from '../BusinessesHomeContext';
+import supabase from '@/modules/common/lib/supabase';
+import { useEffect, useMemo, useState } from 'react';
 
 interface BusinessCardProps {
   business: BusinessesWithCounts;
@@ -10,10 +12,27 @@ interface BusinessCardProps {
 export function BusinessCard({ business }: BusinessCardProps) {
   const navigate = useNavigate();
   const { handleOpenEditBusiness } = useBusinessesHomeContext();
+  const [pathToNavigate, setPathToNavigate] = useState<string>(window.location.pathname);
+
+  useEffect(() => {
+    const calculatePathToNavigate = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) {
+        return `/user/businesses`;
+      }
+
+      setPathToNavigate(business.owner_id === user?.id
+        ? `/user/businesses/${business.id}`
+        : `/user/businesses/${business.id}/pipelines`);
+    }
+
+    calculatePathToNavigate();
+  }, [business]);
 
   return (
     <div
-      onClick={() => navigate(`/user/businesses/${business.id}`)}
+      onClick={() => navigate(pathToNavigate)}
       className="bg-card border border-border rounded-xl p-6 cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 group animate-fade-in relative flex flex-col h-full"
     >
       <div className="flex items-center justify-between mb-4">

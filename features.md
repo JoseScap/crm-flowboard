@@ -100,13 +100,13 @@ Este módulo permite la administración centralizada de las empresas o negocios 
 - Activar o desactivar opción de "Transparencias De Ventas" en la DangerZone. (Pendiente)
 - Poder logo específico a un bussiness. (Pendiente)
 
-### Quick Actions (Funcionalidad Adicional)
+### Quick Actions (Funcionalidad Adicional Pendiente)
 - Pasan a ser dinámicas y no estáticas. 
 - Se pueden agregar quick actions específicas
 - Ranking de uso de quick actions
 - Solamente para el dueño 
 
-### Reportes (Funcionalidad Adicional)
+### Reportes (Funcionalidad Adicional Pendiente)
 - Migrar todos los reportes solamente para que lo pueda ver el dueño, y a quien permita el dueño.
 - (FEATURE ADICCIONAL) El dueño pueda crear sus propios reporpotes o reportes personalizados. 
     Robar mercado a negocios con Analíticas. --> Muy a futuro. 

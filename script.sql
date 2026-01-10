@@ -1,52 +1,30 @@
-DROP FUNCTION IF EXISTS get_businesses_with_pipelines_count_where_user_is_member() CASCADE;
+ALTER TABLE public.businesses ENABLE ROW LEVEL SECURITY;
 
-CREATE OR REPLACE FUNCTION get_businesses_with_pipelines_count_where_user_is_member()
-RETURNS TABLE(
-  business_id BIGINT,
-  pipelines_count BIGINT
-) AS $$
-BEGIN
-  -- Security check
-  IF auth.uid() IS NULL THEN
-    RAISE EXCEPTION 'User not authenticated';
-  END IF;
+DROP POLICY IF EXISTS "users_can_view_businesses_they_are_members_of" ON public.businesses;
+CREATE POLICY "users_can_view_businesses_they_are_members_of"
+ON public.businesses
+FOR SELECT
+TO authenticated
+USING (is_business_member(id) OR is_business_owner(id));
 
-  RETURN QUERY 
-  SELECT 
-    be.business_id, 
-    COUNT(p.id)::BIGINT AS pipelines_count
-  FROM business_employees be
-  LEFT JOIN pipelines p ON 
-    p.business_id = be.business_id AND
-    p.is_active = TRUE
-  WHERE be.user_id = auth.uid()
-  GROUP BY be.business_id;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+DROP POLICY IF EXISTS "deny_insert_for_any_business" ON public.businesses;
+CREATE POLICY "deny_insert_for_any_business"
+ON public.businesses
+FOR INSERT
+TO authenticated
+WITH CHECK (false);
 
-DROP FUNCTION IF EXISTS get_businesses_with_leads_count_where_user_is_member() CASCADE;
+DROP POLICY IF EXISTS "owners_can_update_its_own_business" ON public.businesses;
+CREATE POLICY "owners_can_update_its_own_business"
+ON public.businesses
+FOR UPDATE
+TO authenticated
+USING (is_business_owner(id))
+WITH CHECK (is_business_owner(id));
 
-CREATE OR REPLACE FUNCTION get_businesses_with_leads_count_where_user_is_member()
-RETURNS TABLE(
-  business_id BIGINT,
-  leads_count BIGINT
-) AS $$
-BEGIN
-  -- Security check
-  IF auth.uid() IS NULL THEN
-    RAISE EXCEPTION 'User not authenticated';
-  END IF;
-
-  RETURN QUERY 
-  SELECT 
-    be.business_id, 
-    COUNT(psl.id)::BIGINT AS leads_count
-  FROM business_employees be
-  LEFT JOIN pipeline_stage_leads psl ON 
-    psl.business_id = be.business_id AND 
-    psl.is_active = TRUE AND 
-    psl.closed_at IS NULL
-  WHERE be.user_id = auth.uid()
-  GROUP BY be.business_id;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+DROP POLICY IF EXISTS "deny_delete_for_any_business" ON public.businesses;
+CREATE POLICY "deny_delete_for_any_business"
+ON public.businesses
+FOR DELETE
+TO authenticated
+USING (false);

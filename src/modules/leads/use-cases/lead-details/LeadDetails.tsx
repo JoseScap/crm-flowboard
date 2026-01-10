@@ -21,9 +21,9 @@ const LeadDetails = () => {
   }
 
   return (
-    <div className="p-6 lg:p-12 min-h-full">
+    <>
       <LeadDetailsSection />
-    </div>
+    </>
   );
 };
 

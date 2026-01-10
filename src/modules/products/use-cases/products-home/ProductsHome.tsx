@@ -7,13 +7,13 @@ import { ProductHomeDialogs } from './components/ProductHomeDialogs';
 
 const ProductsHome = () => {
   return (
-    <div className="p-6 space-y-6">
+    <>
       <ProductHomeToolbar />
       <ProductHomeCategoriesSection />
       <ProductHomeTable />
       <ProductHomePagination />
       <ProductHomeDialogs />
-    </div>
+    </>
   );
 }
 

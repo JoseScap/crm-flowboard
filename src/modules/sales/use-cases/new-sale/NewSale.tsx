@@ -6,11 +6,11 @@ import { AddProductModal } from './components/AddProductModal';
 
 const NewSale = () => {
   return (
-    <div className="p-6 space-y-6">
+    <>
       <NewSaleToolbar />
       <NewSaleTable />
       <AddProductModal />
-    </div>
+    </>
   );
 };
 

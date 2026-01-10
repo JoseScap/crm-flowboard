@@ -63,7 +63,7 @@ export function SimpleLayout({ children, requireAuth = true }: SimpleLayoutProps
 
   return (
     <div className="min-h-screen w-full bg-background flex flex-col">
-      <header className="w-full border-b border-border bg-card">
+      <header className="w-full border-b border-border bg-card mb-8">
         <div className="max-w-7xl mx-auto h-16 flex items-center justify-between px-6 lg:px-8">
           <div className="flex items-center">
             <h1 className="text-xl font-bold text-foreground">SynergIA</h1>
@@ -89,7 +89,7 @@ export function SimpleLayout({ children, requireAuth = true }: SimpleLayoutProps
           )}
         </div>
       </header>
-      <main className="w-full flex-1 max-w-7xl mx-auto">
+      <main className="w-full flex-1 max-w-7xl mx-auto px-8 space-y-6">
         {children}
       </main>
     </div>

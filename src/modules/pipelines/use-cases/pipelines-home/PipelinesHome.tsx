@@ -14,7 +14,7 @@ const PipelinesHome = () => {
   }
 
   return (
-    <div className="p-6 lg:p-8 h-full">
+    <>
       <div className="mb-8">
         <div className="flex items-center justify-end mb-6">
           <Button onClick={handleCreatePipeline} className="flex items-center gap-2">
@@ -26,7 +26,7 @@ const PipelinesHome = () => {
       <PipelinesHomeEmptyState />
       <PipelinesHomeGrid />
       <PipelinesHomeCreateDialog />
-    </div>
+    </>
   );
 };
 

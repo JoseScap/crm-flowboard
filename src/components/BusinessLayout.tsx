@@ -91,7 +91,7 @@ export function BusinessLayout({
               <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
             </div>
             {(title || description || (currentBusinessId && businesses.length > 0)) && (
-              <div className="px-4 py-4">
+              <div className="px-8 py-8">
                 <div className="flex items-center justify-between">
                   <div>
                     {title && <h1 className="text-3xl font-bold text-foreground">{title}</h1>}
@@ -118,7 +118,7 @@ export function BusinessLayout({
               </div>
             )}
           </header>
-          <div className={`flex-1 ${maxHeightScreen ? 'overflow-hidden' : 'overflow-auto'}`}>
+          <div className={`flex-1 ${maxHeightScreen ? 'overflow-hidden' : 'overflow-auto'} px-8 space-y-6`}>
             {children}
           </div>
         </main>

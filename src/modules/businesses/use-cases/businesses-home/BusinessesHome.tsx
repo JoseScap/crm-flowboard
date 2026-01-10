@@ -14,13 +14,13 @@ const BusinessesHome = () => {
   }
 
   return (
-    <div className="p-6 lg:p-8 h-full">
+    <>
       <BusinessesHomeHeader />
       <BusinessesHomeEmptyState />
       <BusinessesHomeGrid />
       <BusinessesHomeCreateDialog />
       <BusinessesHomeEditDialog />
-    </div>
+    </>
   );
 };
 

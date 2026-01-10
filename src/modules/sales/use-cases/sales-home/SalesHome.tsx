@@ -6,12 +6,12 @@ import { SalesHomeDetailsDialog } from './components/SalesHomeDetailsDialog';
 
 const SalesHome = () => {
   return (
-    <div className="p-6 space-y-6">
+    <>
       <SalesHomeToolbar />
       <SalesHomeTable />
       <SalesHomePagination />
       <SalesHomeDetailsDialog />
-    </div>
+    </>
   );
 }
 

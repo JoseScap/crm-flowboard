@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { BusinessLayout } from "@/components/BusinessLayout";
 import { SimpleLayout } from "@/components/SimpleLayout";
+import { NoAuthLayout } from "@/components/NoAuthLayout";
 import { LayoutProvider } from "@/components/LayoutContext";
 import { ThemeProvider } from "@/hooks/use-theme";
 import LoginPage from "./modules/auth/use-cases/login/Login";
@@ -38,32 +39,56 @@ const App = () => (
         <BrowserRouter>
           <LayoutProvider>
             <Routes>
-              {/* Public route */}
+              {/* Public routes */}
               <Route
                 path="/login"
-                element={<LoginPage />}
+                element={
+                  <NoAuthLayout>
+                    <LoginPage />
+                  </NoAuthLayout>
+                }
               />
               <Route
                 path="/login/google/callback"
-                element={<LoginGoogleCallbackPage />}
+                element={
+                  <NoAuthLayout>
+                    <LoginGoogleCallbackPage />
+                  </NoAuthLayout>
+                }
               />
               <Route
                 path="/register"
-                element={<RegisterPage />}
+                element={
+                  <NoAuthLayout>
+                    <RegisterPage />
+                  </NoAuthLayout>
+                }
               />
               <Route
                 path="/password-recovery-request"
-                element={<PasswordRecoveryRequestPage />}
+                element={
+                  <NoAuthLayout>
+                    <PasswordRecoveryRequestPage />
+                  </NoAuthLayout>
+                }
               />
               <Route
                 path="/update-password"
-                element={<UpdatePasswordPage />}
+                element={
+                  <NoAuthLayout>
+                    <UpdatePasswordPage />
+                  </NoAuthLayout>
+                }
               />
               
               {/* OAuth callback route */}
               <Route
                 path="/auth/google/callback"
-                element={<GoogleOAuthCallbackPage />}
+                element={
+                  <NoAuthLayout>
+                    <GoogleOAuthCallbackPage />
+                  </NoAuthLayout>
+                }
               />
               
               {/* Redirect root to /user/businesses */}
@@ -93,6 +118,15 @@ const App = () => (
                   <BusinessLayout
                     title="Panel de Control"
                     description="Resumen del rendimiento de tu negocio"
+                    breadcrumbs={[
+                      {
+                        label: "Negocios",
+                        path: "/user/businesses",
+                      },
+                      {
+                        label: "Panel de Control",
+                      }
+                    ]}
                   >
                     <BusinessView />
                   </BusinessLayout>
@@ -104,6 +138,15 @@ const App = () => (
                   <BusinessLayout
                     title="Pipelines"
                     description="Gestiona y organiza tus flujos de venta"
+                    breadcrumbs={[
+                      {
+                        label: "Negocios",
+                        path: "/user/businesses",
+                      },
+                      {
+                        label: "Pipelines",
+                      }
+                    ]}
                   >
                     <PipelinesHomePage />
                   </BusinessLayout>
@@ -115,6 +158,15 @@ const App = () => (
                   <BusinessLayout
                     title="Productos"
                     description="Gestiona tu inventario de productos y niveles de stock"
+                    breadcrumbs={[
+                      {
+                        label: "Negocios",
+                        path: "/user/businesses",
+                      },
+                      {
+                        label: "Productos",
+                      }
+                    ]}
                   >
                     <ProductsHomePage />
                   </BusinessLayout>
@@ -126,6 +178,15 @@ const App = () => (
                   <BusinessLayout
                     title="Historial de Ventas"
                     description="Consulta y gestiona el historial de ventas y detalles de tu negocio."
+                    breadcrumbs={[
+                      {
+                        label: "Negocios",
+                        path: "/user/businesses",
+                      },
+                      {
+                        label: "Ventas",
+                      }
+                    ]}
                   >
                     <SalesHomePage />
                   </BusinessLayout>
@@ -148,6 +209,15 @@ const App = () => (
                   <BusinessLayout
                     title="Aplicaciones"
                     description="Conecta tus aplicaciones favoritas para mejorar tu experiencia CRM"
+                    breadcrumbs={[
+                      {
+                        label: "Negocios",
+                        path: "/user/businesses",
+                      },
+                      {
+                        label: "Aplicaciones",
+                      }
+                    ]}
                   >
                     <ApplicationsHomePage />
                   </BusinessLayout>

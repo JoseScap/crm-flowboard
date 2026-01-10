@@ -1,5 +1,5 @@
 import supabase from "@/modules/common/lib/supabase";
-import { Tables, TablesInsert, TablesUpdate } from "@/modules/types/supabase.schema";
+import { Tables, TablesInsert, TablesUpdate, Database } from "@/modules/types/supabase.schema";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -8,12 +8,16 @@ interface NewBusinessFormData extends Pick<TablesInsert<'businesses'>, 'name' | 
   owner_last_name: string;
 }
 
+export type BusinessesWithLeadsCount = Tables<'businesses'> & {
+  leads_count: number;
+}
+
 interface BusinessesHomeContextType {
   // Loading state
   loadingData: boolean;
 
   // Business states
-  businesses: Tables<'businesses'>[];
+  businesses: BusinessesWithLeadsCount[];
   isCreateBusinessDialogOpen: boolean;
   newBusinessFormData: NewBusinessFormData;
   isEditBusinessDialogOpen: boolean;
@@ -48,7 +52,7 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
   const [loadingData, setLoadingData] = useState(true);
 
   // Business states
-  const [businesses, setBusinesses] = useState<Tables<'businesses'>[]>([]);
+  const [businesses, setBusinesses] = useState<BusinessesWithLeadsCount[]>([]);
   const [isCreateBusinessDialogOpen, setIsCreateBusinessDialogOpen] = useState(false);
   const [newBusinessFormData, setNewBusinessFormData] = useState<NewBusinessFormData>(defaultNewBusinessFormData);
   const [isEditBusinessDialogOpen, setIsEditBusinessDialogOpen] = useState(false);
@@ -65,10 +69,25 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
         .select('*')
         .order('created_at', { ascending: false });
 
+      const { data: businessesWithLeadsCount, error: businessesWithLeadsCountError } = await supabase
+        .rpc('get_businesses_with_leads_count_where_user_is_member')
+        .select('*');
+
+      const businessesWithLeadsCountData: BusinessesWithLeadsCount[] = [];
+
+      if (data) {
+        for (const business of data) {
+          businessesWithLeadsCountData.push({
+            ...business,
+            leads_count: (businessesWithLeadsCount || []).find((b: any) => b.business_id === business.id)?.leads_count || 0,
+          });
+        }
+      }
+      
       if (error) {
         toast.error('Error al obtener los negocios');
       } else if (data) {
-        setBusinesses(data);
+        setBusinesses(businessesWithLeadsCountData);
       }
     } catch (error) {
       toast.error('Error al obtener los negocios');

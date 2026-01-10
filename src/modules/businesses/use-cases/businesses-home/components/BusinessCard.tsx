@@ -1,12 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import { Building2, Calendar, Settings } from 'lucide-react';
+import { Building2, Settings, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Tables } from '@/modules/types/supabase.schema';
-import { formatDate } from '@/lib/lead-utils';
-import { useBusinessesHomeContext } from '../BusinessesHomeContext';
+import { useBusinessesHomeContext, BusinessesWithLeadsCount } from '../BusinessesHomeContext';
 
 interface BusinessCardProps {
-  business: Tables<'businesses'>;
+  business: BusinessesWithLeadsCount;
 }
 
 export function BusinessCard({ business }: BusinessCardProps) {
@@ -16,7 +14,7 @@ export function BusinessCard({ business }: BusinessCardProps) {
   return (
     <div
       onClick={() => navigate(`/user/businesses/${business.id}`)}
-      className="bg-card border border-border rounded-xl p-6 cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 group animate-fade-in relative"
+      className="bg-card border border-border rounded-xl p-6 cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 group animate-fade-in relative flex flex-col h-full"
     >
       <div className="flex items-start justify-between mb-4">
         <div className="p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
@@ -35,19 +33,21 @@ export function BusinessCard({ business }: BusinessCardProps) {
         </Button>
       </div>
       
-      <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
-        {business.name}
-      </h3>
-      
-      {business.description && (
-        <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-          {business.description}
-        </p>
-      )}
-      
-      <div className="flex items-center gap-2 text-xs text-muted-foreground pt-4 border-t border-border">
-        <Calendar className="w-4 h-4" />
-        <span>{formatDate(business.created_at)}</span>
+      <div className="flex-1">
+        <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+          {business.name}
+        </h3>
+        
+        {business.description && (
+          <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+            {business.description}
+          </p>
+        )}
+      </div>
+
+      <div className="flex items-center gap-2 text-sm text-muted-foreground pt-4 border-t border-border mt-auto">
+        <Users className="w-4 h-4" />
+        <span>{business.leads_count} {business.leads_count === 1 ? 'active lead' : 'active leads'}</span>
       </div>
     </div>
   );

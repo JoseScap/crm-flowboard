@@ -85,6 +85,8 @@ Este módulo permite la administración centralizada de las empresas o negocios 
 - Creación de nuevos negocios con registro automático del dueño como primer empleado ✅
 - Edición de la información de perfil del negocio (nombre, contacto, ubicación) ✅
 - Interfaz de cuadrícula con acceso directo al panel de control de cada empresa ✅
+- Visualización de métricas rápidas (leads activos y pipelines) por negocio ✅
+- Interfaz de tarjeta mejorada con indicadores visuales coloreados y mayor legibilidad ✅
 - Poder logo específico a un bussiness. (Pendiente)
 - Activar o desactivar opción de "Transparencias De Ventas" en la DangerZone. (Pendiente)
 

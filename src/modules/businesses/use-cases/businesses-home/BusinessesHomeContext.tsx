@@ -65,36 +65,29 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
       setLoadingData(true);
       
       // Get businesses (RLS policies will filter based on business_users)
-      const { data, error } = await supabase
-        .from('businesses')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      const { data: businessesWithLeadsCount, error: businessesWithLeadsCountError } = await supabase
-        .rpc('get_businesses_with_leads_count_where_user_is_member')
-        .select('*');
-
-      const { data: businessesWithPipelinesCount, error: businessesWithPipelinesCountError } = await supabase
-        .rpc('get_businesses_with_pipelines_count_where_user_is_member')
-        .select('*');
+      const [businesses, pipelinesCountByBusinesses, leadsCountByBusinesses] = await Promise.all([
+        supabase.from('businesses').select('*').order('created_at', { ascending: false }),
+        supabase.rpc('get_businesses_with_pipelines_count_where_user_is_member').select('*'),
+        supabase.rpc('get_businesses_with_leads_count_where_user_is_member').select('*'),
+      ]);
 
       const businessesWithCountsData: BusinessesWithCounts[] = [];
 
-      if (data) {
-        for (const business of data) {
+      if (businesses.data) {
+        for (const business of businesses.data) {
           businessesWithCountsData.push({
             ...business,
-            pipelines_count: businessesWithPipelinesCount.find((b) => b.business_id === business.id)?.pipelines_count || 0,
-            leads_count: businessesWithLeadsCount.find((b) => b.business_id === business.id)?.leads_count || 0,
+            pipelines_count: pipelinesCountByBusinesses.data.find((b) => b.business_id === business.id)?.pipelines_count || 0,
+            leads_count: leadsCountByBusinesses.data.find((b) => b.business_id === business.id)?.leads_count || 0,
           });
         }
       }
       
-      if (error) {
+      if (businesses.error || leadsCountByBusinesses.error || pipelinesCountByBusinesses.error) {
         toast.error('Error al obtener los negocios');
-      } else if (data) {
-        setBusinesses(businessesWithCountsData);
       }
+
+      setBusinesses(businessesWithCountsData);
     } catch (error) {
       toast.error('Error al obtener los negocios');
     } finally {

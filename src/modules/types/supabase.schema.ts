@@ -654,6 +654,13 @@ export type Database = {
           leads_count: number
         }[]
       }
+      get_businesses_with_pipelines_count_where_user_is_member: {
+        Args: never
+        Returns: {
+          business_id: number
+          pipelines_count: number
+        }[]
+      }
       get_my_business_employee_id_by_business: {
         Args: { p_business_id: number }
         Returns: number

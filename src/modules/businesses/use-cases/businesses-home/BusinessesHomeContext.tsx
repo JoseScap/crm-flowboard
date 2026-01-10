@@ -8,7 +8,8 @@ interface NewBusinessFormData extends Pick<TablesInsert<'businesses'>, 'name' | 
   owner_last_name: string;
 }
 
-export type BusinessesWithLeadsCount = Tables<'businesses'> & {
+export type BusinessesWithCounts = Tables<'businesses'> & {
+  pipelines_count: number;
   leads_count: number;
 }
 
@@ -17,7 +18,7 @@ interface BusinessesHomeContextType {
   loadingData: boolean;
 
   // Business states
-  businesses: BusinessesWithLeadsCount[];
+  businesses: BusinessesWithCounts[];
   isCreateBusinessDialogOpen: boolean;
   newBusinessFormData: NewBusinessFormData;
   isEditBusinessDialogOpen: boolean;
@@ -52,7 +53,7 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
   const [loadingData, setLoadingData] = useState(true);
 
   // Business states
-  const [businesses, setBusinesses] = useState<BusinessesWithLeadsCount[]>([]);
+  const [businesses, setBusinesses] = useState<BusinessesWithCounts[]>([]);
   const [isCreateBusinessDialogOpen, setIsCreateBusinessDialogOpen] = useState(false);
   const [newBusinessFormData, setNewBusinessFormData] = useState<NewBusinessFormData>(defaultNewBusinessFormData);
   const [isEditBusinessDialogOpen, setIsEditBusinessDialogOpen] = useState(false);
@@ -73,13 +74,18 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
         .rpc('get_businesses_with_leads_count_where_user_is_member')
         .select('*');
 
-      const businessesWithLeadsCountData: BusinessesWithLeadsCount[] = [];
+      const { data: businessesWithPipelinesCount, error: businessesWithPipelinesCountError } = await supabase
+        .rpc('get_businesses_with_pipelines_count_where_user_is_member')
+        .select('*');
+
+      const businessesWithCountsData: BusinessesWithCounts[] = [];
 
       if (data) {
         for (const business of data) {
-          businessesWithLeadsCountData.push({
+          businessesWithCountsData.push({
             ...business,
-            leads_count: (businessesWithLeadsCount || []).find((b: any) => b.business_id === business.id)?.leads_count || 0,
+            pipelines_count: businessesWithPipelinesCount.find((b) => b.business_id === business.id)?.pipelines_count || 0,
+            leads_count: businessesWithLeadsCount.find((b) => b.business_id === business.id)?.leads_count || 0,
           });
         }
       }
@@ -87,7 +93,7 @@ export function BusinessesHomeProvider({ children }: { children: ReactNode }) {
       if (error) {
         toast.error('Error al obtener los negocios');
       } else if (data) {
-        setBusinesses(businessesWithLeadsCountData);
+        setBusinesses(businessesWithCountsData);
       }
     } catch (error) {
       toast.error('Error al obtener los negocios');

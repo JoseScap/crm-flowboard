@@ -85,12 +85,8 @@ Este módulo permite la administración centralizada de las empresas o negocios 
 - Creación de nuevos negocios con registro automático del dueño como primer empleado ✅
 - Edición de la información de perfil del negocio (nombre, contacto, ubicación) ✅
 - Interfaz de cuadrícula con acceso directo al panel de control de cada empresa ✅
-- Borrar el createad_at en el calendario.
-- Cantidad de Mensajes (Leads) en un bussiness >> Buscar cual es el mejor indicador. 
-- Ponerlo alargado, osea en el ancho de la pantalla; obviamente manteniendo proporciones; obtener estadísticas rápidas del bussiness.
-- Poder logo específico a un bussiness.
-- Listado de leads por pipeline específicamente, y cantidad de pipelines.
-- Activar o desactivar opción de "Transparencias De Ventas" en la DangerZone. 
+- Poder logo específico a un bussiness. (Pendiente)
+- Activar o desactivar opción de "Transparencias De Ventas" en la DangerZone. (Pendiente)
 
 ### Business View
 

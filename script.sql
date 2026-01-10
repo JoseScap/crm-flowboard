@@ -1,3 +1,29 @@
+DROP FUNCTION IF EXISTS get_businesses_with_pipelines_count_where_user_is_member() CASCADE;
+
+CREATE OR REPLACE FUNCTION get_businesses_with_pipelines_count_where_user_is_member()
+RETURNS TABLE(
+  business_id BIGINT,
+  pipelines_count BIGINT
+) AS $$
+BEGIN
+  -- Security check
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'User not authenticated';
+  END IF;
+
+  RETURN QUERY 
+  SELECT 
+    be.business_id, 
+    COUNT(p.id)::BIGINT AS pipelines_count
+  FROM business_employees be
+  LEFT JOIN pipelines p ON 
+    p.business_id = be.business_id AND
+    p.is_active = TRUE
+  WHERE be.user_id = auth.uid()
+  GROUP BY be.business_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
 DROP FUNCTION IF EXISTS get_businesses_with_leads_count_where_user_is_member() CASCADE;
 
 CREATE OR REPLACE FUNCTION get_businesses_with_leads_count_where_user_is_member()

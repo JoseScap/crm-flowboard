@@ -5,6 +5,7 @@ import { BusinessViewStatsCards } from './components/BusinessViewStatsCards';
 import { BusinessViewAdditionalStats } from './components/BusinessViewAdditionalStats';
 import { BusinessViewEmployeesTable } from './components/BusinessViewEmployeesTable';
 import { BusinessViewDialogs } from './components/BusinessViewDialogs';
+import { BusinessViewDangerZone } from './components/BusinessViewDangerZone';
 
 const BusinessView = () => {
   const { loading, business } = useBusinessViewContext();
@@ -22,6 +23,7 @@ const BusinessView = () => {
       <BusinessViewStatsCards />
       <BusinessViewAdditionalStats />
       <BusinessViewEmployeesTable />
+      <BusinessViewDangerZone />
       <BusinessViewDialogs />
     </div>
   );

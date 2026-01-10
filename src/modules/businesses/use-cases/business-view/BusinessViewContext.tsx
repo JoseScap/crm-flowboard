@@ -32,15 +32,20 @@ interface BusinessViewContextType {
   newEmployeeLastName: string;
   addingEmployee: boolean;
   togglingStatus: boolean;
+  togglingBusinessStatus: boolean;
+  isToggleBusinessStatusDialogOpen: boolean;
   
   // Handlers
   handleOpenAddEmployeeDialog: () => void;
   handleCloseAddEmployeeDialog: () => void;
+  handleOpenToggleBusinessStatusDialog: () => void;
+  handleCloseToggleBusinessStatusDialog: () => void;
   handleAddEmployee: () => Promise<void>;
   setNewEmployeeEmail: (email: string) => void;
   setNewEmployeeFirstName: (firstName: string) => void;
   setNewEmployeeLastName: (lastName: string) => void;
   handleToggleEmployeeStatus: (employee: Tables<'business_employees'>) => Promise<void>;
+  handleToggleBusinessStatus: () => Promise<void>;
 }
 
 const BusinessViewContext = createContext<BusinessViewContextType | undefined>(undefined);
@@ -58,6 +63,8 @@ export function BusinessViewProvider({ children }: { children: ReactNode }) {
   const [newEmployeeLastName, setNewEmployeeLastName] = useState('');
   const [addingEmployee, setAddingEmployee] = useState(false);
   const [togglingStatus, setTogglingStatus] = useState(false);
+  const [togglingBusinessStatus, setTogglingBusinessStatus] = useState(false);
+  const [isToggleBusinessStatusDialogOpen, setIsToggleBusinessStatusDialogOpen] = useState(false);
   const [stats, setStats] = useState<BusinessStats>({
     totalSales: 0,
     totalRevenue: 0,
@@ -167,6 +174,14 @@ export function BusinessViewProvider({ children }: { children: ReactNode }) {
     setNewEmployeeLastName('');
   };
 
+  const handleOpenToggleBusinessStatusDialog = () => {
+    setIsToggleBusinessStatusDialogOpen(true);
+  };
+
+  const handleCloseToggleBusinessStatusDialog = () => {
+    setIsToggleBusinessStatusDialogOpen(false);
+  };
+
   const handleAddEmployee = async () => {
     if (!id || !newEmployeeEmail.trim() || !newEmployeeFirstName.trim() || !newEmployeeLastName.trim()) {
       toast.error('Por favor complete todos los campos requeridos');
@@ -235,6 +250,36 @@ export function BusinessViewProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const handleToggleBusinessStatus = async () => {
+    if (!id || !business) return;
+
+    const businessId = parseInt(id || '0', 10);
+    if (isNaN(businessId)) return;
+
+    try {
+      setTogglingBusinessStatus(true);
+      const newStatus = !business.is_active;
+
+      const { error } = await supabase
+        .from('businesses')
+        .update({ is_active: newStatus })
+        .eq('id', businessId);
+
+      if (error) {
+        toast.error(`Error al ${newStatus ? 'activar' : 'desactivar'} el negocio`);
+        return;
+      }
+
+      toast.success(`Negocio ${newStatus ? 'activado' : 'desactivado'} con éxito`);
+      setBusiness({ ...business, is_active: newStatus });
+      setIsToggleBusinessStatusDialogOpen(false);
+    } catch (error: any) {
+      toast.error('Error al actualizar el estado del negocio');
+    } finally {
+      setTogglingBusinessStatus(false);
+    }
+  };
+
   const value: BusinessViewContextType = {
     business,
     loading,
@@ -247,13 +292,18 @@ export function BusinessViewProvider({ children }: { children: ReactNode }) {
     newEmployeeLastName,
     addingEmployee,
     togglingStatus,
+    togglingBusinessStatus,
+    isToggleBusinessStatusDialogOpen,
     handleOpenAddEmployeeDialog,
     handleCloseAddEmployeeDialog,
+    handleOpenToggleBusinessStatusDialog,
+    handleCloseToggleBusinessStatusDialog,
     handleAddEmployee,
     setNewEmployeeEmail,
     setNewEmployeeFirstName,
     setNewEmployeeLastName,
     handleToggleEmployeeStatus,
+    handleToggleBusinessStatus,
   };
 
   return (

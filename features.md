@@ -97,8 +97,8 @@ Este módulo permite la administración centralizada de las empresas o negocios 
 - Visualización detallada de la salud financiera y operativa del negocio ✅
 - Agregar un danger zone para: ✅
     - Poder desactivar un negocio, solo el owner va a poder visualizarlo y reactivarlo. ✅
-- Activar o desactivar opción de "Transparencias De Ventas" en la DangerZone. (Pendiente)
-- Poder logo específico a un bussiness. (Pendiente)
+    - Poder desactivar configuracion de transparencia de ventas personales, solo el owner va a poder visualizarlo y reactivarlo. (Pendiente)
+- Poner logo específico a un bussiness. (Pendiente)
 
 ### Quick Actions (Funcionalidad Adicional Pendiente)
 - Pasan a ser dinámicas y no estáticas. 
@@ -167,8 +167,6 @@ Este módulo es el núcleo operativo del CRM, permitiendo la visualización y ge
 - El modal de archivar va dentro del lead, no en el pipeline.
 - El N/A del correo no aporta, y se rompe la UI.
 - Al tocar un lead; debe abrir los datos del lead, no hay necesidads de tocar el ojito.
-
-
 
 ### Pipelines Config
 

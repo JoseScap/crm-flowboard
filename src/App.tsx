@@ -198,6 +198,19 @@ const App = () => (
                   <BusinessLayout
                     title="Nueva Venta"
                     description="Crea una nueva venta añadiendo productos de tu inventario."
+                    breadcrumbs={[
+                      {
+                        label: "Negocios",
+                        path: "/user/businesses",
+                      },
+                      {
+                        label: "Ventas",
+                        path: "/user/businesses/:id/sales",
+                      },
+                      {
+                        label: "Nueva Venta",
+                      }
+                    ]}
                   >
                     <NewSalePage />
                   </BusinessLayout>
@@ -224,33 +237,76 @@ const App = () => (
                 }
               />
               <Route
-                path="/user/businesses/:id/pipeline/:pipelineId"
+                path="/user/businesses/:id/pipelines/:pipelineId"
                 element={
                   <BusinessLayout
                     title="Pipeline"
                     description="Consulta y gestiona tu flujo de ventas"
+                    breadcrumbs={[
+                      {
+                        label: "Negocios",
+                        path: "/user/businesses",
+                      },
+                      {
+                        label: "Pipelines",
+                        path: `/user/businesses/:id/pipelines`,
+                      },
+                      {
+                        label: "Vista de Pipeline",
+                      },
+                    ]}
                   >
                     <PipelineViewPage />
                   </BusinessLayout>
                 }
               />
               <Route
-                path="/user/businesses/:id/pipeline/:pipelineId/lead/:leadId"
+                path="/user/businesses/:id/pipelines/:pipelineId/lead/:leadId"
                 element={
                   <BusinessLayout
                     title="Detalles del Lead"
                     description="Consulta la información y detalles del lead"
+                    breadcrumbs={[
+                      {
+                        label: "Negocios",
+                        path: "/user/businesses",
+                      },
+                      {
+                        label: "Pipelines",
+                        path: `/user/businesses/:id/pipelines`,
+                      },
+                      {
+                        label: "Vista de Pipeline",
+                        path: "/user/businesses/:id/pipeline/:pipelineId",
+                      },
+                      {
+                        label: "Detalle de Lead"
+                      },
+                    ]}
                   >
                     <LeadDetailsPage />
                   </BusinessLayout>
                 }
               />
               <Route
-                path="/user/businesses/:id/pipeline/:pipelineId/config"
+                path="/user/businesses/:id/pipelines/:pipelineId/config"
                 element={
                   <BusinessLayout
                     title="Configuración del Pipeline"
                     description="Configura los ajustes de tu pipeline"
+                    breadcrumbs={[
+                      {
+                        label: "Negocios",
+                        path: "/user/businesses",
+                      },
+                      {
+                        label: "Pipelines",
+                        path: `/user/businesses/:id/pipelines`,
+                      },
+                      {
+                        label: "Configuración del Pipeline",
+                      },
+                    ]}
                   >
                     <PipelinesConfigPage />
                   </BusinessLayout>

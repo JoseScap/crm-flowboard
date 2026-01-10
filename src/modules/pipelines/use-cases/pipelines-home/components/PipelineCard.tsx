@@ -14,7 +14,7 @@ export function PipelineCard({ pipeline }: PipelineCardProps) {
 
   return (
     <div
-      onClick={() => navigate(`/user/businesses/${businessId}/pipeline/${pipeline.id}`)}
+      onClick={() => navigate(`/user/businesses/${businessId}/pipelines/${pipeline.id}`)}
       className="bg-card border border-border rounded-xl p-6 cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200 group animate-fade-in relative"
     >
       <div className="flex items-start justify-between mb-4">
@@ -27,7 +27,7 @@ export function PipelineCard({ pipeline }: PipelineCardProps) {
           className="h-8 w-8"
           onClick={(e) => {
             e.stopPropagation();
-            navigate(`/user/businesses/${businessId}/pipeline/${pipeline.id}/config`);
+            navigate(`/user/businesses/${businessId}/pipelines/${pipeline.id}/config`);
           }}
           title="Configuración del Pipeline"
         >

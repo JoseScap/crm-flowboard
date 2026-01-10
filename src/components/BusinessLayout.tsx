@@ -50,7 +50,7 @@ export function BusinessLayout({
   breadcrumbs,
 }: BusinessLayoutProps) {
   const { isAuthenticated, loading } = useLayoutContext();
-  const navigate = useNavigate();
+  const params = useParams();
 
   if (loading) {
     return (
@@ -85,12 +85,22 @@ export function BusinessLayout({
               {breadcrumbs && (
                 <Breadcrumb>
                   <BreadcrumbList>
-                    {breadcrumbs.map((breadcrumb, index) => (
+                    {breadcrumbs.map((breadcrumb, index) => {
+                      let newPath = breadcrumb.path;
+                      if (breadcrumb.path?.includes(':')) {
+                        const paramsToReplace = breadcrumb.path.split('/').filter(x => x.startsWith(':'));
+                        
+                        for (const param of paramsToReplace) {
+                          newPath = newPath.replace(`${param}`, params[param.slice(1)]);
+                        }
+                      }
+
+                      return (
                       <Fragment key={breadcrumb.label}>
                         <BreadcrumbItem>
                           {breadcrumb.path && (
                             <BreadcrumbLink asChild>
-                              <Link to={breadcrumb.path}>
+                              <Link to={newPath}>
                                 {breadcrumb.label}
                               </Link>
                             </BreadcrumbLink>
@@ -103,7 +113,7 @@ export function BusinessLayout({
                           <BreadcrumbSeparator />
                         )}
                       </Fragment>
-                    ))}
+                    )})}
                   </BreadcrumbList>
                 </Breadcrumb>
               )}

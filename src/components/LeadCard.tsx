@@ -24,7 +24,7 @@ export function LeadCard({ lead, assignedEmployee, isMe, onArchiveClick, onDetai
     // Navigate to lead details page with pipelineId
     // pipelineId should always be available when viewing a pipeline
     if (pipelineId) {
-      navigate(`/user/businesses/${businessId}/pipeline/${pipelineId}/lead/${lead.id}`);
+      navigate(`/user/businesses/${businessId}/pipelines/${pipelineId}/lead/${lead.id}`);
     } else {
       toast.error('Se requiere el ID del pipeline para ver los detalles del lead');
     }
